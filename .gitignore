@@ -31,3 +31,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Sicurezza
+
+# File di sistema (evita file spazzatura del PC)
+.DS_Store
+Thumbs.db
+
+# Log
+*.log
+
+# File temporanei
+*.tmp
+*.swp

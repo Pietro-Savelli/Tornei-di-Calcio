@@ -12,7 +12,7 @@ public class Torneo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @NotBlank
     private String nome;
@@ -74,6 +74,14 @@ public class Torneo {
 
     public void setPartite(Set<Partita> partite) {
         this.partite = partite;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

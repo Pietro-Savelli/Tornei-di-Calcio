@@ -43,6 +43,30 @@ public class Squadra {
     public Squadra() {
     }
 
+    public Set<Partita> getPartiteGiocateInTrasferta() {
+        return partiteGiocateInTrasferta;
+    }
+
+    public void setPartiteGiocateInTrasferta(Set<Partita> partiteGiocateInTrasferta) {
+        this.partiteGiocateInTrasferta = partiteGiocateInTrasferta;
+    }
+
+    public Set<Partita> getPartiteGiocateInCasa() {
+        return partiteGiocateInCasa;
+    }
+
+    public void setPartiteGiocateInCasa(Set<Partita> partiteGiocateInCasa) {
+        this.partiteGiocateInCasa = partiteGiocateInCasa;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
     }

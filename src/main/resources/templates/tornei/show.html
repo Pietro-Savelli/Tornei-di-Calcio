@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${torneo.nome}"></title>
+</head>
+<body>
+<h1 th:text="${torneo.nome}">Serie A </h1>
+<h2 th:text="${torneo.descrizione}">Descrizione</h2>
+
+<ul>
+  Id: <span th:text= "${torneo.id}">1</span> <br>
+  Year: <span th:text="${torneo.anno}">2009</span> <br>
+</ul>
+<h2>Squadre:</h2>
+<ul>
+    <li th:each="squadra: ${torneo.squadre}">
+        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"
+           th:text="${squadra.nome}">Lazio</a>
+    </li>
+</ul>
+
+<li><a href="/tornei/">Torna alla pagina dei tornei </a></li>
+</body>
+</html>

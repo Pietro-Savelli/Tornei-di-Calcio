@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Squadre</title>
+</head>
+<body>
+<h1>Squadre </h1>
+<h2>Totale = [[${squadre.size()}]] </h2>
+<ul>
+    <li th:each="squadra: ${squadre}">
+        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"
+           th:text="${squadra.nome}">Sassuolo </a>
+    </li>
+    da agigungere le altre entita'
+</ul>
+
+<!-- Dichiariamo il frammento chiamato "bloccoSquadre" che accetta una lista come parametro -->
+<!--<ul th:fragment="bloccoSquadre(squadre)">-->
+<!--    <li th:each="squadra : ${squadre}">-->
+<!--        <a th:href="@{'/squadre/' + ${squadra.id}}"-->
+<!--           th:text="${squadra.nome}">Nome</a>-->
+<!--    </li>-->
+<!--    Da agigungere le altre entita'-->
+<!--</ul>-->
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tornei</title>
+</head>
+<body>
+<h1>Tornei </h1>
+<h2>Totale = [[${tornei.size()}]] </h2>
+<ul>
+    <li th:each="torneo: ${tornei}">
+        <a th:href="@{'/tornei' + '/' + ${torneo.id}}"
+           th:text="${torneo.nome}">Serie A </a>
+        <span th:text="'(' + ${torneo.anno} + ')'">(2009)</span>
+    </li>
+    <h1>QUANDO CI AGGIUNGI LE SQUADRE E LE CLASSIFICHE AGGIORNA LA PAGINA </h1>
+</ul>
+</body>
+</html>

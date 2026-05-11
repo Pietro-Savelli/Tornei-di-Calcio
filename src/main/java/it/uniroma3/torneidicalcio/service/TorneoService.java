@@ -23,4 +23,8 @@ public class TorneoService {
     public Torneo findById(Long id) {
         return torneoRepository.findById(id).orElse(null);// ritorno del torneo se esiste se no null
     }
+
+    public @Nullable Object findCalendarioByTorneoId(Long id) {
+        return torneoRepository.findCalendarioByTorneoId(id);
+    }
 }

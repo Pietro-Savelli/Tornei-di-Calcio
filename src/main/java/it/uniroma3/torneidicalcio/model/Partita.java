@@ -18,12 +18,9 @@ public class Partita {
     @NotBlank
     private String luogo;
 
-    @NotBlank
     private Integer goalsAway;
-    @NotBlank
     private Integer goalsHome;
     private java.time.LocalDateTime dataOra;
-    @NotBlank
     private Stato stato;
 
     @ManyToOne
@@ -33,11 +30,9 @@ public class Partita {
 
     //Una partita coinvolge due squadre (Casa e Trasferta)
     @ManyToOne
-    @NotNull // Rende obbligatoria la presenza della squadra
     private Squadra squadraCasa;
 
     @ManyToOne
-    @NotNull // Rende obbligatoria la presenza della squadra
     private Squadra squadraOspite;
 
 
@@ -51,7 +46,13 @@ public class Partita {
 
     public Partita() {
     }
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
     public String getLuogo() {
         return luogo;
     }

@@ -21,6 +21,7 @@ public class Partita {
     private Integer goalsAway;
     private Integer goalsHome;
     private java.time.LocalDateTime dataOra;
+    @Enumerated(EnumType.STRING)
     private Stato stato;
 
     @ManyToOne

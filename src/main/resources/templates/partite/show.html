@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="|${partita.squadraCasa.nome} vs ${partita.squadraOspite.nome}|">Lazio vs Roma</title>
+</head>
+<body>
+<h1 th:text="|${partita.squadraCasa.nome} vs ${partita.squadraOspite.nome}|">Lazio vs Roma</h1>
+<p><strong>Luogo:</strong> <span th:text="${partita.luogo}">Olimpico</span></p>
+
+<h2>
+    RISULTATO: <span th:text="|${partita.squadraCasa.nome} ${partita.goalsHome} - ${partita.goalsAway} ${partita.squadraOspite.nome}|">Lazio 1 - 1 Roma</span>
+</h2>
+
+<h3>Informazioni utili</h3>
+<ul>
+    <li>
+        <strong>Arbitro:</strong>
+        <span th:text="${partita.arbitro != null ? partita.arbitro.nome + ' ' + partita.arbitro.cognome : 'Da designare'}">Brocchi</span>
+    </li>
+    <li>
+        <strong>Squadra casa:</strong>
+        <a th:href="@{/squadre/{id}(id=${partita.squadraCasa.id})}" th:text="${partita.squadraCasa.nome}">Lazio</a>
+    </li>
+    <li>
+        <strong>Squadra ospite:</strong>
+        <a th:href="@{/squadre/{id}(id=${partita.squadraOspite.id})}" th:text="${partita.squadraOspite.nome}">Roma</a>
+    </li>
+</ul>
+
+<div>
+    <a th:href="@{/tornei/{id}(id=${partita.torneo.id})}">Torna alla pagina del torneo</a>
+</div>
+
+</body>
+</html>

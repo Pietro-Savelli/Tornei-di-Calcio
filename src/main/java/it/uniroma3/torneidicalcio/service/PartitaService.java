@@ -3,6 +3,7 @@ package it.uniroma3.torneidicalcio.service;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.repository.PartitaRepository;
 import it.uniroma3.torneidicalcio.repository.TorneoRepository;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,5 +19,9 @@ public class PartitaService {
 
     public Optional<Partita> findProssimaPartita(Long id) {
         return partitaRepository.findFirstByTorneoIdAndDataOraAfterOrderByDataOraAsc(id, LocalDateTime.now());
+    }
+
+    public Partita findById(Long id) {
+        return partitaRepository.findById(id).orElse(null);
     }
 }

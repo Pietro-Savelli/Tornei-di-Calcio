@@ -5,10 +5,42 @@
     <title th:text="${squadra.nome}"> FOTO DA METTERE</title>
 </head>
 <body>
-<h1 th:text="${squadra.nome}"> Sassuolo </h1>
+<h1 th:text="${squadra.nome}"> Lazio </h1>
 <h2 th:text="${squadra.annoFondazione}"> Anno fondazione </h2>
+<span th:text="${squadra.citta}"> Roma</span>
+<h3>Giocatori</h3>
+<ul>
+    <li th:each="giocatore: ${squadra.giocatori}">
+        <a th:href="@{'/giocatori' + '/' + ${giocatore.id}}"
+           th:text="${giocatore.nome}+${giocatore.cognome}"> Pietro Savelli </a>
+    </li>
+</ul>
 
+<h3>Tornei</h3>
+<ul>
+    <li th:each="torneo: ${squadra.tornei}">
+        <a th:href="@{'/tornei' + '/' + ${torneo.id}}"
+           th:text="${torneo.nome}"> Serie A </a>
+    </li>
+</ul>
 
-<h2> da aggiungere le partite che deve giocare prossimanemte, e nel caso i torni a cui partecipa </h2>
+<h2>Partite</h2>
+<h3>In CASA</h3>
+<ul>
+    <li th:each="partita: ${squadra.partiteGiocateInCasa}">
+        <a th:href="@{'/partite' + '/' + ${partita.id}}"
+           th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome + ':' + partita.dataOra}">Lazio vs Roma </a>
+    </li>
+</ul>
+
+<h3>In TRASFERTA</h3>
+<ul>
+    <li th:each="partita: ${squadra.partiteGiocateInTrasferta}">
+        <a th:href="@{'/partite' + '/' + ${partita.id}}"
+           th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome + ':' + partita.dataOra}">Roma vs Lazio </a>
+    </li>
+</ul>
+
+<h2> da aggiungere le partite che deve giocare prossimanemte</h2>
 </body>
 </html>

@@ -38,6 +38,14 @@ public class Giocatore {
     public Giocatore() {
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public Squadra getSquadra() {
         return squadra;
     }

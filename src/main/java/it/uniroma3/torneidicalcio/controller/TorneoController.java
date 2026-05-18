@@ -34,6 +34,7 @@ public class TorneoController {
         model.addAttribute("torneo", this.torneoService.findById(id));
         Optional<Partita> prossima = this.partitaService.findProssimaPartita(id);
         prossima.ifPresent(p -> model.addAttribute("prossimaPartita", p));
+        model.addAttribute("classifica", this.torneoService.calcolaClassifica(id));
         return "tornei/show";
     }
 
@@ -41,6 +42,16 @@ public class TorneoController {
     public String showCalendario(@PathVariable("id") Long id, Model model){
         model.addAttribute("calendario", this.torneoService.findCalendarioByTorneoId(id));
         return "partite/list";
+    }
+
+    @GetMapping("/{idTorneo}/calendario/partita/{idPartita}")
+    public String showPartita( @PathVariable("idTorneo") Long idTorneo, @PathVariable("idPartita") Long idPartita, Model model) {
+        Partita partita = this.partitaService.findById(idPartita);
+
+        model.addAttribute("partita", partita);
+        model.addAttribute("torneo", this.torneoService.findById(idTorneo));
+
+        return "partite/show";
     }
 
     //@GetMapping("/{id}/squadre") // potrei fare una nuova richeista ma cosa ne guadagno?

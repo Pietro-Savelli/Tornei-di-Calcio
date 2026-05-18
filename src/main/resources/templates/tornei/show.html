@@ -13,7 +13,7 @@
   Year: <span th:text="${torneo.anno}">2009</span> <br>
 </ul>
 <h2><a th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">Calendario</a>
-    ->SOON:<a th:href="@{'/partite/' + ${prossimaPartita.id}}">
+    ->SOON:<a th:href= "@{'/tornei/' + ${torneo.id} + '/calendario/partita/'+${prossimaPartita.id}}">
         <span th:text="${prossimaPartita.squadraCasa.nome + ' vs ' + prossimaPartita.squadraOspite.nome}">Lazio vs Roma</span></a></h2>
 <h2>Squadre:</h2>
 <ul>
@@ -22,6 +22,38 @@
            th:text="${squadra.nome}">Lazio</a>
     </li>
 </ul>
+
+
+<h1>Classifica:</h1>
+<table>
+    <thead>
+    <tr>
+        <th style="width: 8%;">Pos</th>
+        <th class="left-align" style="width: 32%;">Squadra</th>
+        <th style="width: 10%;">Punti</th>
+        <th style="width: 8%;">PG</th>
+        <th style="width: 7%;">V</th>
+        <th style="width: 7%;">N</th>
+        <th style="width: 7%;">S</th>
+        <th style="width: 10%;">GF</th>
+        <th style="width: 11%;">GS</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="riga, iterStat : ${classifica}" th:classappend="${iterStat.first} ? 'pos-1'">
+        <td th:text="${iterStat.count}">1</td>
+        <td class="left-align" th:text="${riga.nomeSquadra}">Nome Squadra</td>
+        <td class="bold-text" th:text="${riga.punti}">0</td>
+        <td th:text="${riga.partiteGiocate}">0</td>
+        <td th:text="${riga.vittorie}">0</td>
+        <td th:text="${riga.pareggi}">0</td>
+        <td th:text="${riga.sconfitte}">0</td>
+        <td th:text="${riga.golFatti}">0</td>
+        <td th:text="${riga.golSubiti}">0</td>
+    </tr>
+    </tbody>
+</table>
+
 
 <li><a href="/tornei/">Torna alla pagina dei tornei </a></li>
 </body>

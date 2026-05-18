@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1 th:text="|${partita.squadraCasa.nome} vs ${partita.squadraOspite.nome}|">Lazio vs Roma</h1>
+<span th:text="${torneo.nome}+' anno:'+ ${torneo.anno}"> Serie A  anno: 2026 </span>
 <p><strong>Luogo:</strong> <span th:text="${partita.luogo}">Olimpico</span></p>
 
 <h2>

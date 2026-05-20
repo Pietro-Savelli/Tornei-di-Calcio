@@ -11,7 +11,7 @@
 <h3>Giocatori</h3>
 <ul>
     <li th:each="giocatore: ${squadra.giocatori}">
-        <a th:href="@{'/giocatori' + '/' + ${giocatore.id}}"
+        <a th:href="@{${squadra.id}+'/giocatori'+'/'+ ${giocatore.id}}"
            th:text="${giocatore.nome}+${giocatore.cognome}"> Pietro Savelli </a>
     </li>
 </ul>
@@ -28,7 +28,7 @@
 <h3>In CASA</h3>
 <ul>
     <li th:each="partita: ${squadra.partiteGiocateInCasa}">
-        <a th:href="@{'/partite' + '/' + ${partita.id}}"
+        <a th:href="@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/'+${partita.id}}"
            th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome + ':' + partita.dataOra}">Lazio vs Roma </a>
     </li>
 </ul>
@@ -36,7 +36,7 @@
 <h3>In TRASFERTA</h3>
 <ul>
     <li th:each="partita: ${squadra.partiteGiocateInTrasferta}">
-        <a th:href="@{'/partite' + '/' + ${partita.id}}"
+        <a th:href="@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/'+${partita.id}}"
            th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome + ':' + partita.dataOra}">Roma vs Lazio </a>
     </li>
 </ul>

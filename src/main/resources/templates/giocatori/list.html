@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rosa</title>
+</head>
+<h2 th:text="Rosa Giocatori ${squadra.nome}">Rosa Giocatori</h2>
+
+<div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+
+    <table style="width: 100%; text-align: left;">
+        <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th>Nome e Cognome</th>
+            <th>Ruolo</th>
+            <th>Dettagli</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${squadra.giocatori}">
+            <td th:text="${g.nome} + ' ' + ${g.cognome}"></td>
+            <td th:text="${g.ruolo}"></td>
+            <td>
+                <a th:href="@{/giocatori/{id}(id=${g.id})}">Vedi Profilo</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${#lists.isEmpty(squadra.giocatori)}">Nessun giocatore registrato per questa squadra.</p>
+</div>

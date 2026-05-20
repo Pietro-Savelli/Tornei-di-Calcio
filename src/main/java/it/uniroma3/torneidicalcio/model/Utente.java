@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
@@ -14,17 +15,36 @@ public class Utente {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String userName;
+    private String username;
     private String password;
     private String ruolo;
+    @NotBlank
+    private String name;
 
-    public Utente(String userName, String password, String ruolo) {
-        this.userName = userName;
+    public Utente(String username, String password, String ruolo, String name) {
+        this.username = username;
         this.password = password;
         this.ruolo = ruolo;
+        this.name = name;
     }
 
     public Utente() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getRuolo() {
@@ -35,12 +55,12 @@ public class Utente {
         this.ruolo = ruolo;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

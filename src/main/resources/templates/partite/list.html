@@ -9,7 +9,7 @@
 <h2>Totale = [[${calendario.size()}]] </h2>
 <ul>
     <li th:each="partita: ${calendario}">
-        <a th:href="@{'/partite' + '/' + ${partita.id}}"
+        <a th:href= "@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/'+${partita.id}}"
            th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome}">USA vs Mexico</a>
         <span th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}">11/05/2026 11:30</span>
     </li>

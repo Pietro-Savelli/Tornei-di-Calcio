@@ -1,5 +1,7 @@
 package it.uniroma3.torneidicalcio.controller;
 
+import it.uniroma3.torneidicalcio.model.Giocatore;
+import it.uniroma3.torneidicalcio.service.GiocatoreService;
 import it.uniroma3.torneidicalcio.service.SquadraService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 class SquadraController {
 
     private final SquadraService squadraService;
+    private final GiocatoreService giocatoreService;
 
-    public SquadraController(SquadraService squadraService){
+    public SquadraController(SquadraService squadraService, GiocatoreService giocatoreService){
         this.squadraService = squadraService;
+        this.giocatoreService = giocatoreService;
     }
 
     @GetMapping("/")
@@ -28,4 +32,17 @@ class SquadraController {
         model.addAttribute("squadra", this.squadraService.findById(id));
         return "squadre/show";
     }
+
+    @GetMapping("/{idSquadra}/giocatori/{idGiocatore}")
+    public String mostraGiocatore (@PathVariable("idSquadra") Long idSquadra, @PathVariable("idGiocatore") Long idGiocatore, Model model){
+        model.addAttribute("giocatore", this.giocatoreService.findById(idGiocatore));
+        return "giocatori/show";
+    }
+
+    @GetMapping("/{idSquadra}/giocatori")
+    public String mostraRosa (@PathVariable("idSquadra") Long idSquadra, Model model){
+        model.addAttribute("squadra", this.squadraService.findById(idSquadra));
+        return "giocatori/list";
+    }
+
 }

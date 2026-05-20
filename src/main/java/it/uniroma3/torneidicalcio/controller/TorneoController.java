@@ -45,12 +45,9 @@ public class TorneoController {
     }
 
     @GetMapping("/{idTorneo}/calendario/partita/{idPartita}")
-    public String showPartita( @PathVariable("idTorneo") Long idTorneo, @PathVariable("idPartita") Long idPartita, Model model) {
+    public String showPartita(@PathVariable("idTorneo") Long idTorneo, @PathVariable("idPartita") Long idPartita, Model model) {
         Partita partita = this.partitaService.findById(idPartita);
-
         model.addAttribute("partita", partita);
-        model.addAttribute("torneo", this.torneoService.findById(idTorneo));
-
         return "partite/show";
     }
 

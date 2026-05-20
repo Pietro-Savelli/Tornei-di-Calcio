@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dettaglio Giocatore</title>
+  <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div>
+  <a href="/tornei/">Torna ai Tornei</a>
+</div>
+
+<h1>Dettaglio <strong th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Cognome></strong></h1>
+
+<div style="border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+  <h2 th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Cognome</h2>
+
+  <ul>
+    <li><strong>Ruolo:</strong> <span th:text="${giocatore.ruolo}"></span></li>
+    <li><strong>Data di nascita:</strong> <span th:text="${giocatore.dataDiNascita}"></span></li>
+    <li><strong>Altezza:</strong> <span th:text="${giocatore.altezza != null ? giocatore.altezza + ' cm' : 'Non specificata'}"></span></li>
+
+    <li><strong>Squadra:</strong>
+      <a th:if="${giocatore.squadra != null}"
+         th:href="@{/squadre/{id}(id=${giocatore.squadra.id})}"
+         th:text="${giocatore.squadra.nome}">Nome Squadra</a>
+      <span th:unless="${giocatore.squadra != null}">Svincolato</span>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

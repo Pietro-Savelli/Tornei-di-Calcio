@@ -10,6 +10,7 @@ public class RigaClassificaDto {
     private int sconfitte;
     private int golFatti;
     private int golSubiti;
+    private boolean ritirata;
 
     public RigaClassificaDto(Long squadraId, String nomeSquadra) {
         this.squadraId = squadraId;
@@ -110,4 +111,8 @@ public class RigaClassificaDto {
     public void setGolSubiti(int golSubiti) {
         this.golSubiti = golSubiti;
     }
+
+    public boolean isRitirata() { return ritirata; }
+    public void setRitirata(boolean ritirata) { this.ritirata = ritirata; }
+
 }

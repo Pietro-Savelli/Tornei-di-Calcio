@@ -13,9 +13,8 @@ import jakarta.persistence.Entity;
  public class Partita {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long  id;
 
-    @NotBlank
     private String luogo;
 
     private Integer goalsAway;
@@ -35,9 +34,12 @@ import jakarta.persistence.Entity;
 
      @ManyToOne
      private Squadra squadraOspite;
- 
-     @OneToMany(mappedBy = "partita", cascade = CascadeType.ALL)
+
+     @OneToMany(mappedBy = "partita", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
      private List<Commento> commenti;
+
+     @Column(nullable = false)
+     private boolean eliminata = false;
  
  
      public Partita(String luogo, Integer goalsAway, Integer goalsHome, LocalDateTime dataOra, Stato stato) {
@@ -50,11 +52,11 @@ import jakarta.persistence.Entity;
 
     public Partita() {
     }
-    public long getId() {
+    public Long  getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long  id) {
         this.id = id;
     }
     public String getLuogo() {
@@ -136,7 +138,10 @@ import jakarta.persistence.Entity;
      public void setCommenti(List<Commento> commenti) {
          this.commenti = commenti;
      }
- 
+
+     public boolean isEliminata() { return eliminata; }
+     public void setEliminata(boolean eliminata) { this.eliminata = eliminata; }
+
      @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

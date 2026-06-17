@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <title>Dettaglio Giocatore</title>
   <link rel="stylesheet" href="/css/stile.css" />
@@ -26,6 +26,17 @@
       <span th:unless="${giocatore.squadra != null}">Svincolato</span>
     </li>
   </ul>
+  <div sec:authorize="hasAuthority('ADMIN')">
+    <a th:href="@{'/admin/giocatori/' + ${giocatore.id} + '/edit'}">✏️ Modifica Giocatore</a>
+    <form th:action="@{'/admin/giocatori/' + ${giocatore.id} + '/delete'}" method="POST" style="display:inline;">
+      <button type="button" class="btn btn-delete"
+              th:attr="onclick=|apriModale('@{/admin/giocatori/{id}/delete(id=${giocatore.id})}', '${giocatore.nome} ' + ${giocatore.cognome})|">
+        🗑️ Elimina
+      </button>
+    </form>
+  </div>
 </div>
+
+<div th:replace="~{fragments/modale :: elimina}"></div>
 </body>
 </html>

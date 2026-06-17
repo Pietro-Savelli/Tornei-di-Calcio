@@ -13,9 +13,11 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
     @Query("SELECT t FROM Torneo t ORDER BY t.anno desc")
     List<Torneo> findAllOrdinatiPerAnno();
 
-    @Query("SELECT p FROM Partita p WHERE p.torneo.id = :idTorneo")
+    @Query("SELECT p FROM Partita p WHERE p.torneo.id =  :idTorneo AND p.eliminata = false")
     List<Partita> findCalendarioByTorneoId(@Param("idTorneo") Long id);
 
+    @Query("SELECT p FROM Partita p WHERE p.torneo.id = :id AND p.eliminata = false")
+    List<Partita> findCalendarioAttivoByTorneoId(Long id);
     // Questa query carica il torneo, le sue partite e le squadre associate in un colpo solo
     @Query("SELECT t FROM Torneo t " +
             "LEFT JOIN FETCH t.partite p " +

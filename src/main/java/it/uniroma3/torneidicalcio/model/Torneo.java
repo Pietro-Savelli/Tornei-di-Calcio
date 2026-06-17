@@ -24,7 +24,7 @@ public class Torneo {
     @ManyToMany
     private Set<Squadra> squadre = new HashSet<>();
 
-    @OneToMany(mappedBy = "torneo")
+    @OneToMany(mappedBy = "torneo", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Partita> partite = new HashSet<>();
 
     public Torneo(Integer anno, String descrizione, String nome) {

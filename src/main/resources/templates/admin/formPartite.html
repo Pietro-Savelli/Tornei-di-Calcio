@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${partita.id != null} ? 'Modifica Partita' : 'Nuova Partita'">Partita</title>
+</head>
+<body>
+<h1 th:text="${partita.id != null} ? 'Modifica Partita' : 'Registra Nuova Partita'">Form Partita</h1>
+
+<form th:action="${partita.id != null} ? @{/admin/partite/{id}/edit(id=${partita.id})} : @{/admin/partite/new}"
+      th:object="${partita}" method="POST">
+
+    <div>
+        <label for="torneo">Torneo:</label>
+        <select id="torneo" name="torneo.id" required>
+            <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome + ' (' + t.anno + ')'}"
+                    th:selected="${partita.torneo != null and partita.torneo.id == t.id}">Torneo</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="squadraCasa">Squadra Casa:</label>
+        <select id="squadraCasa" name="squadraCasa.id" required>
+            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"
+                    th:selected="${partita.squadraCasa != null and partita.squadraCasa.id == s.id}">Squadra</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="squadraOspite">Squadra Ospite:</label>
+        <select id="squadraOspite" name="squadraOspite.id" required>
+            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"
+                    th:selected="${partita.squadraOspite != null and partita.squadraOspite.id == s.id}">Squadra</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="luogo">Luogo:</label>
+        <input type="text" id="luogo" th:field="*{luogo}" required />
+    </div>
+
+    <div>
+        <label for="dataOra">Data e Ora:</label>
+        <input type="datetime-local" id="dataOra" th:field="*{dataOra}" required />
+    </div>
+
+    <button type="submit" th:text="${partita.id != null} ? 'Salva Modifiche' : 'Registra Partita'">Salva</button>
+    <a th:href="@{/tornei/}">Annulla</a>
+</form>
+</body>
+</html>

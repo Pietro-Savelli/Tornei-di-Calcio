@@ -13,7 +13,7 @@ public class Squadra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @NotBlank
     private String nome;
@@ -33,6 +33,9 @@ public class Squadra {
 
     @OneToMany(mappedBy = "squadraOspite")
     private Set<Partita> partiteGiocateInTrasferta = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean eliminata = false;
 
     public Squadra(String citta, Integer annoFondazione, String nome) {
         this.citta = citta;
@@ -59,11 +62,11 @@ public class Squadra {
         this.partiteGiocateInCasa = partiteGiocateInCasa;
     }
 
-    public long getId() {
+    public Long  getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long  id) {
         this.id = id;
     }
 
@@ -106,6 +109,10 @@ public class Squadra {
     public void setGiocatori(Set<Giocatore> giocatori) {
         this.giocatori = giocatori;
     }
+
+    public boolean isEliminata() { return eliminata; }
+    public void setEliminata(boolean eliminata) { this.eliminata = eliminata; }
+
 
     @Override
     public boolean equals(Object o) {

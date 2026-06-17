@@ -1,27 +1,67 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Squadre</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Squadre </h1>-->
+<!--<h2>Totale = [[${squadre.size()}]] </h2>-->
+<!--<ul>-->
+<!--    <li th:each="squadra: ${squadre}">-->
+<!--        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"-->
+<!--           th:text="${squadra.nome}">Sassuolo </a>-->
+<!--    </li>-->
+<!--    da agigungere le altre entita'-->
+<!--</ul>-->
+
+<!--&lt;!&ndash; Dichiariamo il frammento chiamato "bloccoSquadre" che accetta una lista come parametro &ndash;&gt;-->
+<!--&lt;!&ndash;<ul th:fragment="bloccoSquadre(squadre)">&ndash;&gt;-->
+<!--&lt;!&ndash;    <li th:each="squadra : ${squadre}">&ndash;&gt;-->
+<!--&lt;!&ndash;        <a th:href="@{'/squadre/' + ${squadra.id}}"&ndash;&gt;-->
+<!--&lt;!&ndash;           th:text="${squadra.nome}">Nome</a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </li>&ndash;&gt;-->
+<!--&lt;!&ndash;    Da agigungere le altre entita'&ndash;&gt;-->
+<!--&lt;!&ndash;</ul>&ndash;&gt;-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Squadre</title>
+    <link rel="stylesheet" href="/css/stile.css" />
 </head>
-<body>
-<h1>Squadre </h1>
-<h2>Totale = [[${squadre.size()}]] </h2>
-<ul>
-    <li th:each="squadra: ${squadre}">
-        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"
-           th:text="${squadra.nome}">Sassuolo </a>
-    </li>
-    da agigungere le altre entita'
-</ul>
+<body class="dark-theme">
 
-<!-- Dichiariamo il frammento chiamato "bloccoSquadre" che accetta una lista come parametro -->
-<!--<ul th:fragment="bloccoSquadre(squadre)">-->
-<!--    <li th:each="squadra : ${squadre}">-->
-<!--        <a th:href="@{'/squadre/' + ${squadra.id}}"-->
-<!--           th:text="${squadra.nome}">Nome</a>-->
-<!--    </li>-->
-<!--    Da agigungere le altre entita'-->
-<!--</ul>-->
+<div class="container">
+    <h1>👥 Squadre</h1>
+    <h2 style="color:var(--text-muted);">Totale = [[${squadre.size()}]]</h2>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{/admin/squadre/new}" class="btn btn-create">➕ Crea Nuova Squadra</a>
+    </div>
+
+    <ul style="list-style:none; padding:0;">
+        <li th:each="squadra: ${squadre}" class="item-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a th:href="@{'/squadre/' + ${squadra.id}}" style="font-weight:700; font-size:1.1rem; color:var(--text); text-decoration:none;" th:text="${squadra.nome}">Lazio</a>
+                <span style="color:var(--text-muted); font-size:0.9rem;" th:text="${squadra.citta}">Roma</span>
+            </div>
+            <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px;">
+                <a th:href="@{'/admin/squadre/' + ${squadra.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+                <button type="button" class="btn btn-delete"
+                        th:attr="onclick=|apriModale('@{/admin/squadre/{id}/delete(id=${squadra.id})}', '${squadra.nome}')|">
+                    🗑️ Elimina
+                </button>
+            </div>
+        </li>
+    </ul>
+
+    <a href="/tornei/" style="color:var(--text-muted);">↩ Torna ai tornei</a>
+</div>
+
+<div th:replace="~{fragments/modale :: elimina}"></div>
+
 </body>
 </html>

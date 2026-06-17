@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${torneo.id != null} ? 'Modifica Torneo' : 'Nuovo Torneo'">Torneo</title>
+</head>
+<body>
+<h1 th:text="${torneo.id != null} ? 'Modifica Torneo' : 'Crea Nuovo Torneo'">Form Torneo</h1>
+
+<form th:action="${torneo.id != null} ? @{/admin/tornei/{id}/edit(id=${torneo.id})} : @{/admin/tornei/new}"
+      th:object="${torneo}" method="POST">
+
+    <div>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" th:field="*{nome}" required />
+        <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore nome</span>
+    </div>
+
+    <div>
+        <label for="anno">Anno:</label>
+        <input type="number" id="anno" th:field="*{anno}" min="1900" max="2100" required />
+        <span th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}">Errore anno</span>
+    </div>
+
+    <div>
+        <label for="descrizione">Descrizione:</label>
+        <textarea id="descrizione" th:field="*{descrizione}" maxlength="500" required></textarea>
+        <span th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}">Errore descrizione</span>
+    </div>
+
+    <button type="submit" th:text="${torneo.id != null} ? 'Salva Modifiche' : 'Crea Torneo'">Salva</button>
+    <a th:href="@{/tornei/}">Annulla</a>
+</form>
+</body>
+</html>

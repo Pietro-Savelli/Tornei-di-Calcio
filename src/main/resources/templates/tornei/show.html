@@ -1,5 +1,76 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title th:text="${torneo.nome}"></title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1 th:text="${torneo.nome}">Serie A </h1>-->
+<!--<h2 th:text="${torneo.descrizione}">Descrizione</h2>-->
+
+<!--<ul>-->
+<!--  Id: <span th:text= "${torneo.id}">1</span> <br>-->
+<!--  Year: <span th:text="${torneo.anno}">2009</span> <br>-->
+<!--</ul>-->
+<!--<h2>-->
+<!--    &lt;!&ndash; Il link generale al calendario rimane sempre visibile &ndash;&gt;-->
+<!--    <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">Calendario</a>-->
+
+<!--    &lt;!&ndash; Avvolgiamo il "SOON" in uno span con th:if &ndash;&gt;-->
+<!--    <span th:if="${prossimaPartita != null}">-->
+<!--        ->SOON: <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${prossimaPartita.id}}">-->
+<!--            <span th:text="${prossimaPartita.squadraCasa.nome + ' vs ' + prossimaPartita.squadraOspite.nome}">Lazio vs Roma</span>-->
+<!--        </a>-->
+<!--    </span>-->
+<!--</h2>-->
+
+<!--<h2>Squadre:</h2>-->
+<!--<ul>-->
+<!--    <li th:each="squadra: ${torneo.squadre}">-->
+<!--        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"-->
+<!--           th:text="${squadra.nome}">Lazio</a>-->
+<!--    </li>-->
+<!--</ul>-->
+
+
+<!--<h1>Classifica:</h1>-->
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th style="width: 8%;">Pos</th>-->
+<!--        <th class="left-align" style="width: 32%;">Squadra</th>-->
+<!--        <th style="width: 10%;">Punti</th>-->
+<!--        <th style="width: 8%;">PG</th>-->
+<!--        <th style="width: 7%;">V</th>-->
+<!--        <th style="width: 7%;">N</th>-->
+<!--        <th style="width: 7%;">S</th>-->
+<!--        <th style="width: 10%;">GF</th>-->
+<!--        <th style="width: 11%;">GS</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="riga, iterStat : ${classifica}" th:classappend="${iterStat.first} ? 'pos-1'">-->
+<!--        <td th:text="${iterStat.count}">1</td>-->
+<!--        <td class="left-align" th:text="${riga.nomeSquadra}">Nome Squadra</td>-->
+<!--        <td class="bold-text" th:text="${riga.punti}">0</td>-->
+<!--        <td th:text="${riga.partiteGiocate}">0</td>-->
+<!--        <td th:text="${riga.vittorie}">0</td>-->
+<!--        <td th:text="${riga.pareggi}">0</td>-->
+<!--        <td th:text="${riga.sconfitte}">0</td>-->
+<!--        <td th:text="${riga.golFatti}">0</td>-->
+<!--        <td th:text="${riga.golSubiti}">0</td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+
+
+<!--<li><a href="/tornei/">Torna alla pagina dei tornei </a></li>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title th:text="${torneo.nome}"></title>
@@ -9,14 +80,21 @@
 <h2 th:text="${torneo.descrizione}">Descrizione</h2>
 
 <ul>
-  Id: <span th:text= "${torneo.id}">1</span> <br>
-  Year: <span th:text="${torneo.anno}">2009</span> <br>
+    Id: <span th:text= "${torneo.id}">1</span> <br>
+    Year: <span th:text="${torneo.anno}">2009</span> <br>
 </ul>
+
+<div sec:authorize="hasAuthority('ADMIN')">
+    <a th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}">✏️ Modifica Torneo</a>
+    <form th:action="@{'/admin/tornei/' + ${torneo.id} + '/delete'}" method="POST" style="display:inline;">
+        <button type="submit" onclick="return confirm('Sei sicuro?')">🗑️ Elimina Torneo</button>
+    </form>
+    <a th:href="@{/admin/partite/new}">➕ Aggiungi Partita</a>
+</div>
+
 <h2>
-    <!-- Il link generale al calendario rimane sempre visibile -->
     <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">Calendario</a>
 
-    <!-- Avvolgiamo il "SOON" in uno span con th:if -->
     <span th:if="${prossimaPartita != null}">
         ->SOON: <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${prossimaPartita.id}}">
             <span th:text="${prossimaPartita.squadraCasa.nome + ' vs ' + prossimaPartita.squadraOspite.nome}">Lazio vs Roma</span>
@@ -31,7 +109,6 @@
            th:text="${squadra.nome}">Lazio</a>
     </li>
 </ul>
-
 
 <h1>Classifica:</h1>
 <table>
@@ -48,11 +125,15 @@
         <th style="width: 11%;">GS</th>
     </tr>
     </thead>
-    <tbody>
     <tr th:each="riga, iterStat : ${classifica}" th:classappend="${iterStat.first} ? 'pos-1'">
         <td th:text="${iterStat.count}">1</td>
         <td class="left-align" th:text="${riga.nomeSquadra}">Nome Squadra</td>
-        <td class="bold-text" th:text="${riga.punti}">0</td>
+
+        <td class="bold-text">
+            <span th:if="${riga.ritirata}" style="color:#e94560; font-weight:700;">🔴 Ritirata</span>
+            <span th:unless="${riga.ritirata}" th:text="${riga.punti}">0</span>
+        </td>
+
         <td th:text="${riga.partiteGiocate}">0</td>
         <td th:text="${riga.vittorie}">0</td>
         <td th:text="${riga.pareggi}">0</td>
@@ -62,7 +143,6 @@
     </tr>
     </tbody>
 </table>
-
 
 <li><a href="/tornei/">Torna alla pagina dei tornei </a></li>
 </body>

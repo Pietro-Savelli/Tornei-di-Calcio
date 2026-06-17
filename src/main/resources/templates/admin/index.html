@@ -1,0 +1,364 @@
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Tornei di Calcio - Home</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text: #f1f1f1;
+            --text-muted: #a0a0a0;
+            --card-bg: #16213e;
+            --card-border: #0f3460;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .admin-section {
+            background: linear-gradient(135deg, #e94560 0%, #c73e54 100%);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .admin-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 24px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .tornei-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .torneo-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .torneo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        .torneo-card .admin-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .torneo-card:hover .admin-actions {
+            opacity: 1;
+        }
+
+        .admin-actions a, .admin-actions button {
+            background: rgba(233,69,96,0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-actions a:hover, .admin-actions button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .torneo-anno {
+            display: inline-block;
+            background: rgba(233,69,96,0.15);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .torneo-nome {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+        }
+
+        .torneo-nome:hover {
+            color: var(--accent-light);
+        }
+
+        .torneo-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .torneo-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .torneo-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .auth-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            padding: 16px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .auth-bar a, .auth-bar button {
+            color: var(--text-muted);
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .auth-bar a:hover, .auth-bar button:hover {
+            color: var(--accent-light);
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: var(--card-bg);
+            color: var(--accent-light);
+        }
+
+        .messages {
+            max-width: 800px;
+            margin: 0 auto 24px;
+        }
+
+        .message {
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(0,217,165,0.15);
+            color: #00d9a5;
+            border: 1px solid rgba(0,217,165,0.3);
+        }
+
+        .message.error {
+            background: rgba(233,69,96,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            .tornei-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Auth Bar -->
+    <div class="auth-bar">
+        <div sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Accedi</a>
+            <a th:href="@{/register}">Registrati</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <span sec:authentication="name">Utente</span>
+            <form th:action="@{/logout}" method="POST" style="display:inline;">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>⚽ Tornei di Calcio</h1>
+        <p>Esplora i tornei, le squadre, i giocatori e le partite. Segui la classifica e commenta le partite!</p>
+    </div>
+
+    <!-- Admin Section (solo per ADMIN) -->
+    <div sec:authorize="hasAuthority('ADMIN')" class="admin-section">
+        <h2>🔧 Pannello Amministratore</h2>
+        <div class="admin-grid">
+            <a th:href="@{/admin/tornei/new}" class="admin-btn">🏆 Crea Torneo</a>
+            <a th:href="@{/squadre/}" class="admin-btn" style="background:rgba(255,255,255,0.25);">📋 Gestione Squadre</a>
+            <a th:href="@{/admin/giocatori/new}" class="admin-btn">⚽ Crea Giocatore</a>
+            <a th:href="@{/admin/partite/new}" class="admin-btn">📅 Registra Partita</a>
+        </div>
+    </div>
+
+    <!-- Nav Links -->
+    <div class="nav-links">
+        <a th:href="@{/tornei/}">🏆 Tornei</a>
+        <a th:href="@{/squadre/}">👥 Squadre</a>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages" th:if="${successMessage} or ${errorMessage}">
+        <div th:if="${successMessage}" class="message success" th:text="${successMessage}">Successo!</div>
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}">Errore!</div>
+    </div>
+
+    <!-- Tornei -->
+    <h2 class="section-title">Tornei in corso</h2>
+    <div class="tornei-grid">
+        <div th:each="torneo : ${tornei}" class="torneo-card">
+
+            <!-- Admin Actions (visibili solo ad admin, appaiono su hover) -->
+            <div sec:authorize="hasAuthority('ADMIN')" class="admin-actions">
+                <a th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}">✏️</a>
+                <form th:action="@{'/admin/tornei/' + ${torneo.id} + '/delete'}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Eliminare questo torneo?')">🗑️</button>
+                </form>
+            </div>
+
+            <span class="torneo-anno" th:text="${torneo.anno}">2024</span>
+            <a th:href="@{'/tornei/' + ${torneo.id}}" class="torneo-nome" th:text="${torneo.nome}">Serie A</a>
+            <p class="torneo-desc" th:text="${torneo.descrizione}">Descrizione torneo</p>
+            <div class="torneo-stats">
+                <span>👥 <span th:text="${#sets.size(torneo.squadre)}">0</span> squadre</span>
+                <span>⚽ <span th:text="${#sets.size(torneo.partite)}">0</span> partite</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Giocatore {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @NotBlank
     private String nome;
@@ -19,7 +19,7 @@ public class Giocatore {
     private String cognome;
     @NotNull
     private java.time.LocalDate dataDiNascita;
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING) // serve per dire al db di salvarlo come una stringa(serve per la scalabilita' del cosdice)
     private Ruolo ruolo;
     private Integer altezza;
@@ -38,11 +38,11 @@ public class Giocatore {
     public Giocatore() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

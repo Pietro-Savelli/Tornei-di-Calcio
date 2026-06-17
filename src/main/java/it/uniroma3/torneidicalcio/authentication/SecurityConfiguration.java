@@ -45,10 +45,19 @@ public class SecurityConfiguration {
     protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/register", "/tornei/", "/tornei/**", "/partite/**", "/squadre/**","/css/**", "/images/**", "/favicon.ico", "/login").permitAll();
-            authorize.requestMatchers(HttpMethod.POST, "/register", "/login").permitAll();
-            authorize.requestMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(ADMIN_ROLE);
-            authorize.requestMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(ADMIN_ROLE);
+            // PUBBLICO
+            authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/css/**", "/images/**", "/favicon.ico").permitAll();
+            authorize.requestMatchers("/login", "/register").permitAll();
+            // 4.1
+            authorize.requestMatchers(HttpMethod.GET, "/tornei/**", "/squadre/**", "/giocatori/**").permitAll();
+
+            // UTENTI REGISTRATI 4.2
+            authorize.requestMatchers("/partite/*/commenti/**").authenticated();
+
+            // ADMIN
+            // Tutte le operazioni di gestione (Requisito 4.3)
+            authorize.requestMatchers("/admin/**").hasAnyAuthority(ADMIN_ROLE);
+
             authorize.anyRequest().authenticated();
         });
 

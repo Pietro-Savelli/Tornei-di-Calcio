@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inserisci Risultato</title>
+</head>
+<body>
+<h1>Inserisci Risultato</h1>
+
+<h2 th:text="${partita.squadraCasa.nome} + ' vs ' + ${partita.squadraOspite.nome}">Lazio vs Roma</h2>
+<p th:text="'Data: ' + ${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}">Data partita</p>
+
+<form th:action="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
+                     ? @{/admin/partite/{id}/risultato/edit(id=${partita.id})}
+                     : @{/admin/partite/{id}/risultato(id=${partita.id})}"
+      method="POST">
+
+    <div>
+        <label th:for="goalsHome" th:text="${partita.squadraCasa.nome} + ' Gol:'">Lazio Gol:</label>
+        <input type="number" id="goalsHome" name="goalsHome"
+               th:value="${partita.goalsHome}" min="0" required />
+    </div>
+
+    <div>
+        <label th:for="goalsAway" th:text="${partita.squadraOspite.nome} + ' Gol:'">Roma Gol:</label>
+        <input type="number" id="goalsAway" name="goalsAway"
+               th:value="${partita.goalsAway}" min="0" required />
+    </div>
+
+    <button type="submit" th:text="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED} ? 'Aggiorna Risultato' : 'Salva Risultato'">
+        Salva Risultato
+    </button>
+    <a th:href="@{/partite/{id}(id=${partita.id})}">Annulla</a>
+</form>
+</body>
+</html>

@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Rosa</title>
 </head>
 <h2 th:text="Rosa Giocatori ${squadra.nome}">Rosa Giocatori</h2>
+
+<div sec:authorize="hasAuthority('ADMIN')">
+    <a th:href="@{/admin/giocatori/new}">➕ Aggiungi Giocatore</a>
+</div>
 
 <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
 

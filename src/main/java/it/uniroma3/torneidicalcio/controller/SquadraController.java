@@ -1,13 +1,13 @@
 package it.uniroma3.torneidicalcio.controller;
 
-import it.uniroma3.torneidicalcio.model.Giocatore;
+import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.service.GiocatoreService;
 import it.uniroma3.torneidicalcio.service.SquadraService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/squadre")

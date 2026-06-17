@@ -21,3 +21,4 @@ public class GlobalController {
         return Utente;
     }
 }
+

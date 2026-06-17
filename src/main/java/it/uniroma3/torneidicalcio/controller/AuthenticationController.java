@@ -1,6 +1,7 @@
 package it.uniroma3.torneidicalcio.controller;
 
 import it.uniroma3.torneidicalcio.model.Credentials;
+import it.uniroma3.torneidicalcio.model.Torneo;
 import it.uniroma3.torneidicalcio.model.Utente;
 import it.uniroma3.torneidicalcio.service.CredentialsService;
 import jakarta.validation.Valid;
@@ -45,7 +46,7 @@ public class AuthenticationController {
         if(!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
             credentials.setUtente(utente);
             credentialsService.saveCredentials(credentials);
-            return "redirect:/";
+            return "redirect:/login";
         }
         return "authentication/registerUtente";
     }

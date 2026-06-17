@@ -1,16 +1,16 @@
 package it.uniroma3.torneidicalcio.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import org.antlr.v4.runtime.misc.NotNull;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-
-@Entity
-public class Partita {
+ import jakarta.persistence.*;
+ import jakarta.validation.constraints.NotBlank;
+ 
+ import java.time.LocalDateTime;
+ import java.util.List;
+ import java.util.Objects;
+ 
+ 
+ @Entity
+ public class Partita {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -33,11 +33,14 @@ public class Partita {
     @ManyToOne
     private Squadra squadraCasa;
 
-    @ManyToOne
-    private Squadra squadraOspite;
-
-
-    public Partita(String luogo, Integer goalsAway, Integer goalsHome, LocalDateTime dataOra, Stato stato) {
+     @ManyToOne
+     private Squadra squadraOspite;
+ 
+     @OneToMany(mappedBy = "partita", cascade = CascadeType.ALL)
+     private List<Commento> commenti;
+ 
+ 
+     public Partita(String luogo, Integer goalsAway, Integer goalsHome, LocalDateTime dataOra, Stato stato) {
         this.luogo = luogo;
         this.goalsAway = goalsAway;
         this.goalsHome = goalsHome;
@@ -122,11 +125,19 @@ public class Partita {
         return squadraOspite;
     }
 
-    public void setSquadraOspite(Squadra squadraOspite) {
-        this.squadraOspite = squadraOspite;
-    }
-
-    @Override
+     public void setSquadraOspite(Squadra squadraOspite) {
+         this.squadraOspite = squadraOspite;
+     }
+ 
+     public List<Commento> getCommenti() {
+         return commenti;
+     }
+ 
+     public void setCommenti(List<Commento> commenti) {
+         this.commenti = commenti;
+     }
+ 
+     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Partita partita = (Partita) o;

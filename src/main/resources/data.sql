@@ -1,3 +1,8 @@
+-- ==========================================
+-- UTENTI
+-- ==========================================
+INSERT INTO utente(id, username, password, ruolo, name) VALUES (1, 'p', '{noop}p', null, 'p');
+insert into credentials (id, username, password, role, utente_id) values(nextval('credentials_seq'), 'pietro', '$2a$10$yWAIDyuEr78BBBFZ5cYh8.Nw4gUHFTRG5FwaWqNCGeOD8M4mh3.xy','DEFAULT', 1);
 -- Inserimento di 5 tornei di esempio
 INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2024, 'Campionato italiano di massima serie', 'Serie A');
 INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2024, 'La competizione europea più prestigiosa', 'Champions League');
@@ -204,3 +209,5 @@ VALUES (nextval('giocatore_seq'), 'Stanislav', 'Lobotka', '1994-11-25', 'CENTROC
 
 INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id)
 VALUES (nextval('giocatore_seq'), 'Victor', 'Osimhen', '1998-12-29', 'ATTACCANTE', 186, (SELECT id FROM squadra WHERE nome = 'Napoli'));
+
+

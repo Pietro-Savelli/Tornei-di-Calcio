@@ -91,7 +91,7 @@
             <span class="actions">
                 <!-- data-* attributes + onclick senza variabili -->
                 <button type="button" class="btn btn-danger"
-                        th:data-url="@{/admin/tornei/{id}/delete(id=${squadra.id})}"
+                        th:data-url="@{/admin/tornei/{tid}/squadre/{sid}/remove(tid=${torneo.id},sid=${squadra.id})}"
                         th:data-nome="${squadra.nome}"
                         onclick="apriModale(this.dataset.url, this.dataset.nome)">
                     🗑️ Rimuovi

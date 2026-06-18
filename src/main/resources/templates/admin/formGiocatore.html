@@ -9,7 +9,6 @@
 
 <h1 class="page-title"
     th:text="${giocatore.id != null} ? '✏️ Modifica Giocatore' : '➕ Nuovo Giocatore'">
-    Giocatore
 </h1>
 <p class="page-subtitle"
    th:text="${giocatore.id != null}
@@ -30,31 +29,24 @@
 
         <div class="form-group">
             <label for="nome">Nome</label>
-            <input type="text" id="nome" th:field="*{nome}"
-                   placeholder="es. Marco" required />
-            <span class="field-error"
-                  th:if="${#fields.hasErrors('nome')}"
-                  th:errors="*{nome}">
-            </span>
+            <input type="text" id="nome" th:field="*{nome}" placeholder="es. Marco" required />
+            <span class="field-error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
         </div>
 
         <div class="form-group">
             <label for="cognome">Cognome</label>
-            <input type="text" id="cognome" th:field="*{cognome}"
-                   placeholder="es. Rossi" required />
-            <span class="field-error"
-                  th:if="${#fields.hasErrors('cognome')}"
-                  th:errors="*{cognome}">
-            </span>
+            <input type="text" id="cognome" th:field="*{cognome}" placeholder="es. Rossi" required />
+            <span class="field-error" th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}"></span>
         </div>
 
         <div class="form-group">
             <label for="dataDiNascita">Data di Nascita</label>
-            <input type="date" id="dataDiNascita" th:field="*{dataDiNascita}" required />
-            <span class="field-error"
-                  th:if="${#fields.hasErrors('dataDiNascita')}"
-                  th:errors="*{dataDiNascita}">
-            </span>
+            <input type="date" id="dataDiNascita" name="dataDiNascita"
+                   th:value="${giocatore.dataDiNascita != null}
+                              ? ${#temporals.format(giocatore.dataDiNascita, 'yyyy-MM-dd')}
+                              : ''"
+                   required />
+            <span class="field-error" th:if="${#fields.hasErrors('dataDiNascita')}" th:errors="*{dataDiNascita}"></span>
         </div>
 
         <div class="form-group">
@@ -75,10 +67,6 @@
 
         <div class="form-group">
             <label for="squadra">Squadra</label>
-            <!--
-                Non usiamo th:field qui perché la squadra è un oggetto annidato.
-                Mandiamo solo squadra.id e il controller si occupa di trovare la squadra.
-            -->
             <select id="squadra" name="squadra.id">
                 <option value="">-- Nessuna squadra --</option>
                 <option th:each="s : ${squadre}"
@@ -92,7 +80,6 @@
         <div class="form-actions">
             <button type="submit" class="btn btn-success"
                     th:text="${giocatore.id != null} ? '💾 Salva Modifiche' : '➕ Crea Giocatore'">
-                Salva
             </button>
             <a th:href="@{/squadre/}" class="btn btn-secondary">↩️ Annulla</a>
         </div>

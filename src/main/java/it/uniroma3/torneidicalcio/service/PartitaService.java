@@ -3,8 +3,6 @@ package it.uniroma3.torneidicalcio.service;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Stato;
 import it.uniroma3.torneidicalcio.repository.PartitaRepository;
-import it.uniroma3.torneidicalcio.repository.TorneoRepository;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,17 +49,25 @@ public class PartitaService {
     @Transactional
     public Partita update(Long id, Partita partitaAggiornata) {
         Partita partita = findById(id);
-        if (partita != null) {
-            partita.setLuogo(partitaAggiornata.getLuogo());
-            partita.setDataOra(partitaAggiornata.getDataOra());
-            partita.setStato(partitaAggiornata.getStato());
-            partita.setSquadraCasa(partitaAggiornata.getSquadraCasa());
-            partita.setSquadraOspite(partitaAggiornata.getSquadraOspite());
-            partita.setTorneo(partitaAggiornata.getTorneo());
-            partita.setArbitro(partitaAggiornata.getArbitro());
-            return partitaRepository.save(partita);
+        if (partita == null) return null;
+
+        partita.setLuogo(partitaAggiornata.getLuogo());
+        partita.setDataOra(partitaAggiornata.getDataOra());
+        partita.setSquadraCasa(partitaAggiornata.getSquadraCasa());
+        partita.setSquadraOspite(partitaAggiornata.getSquadraOspite());
+        partita.setTorneo(partitaAggiornata.getTorneo());
+
+        Stato nuovoStato = partitaAggiornata.getStato();
+        if (nuovoStato != null && nuovoStato != partita.getStato()) {
+            partita.setStato(nuovoStato);
+
+            if (nuovoStato == Stato.SCHEDULED || nuovoStato == Stato.POSTPONED) {
+                partita.setGoalsHome(null);
+                partita.setGoalsAway(null);
+            }
         }
-        return null;
+
+        return partitaRepository.save(partita);
     }
 
     @Transactional

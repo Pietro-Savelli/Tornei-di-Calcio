@@ -9,11 +9,10 @@
 
 <h1 class="page-title"
     th:text="${partita.id != null} ? '✏️ Modifica Partita' : '📅 Registra Nuova Partita'">
-    Partita
 </h1>
 <p class="page-subtitle"
    th:text="${partita.id != null}
-       ? 'Modifica i dati della partita. Il risultato si cambia dalla pagina della partita.'
+       ? 'Modifica i dati della partita o aggiorna il suo stato.'
        : 'Inserisci i dati per programmare una nuova partita.'">
 </p>
 
@@ -30,9 +29,6 @@
 
         <div class="form-group">
             <label for="torneo">Torneo</label>
-            <!--
-                Non usiamo th:field perché torneo è un oggetto: mandiamo torneo.id
-            -->
             <select id="torneo" name="torneo.id" required>
                 <option value="">-- Seleziona torneo --</option>
                 <option th:each="t : ${tornei}"
@@ -70,25 +66,42 @@
         <div class="form-group">
             <label for="luogo">Luogo / Stadio</label>
             <input type="text" id="luogo" th:field="*{luogo}"
-                   placeholder="es. Stadio Olimpico, Roma" required />
+                   placeholder="es. Stadio Olimpico, Roma" />
         </div>
 
         <div class="form-group">
             <label for="dataOra">Data e Ora</label>
-            <input type="datetime-local" id="dataOra" th:field="*{dataOra}" required />
+            <!--
+                FIX: th:field su LocalDateTime non pre-compila correttamente.
+                Usiamo name + th:value con formato 'yyyy-MM-dd'T'HH:mm'
+                che è esattamente quello che si aspetta input type="datetime-local".
+            -->
+            <input type="datetime-local" id="dataOra" name="dataOra"
+                   th:value="${partita.dataOra != null}
+                              ? ${#temporals.format(partita.dataOra, 'yyyy-MM-dd') + 'T' + #temporals.format(partita.dataOra, 'HH:mm')}
+                              : ''" />
         </div>
 
         <!--
-            Lo stato NON è modificabile da qui: in fase di creazione viene impostato
-            automaticamente a SCHEDULED dal controller. In modifica non si tocca.
-            Il risultato si inserisce da una pagina dedicata (/admin/partite/{id}/risultato).
+            STATO — visibile solo in modifica.
+            In creazione viene impostato automaticamente a SCHEDULED dal controller.
+            In modifica l'admin può cambiarlo: es. da FINISHED a SCHEDULED se la partita
+            deve essere rigiorata, oppure a POSTPONED se è rinviata.
+            Se si riporta a SCHEDULED i gol vengono azzerati (gestito nel service).
         -->
-        <div th:if="${partita.id != null}" class="form-group">
-            <label>Stato attuale</label>
-            <input type="text" th:value="${partita.stato}" disabled
-                   style="background:#f5f5f5; cursor:not-allowed;" />
-            <span style="font-size:0.8rem; color:#888; display:block; margin-top:4px;">
-                Per cambiare il risultato vai alla
+        <div class="form-group" th:if="${partita.id != null}">
+            <label for="stato">Stato</label>
+            <select id="stato" name="stato">
+                <option th:each="s : ${T(it.uniroma3.torneidicalcio.model.Stato).values()}"
+                        th:value="${s}"
+                        th:text="${s}"
+                        th:selected="${partita.stato == s}">
+                </option>
+            </select>
+            <span style="font-size:0.82rem; color:#888; display:block; margin-top:5px;">
+                ⚠️ Se porti lo stato da <strong>FINISHED</strong> a <strong>SCHEDULED</strong>
+                o <strong>POSTPONED</strong>, i gol vengono azzerati automaticamente.
+                Per aggiornare solo il risultato usa la
                 <a th:href="@{/admin/partite/{id}/risultato(id=${partita.id})}">pagina risultato</a>.
             </span>
         </div>
@@ -96,7 +109,6 @@
         <div class="form-actions">
             <button type="submit" class="btn btn-success"
                     th:text="${partita.id != null} ? '💾 Salva Modifiche' : '📅 Registra Partita'">
-                Salva
             </button>
             <a th:href="${partita.torneo != null}
                         ? '/tornei/' + ${partita.torneo.id} + '/calendario'

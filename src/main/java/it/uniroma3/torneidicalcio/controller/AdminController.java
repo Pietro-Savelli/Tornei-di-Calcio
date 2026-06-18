@@ -110,17 +110,17 @@ public class AdminController {
     }
 
     // FIX: questo metodo era chiamato dal bottone "Rimuovi" in formTornei ma non esisteva
-    @PostMapping("/tornei/{id}/squadre/{squadraId}/remove")
-    public String removeSquadraFromTorneo(@PathVariable Long id,
-                                          @PathVariable Long squadraId) {
-        Torneo torneo = this.torneoService.findById(id);
-        Squadra squadra = this.squadraService.findById(squadraId);
+    @PostMapping("/tornei/{tid}/squadre/{sid}/remove")
+    public String removeSquadraFromTorneo(@PathVariable Long tid, @PathVariable Long sid) {
+        Torneo torneo = this.torneoService.findById(tid);
+        Squadra squadra = this.squadraService.findById(sid);
         if (torneo != null && squadra != null) {
-            torneo.getSquadre().remove(squadra);
+            torneo.getSquadre().remove(squadra);  // rimuove solo il link nella tabella ManyToMany
             this.torneoService.save(torneo);
         }
-        return "redirect:/admin/tornei/" + id + "/edit";
+        return "redirect:/admin/tornei/" + tid + "/edit";
     }
+
 
     @PostMapping("/tornei/{id}/delete")
     public String deleteTorneo(@PathVariable Long id) {
@@ -177,6 +177,16 @@ public class AdminController {
             this.squadraService.save(squadra);
         }
         return "redirect:/squadre/";
+    }
+
+    @PostMapping("/squadre/{sid}/giocatori/{gid}/remove")
+    public String removeGiocatoreFromSquadra(@PathVariable Long sid, @PathVariable Long gid) {
+        Giocatore giocatore = this.giocatoreService.findById(gid);
+        if (giocatore != null) {
+            giocatore.setSquadra(null);  // slega il giocatore, non lo cancella
+            this.giocatoreService.save(giocatore);
+        }
+        return "redirect:/admin/squadre/" + sid + "/edit";
     }
 
 

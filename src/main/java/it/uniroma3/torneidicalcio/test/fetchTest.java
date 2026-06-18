@@ -1,6 +1,7 @@
 package it.uniroma3.torneidicalcio.test;
 
 import it.uniroma3.torneidicalcio.model.Partita;
+import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Torneo;
 import it.uniroma3.torneidicalcio.repository.TorneoRepository;
 import it.uniroma3.torneidicalcio.service.TorneoService;
@@ -33,20 +34,47 @@ public class fetchTest implements CommandLineRunner {
 
         StopWatch watch = new StopWatch();
 
-        // === TEST A: LAZY N+1 (primo, cache vuota) ===
-        watch.start("A - LAZY N+1");
+        // =========================================================
+        // TEST A: LAZY N+1 — SOLO CARICAMENTO
+        // =========================================================
+        watch.start("A - LAZY caricamento");
         Torneo t1 = torneoRepository.findById(id).orElseThrow();
+        // Forza il caricamento completo del grafo come fa il service
         for (Partita p : t1.getPartite()) {
-            p.getSquadraCasa().getNome(); // scatena N+1 reale
+            p.getSquadraCasa().getNome();
             p.getSquadraOspite().getNome();
+        }
+        for (Squadra s : t1.getSquadre()) {
+            s.getNome();
         }
         watch.stop();
 
         // PULISCI la cache di Hibernate tra i due test
         entityManager.clear();
 
-        // === TEST B: JOIN FETCH ===
-        watch.start("B - JOIN FETCH");
+        // =========================================================
+        // TEST B: 2x JOIN FETCH — SOLO CARICAMENTO
+        // =========================================================
+        watch.start("B - 2x JOIN FETCH caricamento");
+        Torneo t2 = torneoRepository.findTorneoWithPartite(id);
+        torneoRepository.findTorneoWithSquadre(id);
+        // Forza materializzazione delle proxy (come nel test A)
+        for (Partita p : t2.getPartite()) {
+            p.getSquadraCasa().getNome();
+            p.getSquadraOspite().getNome();
+        }
+        for (Squadra s : t2.getSquadre()) {
+            s.getNome();
+        }
+        watch.stop();
+
+        // PULISCI cache
+        entityManager.clear();
+
+        // =========================================================
+        // TEST C: end-to-end calcolaClassifica
+        // =========================================================
+        watch.start("C - calcolaClassifica end-to-end");
         torneoService.calcolaClassifica(id);
         watch.stop();
 
@@ -57,20 +85,50 @@ public class fetchTest implements CommandLineRunner {
 }
 
 /*
-Strategia LAZY (N+1):
+========== PERCHÉ IL TEST PRECEDENTE NON ERA FAIR ==========
 
-Query eseguite: 1 (torneo) + 1 (partite) + 2×20 (squadraCasa + squadraOspite per ogni squadra distinta) = ~42 query
-In realtà Hibernate riduce questo numero grazie alla first-level cache: le stesse 20 squadre si ripetono in 190 partite, quindi ogni squadra viene caricata solo la prima volta che appare. Il numero reale di query osservato nei log è stato ~22, non 42.
-Tempo misurato: 75ms (DB locale)
+Il confronto originale misurava:
+  A) SOLO caricamento LAZY + accesso ai nomi (~4 righe di codice)
+  B) TUTTO calcolaClassifica() = caricamento + HashMap + cicli + calcoli + sort()
 
-Strategia JOIN FETCH:
+Il test B faceva molto più lavoro computazionale dopo il caricamento.
+Inoltre, in locale le query by PK (N+1) sono praticamente istantanee perché
+il DB è localhost: nessuna latenza di rete, nessuna serializzazione TCP.
 
-Query eseguite: 1 sola query con 4 LEFT JOIN (partite, squadraCasa, squadraOspite, squadre iscritte)
-Tempo misurato: 70ms (DB locale)
+========== STRUTTURA DEL NUOVO TEST ==========
 
+A - LAZY caricamento: forza caricamento completo del grafo con accesso LAZY.
+   Query: ~22 query by PK (torneo + partite + squadreCasa/Ospite + squadre iscritte).
+   In locale queste sono istantanee; in produzione con DB remoto diventano lente.
 
+B - 2x JOIN FETCH caricamento: stesso grafo caricato con 2 query JPQL.
+   Query 1: JOIN FETCH t.partite + p.squadraCasa + p.squadraOspite
+   Query 2: JOIN FETCH t.squadre (stesso torneo, ritrovato in L1 cache)
+   In locale 2 round-trip sono leggermente più lenti di ~22 query by PK,
+   ma in produzione 2 query battono nettamente le 22 query N+1.
 
-I tempi risultano quasi identici per due motivi combinati: il DB è locale (latenza per query ≈ 0.1ms), e la first-level cache di Hibernate riduce già il numero reale di query LAZY da 381 teoriche (1 + 190×2) a ~22, perché le 20 squadre vengono messe in cache dopo il primo accesso.
-In un contesto di produzione con DB remoto (latenza realistica 5–10ms/query), la situazione cambierebbe drasticamente: anche con la cache, le 22 query LAZY produrrebbero 22 × 10ms = 220ms, contro i 10ms del JOIN FETCH — un rapporto di circa 22×. Senza cache (prima richiesta a freddo, sessione nuova) il numero teorico di query sarebbe molto più alto.
-La scelta del JOIN FETCH è quindi motivata dalla scalabilità e dalla prevedibilità del comportamento in produzione, non dai tempi misurati in locale che risultano ingannevoli per via della cache e della latenza zero.
- */
+C - calcolaClassifica end-to-end: misura il tempo totale del servizio.
+   Include il caricamento + tutta l'elaborazione della classifica.
+
+========== PERCHÉ A PUÒ BATTERE B IN LOCALE ==========
+
+1. Latenza zero: in localhost, una query by PK impiega ~0.1-0.5ms.
+   22 query semplici = ~5-11ms totali. 2 query con JOIN = ~2-4ms.
+   La differenza è marginale e il parsing di 2 ResultSet complessi può
+   bilanciare il vantaggio.
+
+2. Overhead di 2 round-trip: la strategia a 2 query fa parsing JPQL ×2,
+   generazione SQL ×2, ResultSet ×2. In locale questo overhead è visibile.
+
+3. Il vantaggio reale della strategia B è:
+   - ZERO prodotto cartesiano (meno memoria, meno righe JDBC)
+   - Scalabilità in produzione (DB remoto): 2 query vs 22 query
+   - Prevedibilità: il numero di query è fisso (2), indipendente dal numero di squadre.
+
+========== STIMA IN PRODUZIONE (DB remoto, latenza 5–10ms/query) ==========
+
+A - LAZY: ~22 query → 22 × 10ms = 220ms (senza contare il calcolo)
+B - 2x JOIN FETCH: 2 query → 2 × 10ms = 20ms (caricamento)
+
+Rapporto di scalabilità: circa 10-11×, con memoria e prevedibilità superiori.
+*/

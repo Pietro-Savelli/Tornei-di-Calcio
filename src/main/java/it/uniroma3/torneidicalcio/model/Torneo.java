@@ -8,22 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@NamedEntityGraph(
-        name = "Torneo.classifica",
-        attributeNodes = {
-                @NamedAttributeNode("squadre"),
-                @NamedAttributeNode(value = "partite", subgraph = "partiteSub")
-        },
-        subgraphs = {
-                @NamedSubgraph(
-                        name = "partiteSub",
-                        attributeNodes = {
-                                @NamedAttributeNode("squadraCasa"),
-                                @NamedAttributeNode("squadraOspite")
-                        }
-                )
-        }
-)
 public class Torneo {
 
     @Id

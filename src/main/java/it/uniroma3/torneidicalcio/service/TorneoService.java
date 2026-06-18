@@ -73,7 +73,12 @@ public class TorneoService {
 
     @Transactional(readOnly = true)
     public Torneo findByIdWithDetails(Long id) {
-        return torneoRepository.findTorneoWithPartiteEFeat(id);
+        // Carica partite e squadre in due query separate per evitare il prodotto cartesiano
+        // tra due collezioni @OneToMany/@ManyToMany dello stesso padre.
+        // Hibernate ritrova la stessa istanza di Torneo in L1 cache e popola entrambe le collezioni.
+        Torneo torneo = torneoRepository.findTorneoWithPartite(id);
+        torneoRepository.findTorneoWithSquadre(id);
+        return torneo;
     }
 
     public @Nullable Object findCalendarioByTorneoId(Long id) {
@@ -82,7 +87,10 @@ public class TorneoService {
 
     @Transactional(readOnly = true)
     public List<RigaClassificaDto> calcolaClassifica(Long torneoId) {
-        Torneo torneo = torneoRepository.findTorneoWithPartiteEFeat(torneoId);
+        // Stesso pattern: una query per il grafo partite, una per le squadre iscritte.
+        // Nessun prodotto cartesiano; il DB trasferisce solo le righe necessarie.
+        Torneo torneo = torneoRepository.findTorneoWithPartite(torneoId);
+        torneoRepository.findTorneoWithSquadre(torneoId);
         Map<Long, RigaClassificaDto> classificaMap = new HashMap<>();
 
         for (Squadra squadra : torneo.getSquadre()) {

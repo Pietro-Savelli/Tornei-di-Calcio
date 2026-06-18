@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Errore 404 - Pagina non trovata</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body class="bg-light">
+
+<div class="container text-center mt-5">
+    <h1 class="display-1 fw-bold text-danger">404</h1>
+    <h2>Ops! Pagina non trovata.</h2>
+    <p class="lead mt-3">
+        La pagina, il torneo o la partita che stai cercando non esiste oppure è stata rimossa.
+    </p>
+
+    <a th:href="@{/}" class="btn btn-primary mt-4">
+        Torna alla Home
+    </a>
+</div>
+
+</body>
+</html>

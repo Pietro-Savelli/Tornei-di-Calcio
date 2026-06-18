@@ -71,6 +71,11 @@ public class TorneoService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Torneo findByIdWithDetails(Long id) {
+        return torneoRepository.findTorneoWithPartiteEFeat(id);
+    }
+
     public @Nullable Object findCalendarioByTorneoId(Long id) {
         return torneoRepository.findCalendarioByTorneoId(id);
     }

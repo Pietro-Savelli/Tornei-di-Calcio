@@ -58,12 +58,10 @@ public class AdminController {
 
     @GetMapping("/tornei/{id}/edit")
     public String editTorneoForm(@PathVariable Long id, Model model) {
-        Torneo torneo = this.torneoService.findById(id);
+        Torneo torneo = this.torneoService.findByIdWithDetails(id);
         if (torneo == null) return "redirect:/tornei/";
 
-        Hibernate.initialize(torneo.getPartite());
-        Hibernate.initialize(torneo.getSquadre());
-
+        // RIMOSSE le Hibernate.initialize() — ora i dati sono già in memoria
         Set<Partita> partite = torneo.getPartite();
         Set<Squadra> squadre = torneo.getSquadre();
 
@@ -72,7 +70,6 @@ public class AdminController {
         List<Partita> partiteAttive     = partite.stream().filter(p -> !p.isEliminata()).toList();
         List<Partita> partiteEliminate  = partite.stream().filter(Partita::isEliminata).toList();
 
-        // Squadre disponibili = tutte quelle non eliminate e non già nel torneo
         List<Squadra> squadreDisponibili = this.squadraService.fidAll().stream()
                 .filter(s -> !s.isEliminata() && !squadre.contains(s))
                 .toList();

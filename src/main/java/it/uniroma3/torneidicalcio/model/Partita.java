@@ -23,16 +23,16 @@ public class Partita {
     @Enumerated(EnumType.STRING)
     private Stato stato;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Torneo torneo;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Arbitro arbitro;
 
     //Una partita coinvolge due squadre (Casa e Trasferta)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Squadra squadraCasa;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Squadra squadraOspite;
 
     @OneToMany(mappedBy = "partita", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)

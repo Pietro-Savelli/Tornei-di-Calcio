@@ -1,5 +1,6 @@
 package it.uniroma3.torneidicalcio.service;
 
+import it.uniroma3.torneidicalcio.exception.PartitaNotFoundException;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Stato;
 import it.uniroma3.torneidicalcio.repository.PartitaRepository;
@@ -22,7 +23,8 @@ public class PartitaService {
     }
 
     public Partita findById(Long id) {
-        return partitaRepository.findById(id).orElse(null);
+        return partitaRepository.findById(id)
+                .orElseThrow(() -> new PartitaNotFoundException(id));
     }
 
     //ADMIN

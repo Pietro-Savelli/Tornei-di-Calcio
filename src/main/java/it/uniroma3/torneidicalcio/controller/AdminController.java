@@ -1,5 +1,6 @@
 package it.uniroma3.torneidicalcio.controller;
 
+import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
 import it.uniroma3.torneidicalcio.model.Giocatore;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Squadra;
@@ -139,11 +140,21 @@ public class AdminController {
     @PostMapping("/squadre/new")
     public String createSquadra(@Valid @ModelAttribute("squadra") Squadra squadra,
                                 BindingResult bindingResult) {
+        // 1. Validazione sintattica: campi @NotBlank, formati, ecc.
         if (bindingResult.hasErrors()) {
             return "admin/formSquadre";
         }
-        Squadra salvata = this.squadraService.save(squadra);
-        return "redirect:/squadre/" + salvata.getId();
+
+        // 2. Validazione semantica: regola di business nel Service (transazionale)
+        try {
+            Squadra salvata = this.squadraService.iscriviSquadra(squadra);
+            return "redirect:/squadre/" + salvata.getId();
+        } catch (SquadraDuplicataException e) {
+            // 3. Intercetta l'errore di business e lo registra nel BindingResult
+            //    reject(String errorCode) aggiunge un errore globale non legato a un campo specifico
+            bindingResult.reject("squadra.duplicata", e.getMessage());
+            return "admin/formSquadre";
+        }
     }
 
     @GetMapping("/squadre/{id}/edit")

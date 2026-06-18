@@ -21,31 +21,33 @@ public class fetchTest implements CommandLineRunner {
     @Autowired
     private TorneoService torneoService;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @Override
     @Transactional
-    @PersistenceContext
     public void run(String... args) {
-        Long id = 1L;
+        Torneo primo = torneoRepository.findAll().iterator().next();
+        Long id = primo.getId();
+        System.out.println(">>> Test sul torneo: " + primo.getNome() + " (id=" + id + ")");
+
         StopWatch watch = new StopWatch();
 
-        // Test A: LAZY → N+1
-        // carica torneo, poi per ogni partita fa una query per squadraCasa e una per squadraOspite
-        watch.start("LAZY - N+1");
-        Torneo t = torneoRepository.findById(id).orElseThrow();
-        for (Partita p : t.getPartite()) {
-            p.getSquadraCasa().getNome();
+        // === TEST A: LAZY N+1 (primo, cache vuota) ===
+        watch.start("A - LAZY N+1");
+        Torneo t1 = torneoRepository.findById(id).orElseThrow();
+        for (Partita p : t1.getPartite()) {
+            p.getSquadraCasa().getNome(); // scatena N+1 reale
             p.getSquadraOspite().getNome();
         }
         watch.stop();
 
+        // PULISCI la cache di Hibernate tra i due test
+        entityManager.clear();
 
-        // Test B: JOIN FETCH → 1 sola query, stesso accesso ai dati
-        watch.start("JOIN FETCH");
-        Torneo t2 = torneoRepository.findTorneoWithPartiteEFeat(id);
-        for (Partita p : t2.getPartite()) {
-            p.getSquadraCasa().getNome();
-            p.getSquadraOspite().getNome();
-        }
+        // === TEST B: JOIN FETCH ===
+        watch.start("B - JOIN FETCH");
+        torneoService.calcolaClassifica(id);
         watch.stop();
 
         System.out.println("\n========== RISULTATI PERFORMANCE ==========");

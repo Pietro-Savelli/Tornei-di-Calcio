@@ -1,5 +1,6 @@
 package it.uniroma3.torneidicalcio.service;
 
+import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
 import it.uniroma3.torneidicalcio.model.Giocatore;
 import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Stato;
@@ -34,6 +35,19 @@ public class SquadraService {
     //ADMIN
     @Transactional
     public Squadra save(Squadra squadra) {
+        return squadraRepository.save(squadra);
+    }
+
+    /**
+     * Validazione semantica di business: prima di salvare verifica che non esista
+     * già una squadra (non eliminata) con lo stesso nome. Se il controllo fallisce,
+     * lancia un'eccezione di dominio che verrà gestita nel Controller.
+     */
+    @Transactional
+    public Squadra iscriviSquadra(Squadra squadra) {
+        if (squadraRepository.existsByNomeAndEliminataFalse(squadra.getNome())) {
+            throw new SquadraDuplicataException(squadra.getNome());
+        }
         return squadraRepository.save(squadra);
     }
 

@@ -3,49 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${partita.id != null} ? 'Modifica Partita' : 'Nuova Partita'">Partita</title>
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
 </head>
 <body>
-<h1 th:text="${partita.id != null} ? 'Modifica Partita' : 'Registra Nuova Partita'">Form Partita</h1>
 
-<form th:action="${partita.id != null} ? @{/admin/partite/{id}/edit(id=${partita.id})} : @{/admin/partite/new}"
-      th:object="${partita}" method="POST">
+<h1 class="page-title"
+    th:text="${partita.id != null} ? '✏️ Modifica Partita' : '📅 Registra Nuova Partita'">
+    Partita
+</h1>
+<p class="page-subtitle"
+   th:text="${partita.id != null}
+       ? 'Modifica i dati della partita. Il risultato si cambia dalla pagina della partita.'
+       : 'Inserisci i dati per programmare una nuova partita.'">
+</p>
 
-    <div>
-        <label for="torneo">Torneo:</label>
-        <select id="torneo" name="torneo.id" required>
-            <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome + ' (' + t.anno + ')'}"
-                    th:selected="${partita.torneo != null and partita.torneo.id == t.id}">Torneo</option>
-        </select>
-    </div>
+<div class="form-card">
+    <h2>🏟️ Dati Partita</h2>
 
-    <div>
-        <label for="squadraCasa">Squadra Casa:</label>
-        <select id="squadraCasa" name="squadraCasa.id" required>
-            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"
-                    th:selected="${partita.squadraCasa != null and partita.squadraCasa.id == s.id}">Squadra</option>
-        </select>
-    </div>
+    <form th:action="${partita.id != null}
+                    ? @{/admin/partite/{id}/edit(id=${partita.id})}
+                    : @{/admin/partite/new}"
+          th:object="${partita}"
+          method="POST">
 
-    <div>
-        <label for="squadraOspite">Squadra Ospite:</label>
-        <select id="squadraOspite" name="squadraOspite.id" required>
-            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"
-                    th:selected="${partita.squadraOspite != null and partita.squadraOspite.id == s.id}">Squadra</option>
-        </select>
-    </div>
+        <input type="hidden" th:if="${partita.id != null}" th:field="*{id}" />
 
-    <div>
-        <label for="luogo">Luogo:</label>
-        <input type="text" id="luogo" th:field="*{luogo}" required />
-    </div>
+        <div class="form-group">
+            <label for="torneo">Torneo</label>
+            <!--
+                Non usiamo th:field perché torneo è un oggetto: mandiamo torneo.id
+            -->
+            <select id="torneo" name="torneo.id" required>
+                <option value="">-- Seleziona torneo --</option>
+                <option th:each="t : ${tornei}"
+                        th:value="${t.id}"
+                        th:text="${t.nome + ' (' + t.anno + ')'}"
+                        th:selected="${partita.torneo != null and partita.torneo.id == t.id}">
+                </option>
+            </select>
+        </div>
 
-    <div>
-        <label for="dataOra">Data e Ora:</label>
-        <input type="datetime-local" id="dataOra" th:field="*{dataOra}" required />
-    </div>
+        <div class="form-group">
+            <label for="squadraCasa">Squadra in Casa</label>
+            <select id="squadraCasa" name="squadraCasa.id" required>
+                <option value="">-- Seleziona squadra --</option>
+                <option th:each="s : ${squadre}"
+                        th:value="${s.id}"
+                        th:text="${s.nome}"
+                        th:selected="${partita.squadraCasa != null and partita.squadraCasa.id == s.id}">
+                </option>
+            </select>
+        </div>
 
-    <button type="submit" th:text="${partita.id != null} ? 'Salva Modifiche' : 'Registra Partita'">Salva</button>
-    <a th:href="@{/tornei/}">Annulla</a>
-</form>
+        <div class="form-group">
+            <label for="squadraOspite">Squadra Ospite</label>
+            <select id="squadraOspite" name="squadraOspite.id" required>
+                <option value="">-- Seleziona squadra --</option>
+                <option th:each="s : ${squadre}"
+                        th:value="${s.id}"
+                        th:text="${s.nome}"
+                        th:selected="${partita.squadraOspite != null and partita.squadraOspite.id == s.id}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="luogo">Luogo / Stadio</label>
+            <input type="text" id="luogo" th:field="*{luogo}"
+                   placeholder="es. Stadio Olimpico, Roma" required />
+        </div>
+
+        <div class="form-group">
+            <label for="dataOra">Data e Ora</label>
+            <input type="datetime-local" id="dataOra" th:field="*{dataOra}" required />
+        </div>
+
+        <!--
+            Lo stato NON è modificabile da qui: in fase di creazione viene impostato
+            automaticamente a SCHEDULED dal controller. In modifica non si tocca.
+            Il risultato si inserisce da una pagina dedicata (/admin/partite/{id}/risultato).
+        -->
+        <div th:if="${partita.id != null}" class="form-group">
+            <label>Stato attuale</label>
+            <input type="text" th:value="${partita.stato}" disabled
+                   style="background:#f5f5f5; cursor:not-allowed;" />
+            <span style="font-size:0.8rem; color:#888; display:block; margin-top:4px;">
+                Per cambiare il risultato vai alla
+                <a th:href="@{/admin/partite/{id}/risultato(id=${partita.id})}">pagina risultato</a>.
+            </span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success"
+                    th:text="${partita.id != null} ? '💾 Salva Modifiche' : '📅 Registra Partita'">
+                Salva
+            </button>
+            <a th:href="${partita.torneo != null}
+                        ? '/tornei/' + ${partita.torneo.id} + '/calendario'
+                        : '/tornei/'"
+               class="btn btn-secondary">
+                ↩️ Annulla
+            </a>
+        </div>
+    </form>
+</div>
+
+<a th:href="@{/tornei/}" class="back-link">← Torna ai tornei</a>
+
 </body>
 </html>

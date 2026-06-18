@@ -3,55 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${giocatore.id != null} ? 'Modifica Giocatore' : 'Nuovo Giocatore'">Giocatore</title>
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
 </head>
 <body>
-<h1 th:text="${giocatore.id != null} ? 'Modifica Giocatore' : 'Crea Nuovo Giocatore'">Form Giocatore</h1>
 
-<form th:action="${giocatore.id != null} ? @{/admin/giocatori/{id}/edit(id=${giocatore.id})} : @{/admin/giocatori/new}"
-      th:object="${giocatore}" method="POST">
+<h1 class="page-title"
+    th:text="${giocatore.id != null} ? '✏️ Modifica Giocatore' : '➕ Nuovo Giocatore'">
+    Giocatore
+</h1>
+<p class="page-subtitle"
+   th:text="${giocatore.id != null}
+       ? 'Modifica i dati del giocatore.'
+       : 'Inserisci i dati del nuovo giocatore e assegnalo a una squadra.'">
+</p>
 
-    <div>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" th:field="*{nome}" required />
-        <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore nome</span>
-    </div>
+<div class="form-card">
+    <h2>👤 Dati Giocatore</h2>
 
-    <div>
-        <label for="cognome">Cognome:</label>
-        <input type="text" id="cognome" th:field="*{cognome}" required />
-        <span th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}">Errore cognome</span>
-    </div>
+    <form th:action="${giocatore.id != null}
+                    ? @{/admin/giocatori/{id}/edit(id=${giocatore.id})}
+                    : @{/admin/giocatori/new}"
+          th:object="${giocatore}"
+          method="POST">
 
-    <div>
-        <label for="dataDiNascita">Data di Nascita:</label>
-        <input type="date" id="dataDiNascita" th:field="*{dataDiNascita}" required />
-        <span th:if="${#fields.hasErrors('dataDiNascita')}" th:errors="*{dataDiNascita}">Errore data</span>
-    </div>
+        <input type="hidden" th:if="${giocatore.id != null}" th:field="*{id}" />
 
-    <div>
-        <label for="ruolo">Ruolo:</label>
-        <select id="ruolo" th:field="*{ruolo}" required>
-            <option th:each="r : ${T(it.uniroma3.torneidicalcio.model.Ruolo).values()}"
-                    th:value="${r}" th:text="${r}">PORTIERE</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" th:field="*{nome}"
+                   placeholder="es. Marco" required />
+            <span class="field-error"
+                  th:if="${#fields.hasErrors('nome')}"
+                  th:errors="*{nome}">
+            </span>
+        </div>
 
-    <div>
-        <label for="altezza">Altezza (cm):</label>
-        <input type="number" id="altezza" th:field="*{altezza}" />
-    </div>
+        <div class="form-group">
+            <label for="cognome">Cognome</label>
+            <input type="text" id="cognome" th:field="*{cognome}"
+                   placeholder="es. Rossi" required />
+            <span class="field-error"
+                  th:if="${#fields.hasErrors('cognome')}"
+                  th:errors="*{cognome}">
+            </span>
+        </div>
 
-    <div>
-        <label for="squadra">Squadra:</label>
-        <select id="squadra" name="squadra.id">
-            <option value="">-- Seleziona Squadra --</option>
-            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"
-                    th:selected="${giocatore.squadra != null and giocatore.squadra.id == s.id}">Squadra</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="dataDiNascita">Data di Nascita</label>
+            <input type="date" id="dataDiNascita" th:field="*{dataDiNascita}" required />
+            <span class="field-error"
+                  th:if="${#fields.hasErrors('dataDiNascita')}"
+                  th:errors="*{dataDiNascita}">
+            </span>
+        </div>
 
-    <button type="submit" th:text="${giocatore.id != null} ? 'Salva Modifiche' : 'Crea Giocatore'">Salva</button>
-    <a th:href="@{/squadre/}">Annulla</a>
-</form>
+        <div class="form-group">
+            <label for="ruolo">Ruolo</label>
+            <select id="ruolo" th:field="*{ruolo}" required>
+                <option value="">-- Seleziona ruolo --</option>
+                <option th:each="r : ${T(it.uniroma3.torneidicalcio.model.Ruolo).values()}"
+                        th:value="${r}" th:text="${r}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="altezza">Altezza (cm)</label>
+            <input type="number" id="altezza" th:field="*{altezza}"
+                   min="100" max="250" placeholder="es. 182" />
+        </div>
+
+        <div class="form-group">
+            <label for="squadra">Squadra</label>
+            <!--
+                Non usiamo th:field qui perché la squadra è un oggetto annidato.
+                Mandiamo solo squadra.id e il controller si occupa di trovare la squadra.
+            -->
+            <select id="squadra" name="squadra.id">
+                <option value="">-- Nessuna squadra --</option>
+                <option th:each="s : ${squadre}"
+                        th:value="${s.id}"
+                        th:text="${s.nome}"
+                        th:selected="${giocatore.squadra != null and giocatore.squadra.id == s.id}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success"
+                    th:text="${giocatore.id != null} ? '💾 Salva Modifiche' : '➕ Crea Giocatore'">
+                Salva
+            </button>
+            <a th:href="@{/squadre/}" class="btn btn-secondary">↩️ Annulla</a>
+        </div>
+    </form>
+</div>
+
+<a href="/squadre/" class="back-link">← Torna all'elenco squadre</a>
+
 </body>
 </html>

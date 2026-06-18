@@ -24,7 +24,15 @@ public class Torneo {
     @ManyToMany
     private Set<Squadra> squadre = new HashSet<>();
 
-    @OneToMany(mappedBy = "torneo", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    /*
+     * ATTENZIONE: orphanRemoval rimosso di proposito.
+     * Con il soft delete (eliminata = true) non cancelliamo mai fisicamente le partite
+     * dalla collezione JPA, quindi orphanRemoval causerebbe cancellazioni fisiche
+     * indesiderate ogni volta che JPA ricarica la collezione senza tutte le partite.
+     * CascadeType.REMOVE rimane: se si cancella fisicamente un Torneo, le sue partite
+     * vengono cancellate fisicamente anche loro (comportamento corretto).
+     */
+    @OneToMany(mappedBy = "torneo", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Partita> partite = new HashSet<>();
 
     public Torneo(Integer anno, String descrizione, String nome) {
@@ -88,7 +96,7 @@ public class Torneo {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Torneo torneo = (Torneo) o;
-        return id == torneo.id;
+        return Objects.equals(id, torneo.id); // FIX: Long è un oggetto, == confronta riferimenti non valori
     }
 
     @Override

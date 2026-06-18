@@ -118,7 +118,7 @@ public class Squadra {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Squadra squadra = (Squadra) o;
-        return id == squadra.id;
+        return Objects.equals(id, squadra.id); // FIX: Long è un oggetto, == confronta riferimenti non valori
     }
 
     @Override

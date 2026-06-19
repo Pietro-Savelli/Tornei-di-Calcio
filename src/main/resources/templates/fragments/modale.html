@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"></head>
+<body>
+
+<div th:fragment="elimina">
+  <div id="modaleEliminazione" class="modal-overlay">
+    <div class="modal-box">
+      <h3>⚠️ Conferma eliminazione</h3>
+      <p>Sei sicuro di voler eliminare<br><span id="nomeEntita" class="modal-target"></span>?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="chiudiModale()">Annulla</button>
+        <form id="deleteForm" method="POST" style="margin:0;">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button type="submit" class="btn-confirm">🗑️ Conferma</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function apriModale(deleteUrl, nomeEntita) {
+      document.getElementById("deleteForm").action = deleteUrl;
+      document.getElementById("nomeEntita").textContent = nomeEntita;
+      document.getElementById("modaleEliminazione").classList.add("active");
+    }
+    function chiudiModale() {
+      document.getElementById("modaleEliminazione").classList.remove("active");
+      document.getElementById("deleteForm").action = "";
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') chiudiModale();
+    });
+    document.getElementById('modaleEliminazione').addEventListener('click', function(e) {
+      if (e.target === this) chiudiModale();
+    });
+  </script>
+</div>
+
+</body>
+</html>

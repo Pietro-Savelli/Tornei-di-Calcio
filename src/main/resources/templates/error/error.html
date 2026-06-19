@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errore Oops</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div class="auth-wrap">
+    <div class="auth-card" style="text-align:center;">
+        <div style="font-size:4.5rem; font-weight:900; line-height:1; color:var(--accent);">Oops</div>
+        <h1 style="margin-top:10px;">Qualcosa è andato storto</h1>
+        <p class="auth-sub">Si è verificato un errore imprevisto durante l'elaborazione della richiesta.</p>
+        <p class="auth-error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+        <div class="auth-actions" style="display:flex; gap:10px; justify-content:center;">
+            <a th:href="@{/}" class="btn btn-accent">Torna alla Home</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

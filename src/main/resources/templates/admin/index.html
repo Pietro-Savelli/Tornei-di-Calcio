@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello Amministratore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+
+    <section class="hero fade-in">
+        <div class="tournament-badge">AREA RISERVATA</div>
+        <h1 class="match-title">🔧 Pannello Amministratore</h1>
+        <p class="muted" style="margin-top:10px;">Gestisci tornei, squadre, giocatori e partite del sistema.</p>
+    </section>
+
+    <section class="card fade-in stagger-1">
+        <div class="card-header">
+            <div class="card-icon">⚙️</div>
+            <h2>Azioni rapide</h2>
+        </div>
+        <div class="torneo-cards" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+            <a class="torneo-card" th:href="@{/admin/tornei/new}" style="align-items:center; text-align:center;">
+                <span style="font-size:2rem;">🏆</span>
+                <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Crea Torneo</span>
+            </a>
+            <a class="torneo-card" th:href="@{/admin/squadre/new}" style="align-items:center; text-align:center;">
+                <span style="font-size:2rem;">👥</span>
+                <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Crea Squadra</span>
+            </a>
+            <a class="torneo-card" th:href="@{/admin/giocatori/new}" style="align-items:center; text-align:center;">
+                <span style="font-size:2rem;">⚽</span>
+                <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Crea Giocatore</span>
+            </a>
+            <a class="torneo-card" th:href="@{/admin/partite/new}" style="align-items:center; text-align:center;">
+                <span style="font-size:2rem;">📅</span>
+                <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Registra Partita</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="card fade-in stagger-2">
+        <div class="card-header">
+            <div class="card-icon">🗂️</div>
+            <h2>Gestione contenuti</h2>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn btn-ghost" th:href="@{/tornei/}">🏆 Elenco Tornei</a>
+            <a class="btn btn-ghost" th:href="@{/squadre/}">👥 Elenco Squadre</a>
+        </div>
+    </section>
+
+    <a href="/" class="back-link">← Torna alla home</a>
+</div>
+
+</body>
+</html>

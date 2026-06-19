@@ -1,0 +1,110 @@
+/* =====================================================================
+   admin-form.css — stile (dark) condiviso dai FORM dell'area admin.
+   Va incluso DOPO stile.css: riusa le variabili e i bottoni del tema unico
+   e aggiunge solo le regole specifiche dei form (card, label, input, tabelle admin).
+   ===================================================================== */
+
+.page-title { font-size: 1.9rem; font-weight: 800; margin-bottom: 4px; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 26px; font-size: 0.95rem; }
+
+/* Card contenitore del form */
+.form-card {
+    background: linear-gradient(160deg, var(--card-bg-2) 0%, var(--card-bg) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 26px 30px;
+    max-width: 640px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+}
+.form-card h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+/* Campi */
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.88rem; color: var(--text-muted); }
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="datetime-local"],
+.form-group textarea,
+.form-group select,
+.admin-box input[type="text"],
+.admin-box input[type="number"],
+.admin-box textarea,
+.admin-box select {
+    width: 100%;
+    padding: 11px 13px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border-strong);
+    background: var(--bg-1);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 0.95rem;
+}
+.form-group textarea { min-height: 90px; resize: vertical; }
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus { outline: none; border-color: var(--accent); }
+.form-group select option { background: var(--bg-1); color: var(--text); }
+
+.field-error, .error { color: var(--accent-light); font-size: 0.85rem; margin-top: 5px; display: block; }
+
+.form-actions { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+
+/* Liste interne (giocatori della squadra, ecc.) */
+.item-list { list-style: none; padding: 0; }
+.item-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border: 1px solid var(--card-border); border-radius: var(--radius-sm);
+    margin-bottom: 10px; background: rgba(255, 255, 255, 0.03);
+}
+.item-list .item-name a { color: var(--text); text-decoration: none; font-weight: 600; }
+.item-list .item-name a:hover { color: var(--accent-light); }
+.item-list .actions { display: flex; gap: 8px; }
+.inline-form { display: inline; margin: 0; }
+.empty-msg { color: var(--text-muted); font-style: italic; }
+
+/* Box admin (formTornei) */
+.admin-box {
+    background: linear-gradient(160deg, var(--card-bg-2) 0%, var(--card-bg) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+}
+.admin-box h2 { font-size: 1.1rem; font-weight: 800; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; margin-bottom: 18px; }
+.admin-box h3 { font-size: 0.95rem; color: var(--text-muted); margin: 18px 0 10px; }
+ul.info { list-style: none; padding: 0; color: var(--text-muted); margin-bottom: 20px; }
+ul.clean-list { list-style: none; padding: 0; }
+ul.clean-list li {
+    padding: 10px 0; border-bottom: 1px solid var(--card-border);
+    display: flex; justify-content: space-between; align-items: center;
+}
+ul.clean-list li:last-child { border-bottom: none; }
+ul.clean-list a { color: var(--text); text-decoration: none; font-weight: 600; }
+ul.clean-list a:hover { color: var(--accent-light); }
+.actions a, .actions form { margin-right: 6px; }
+
+.badge-soft-delete { background: var(--accent); color: #fff; padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; margin-left: 8px; }
+.deleted-item { opacity: 0.55; text-decoration: line-through; color: var(--text-muted); }
+
+/* Inserimento risultato (vs box) */
+.vs-box { display: flex; align-items: center; justify-content: center; gap: 24px; margin: 20px 0; flex-wrap: wrap; }
+.vs-team { text-align: center; flex: 1; min-width: 150px; }
+.vs-team .team-name { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; }
+.vs-team input[type="number"] {
+    width: 90px; text-align: center; font-size: 1.8rem; font-weight: 800; padding: 12px;
+    border: 1px solid var(--card-border-strong); border-radius: var(--radius-sm); background: var(--bg-1); color: var(--text);
+}
+.vs-team input[type="number"]:focus { border-color: var(--accent); outline: none; }
+.vs-separator { font-size: 1.4rem; font-weight: 800; color: var(--text-muted); padding-top: 30px; }
+.partita-info { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+.partita-info span { margin-right: 16px; }
+.warn-box { background: rgba(247, 185, 85, 0.12); border: 1px solid #f7b955; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.9rem; color: #ffd591; margin-bottom: 16px; }

@@ -1,0 +1,1180 @@
+
+<!DOCTYPE html>
+<!--V1 -->
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="|⚽ ${partita.squadraCasa?.nome} vs ${partita.squadraOspite?.nome} - MatchDay|">
+        ⚽ Lazio vs Roma | MatchDay
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+
+    <!-- ===== HERO HEADER ===== -->
+    <header class="hero fade-in">
+        <div class="hero-content">
+            <div class="tournament-badge">
+                🏆 <span th:text="|${partita.torneo.nome} - Edizione ${partita.torneo.anno}|">Serie A - Edizione 2026</span>
+            </div>
+            <h1 class="match-title" th:text="|${partita.squadraCasa?.nome} vs ${partita.squadraOspite?.nome}|">Lazio vs Roma</h1>
+            <div class="stadium-info">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <span th:text="${partita.luogo}">Stadio Olimpico</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== SCORE CARD ===== -->
+    <section class="score-card fade-in stagger-1">
+        <div class="score-label">Risultato Finale</div>
+        <div class="score-board">
+            <div class="team">
+                <div class="team-badge">🏠</div>
+                <div class="team-name" th:text="${partita.squadraCasa.nome}">Lazio</div>
+            </div>
+            <div class="score-divider">
+                <div class="score-number" th:text="|${partita.goalsHome} - ${partita.goalsAway}|">1 - 1</div>
+            </div>
+            <div class="team">
+                <div class="team-badge">✈️</div>
+                <div class="team-name" th:text="${partita.squadraOspite.nome}">Roma</div>
+            </div>
+        </div>
+        <div class="match-status">Terminata</div>
+    </section>
+
+    <!-- ===== DETAILS CARD ===== -->
+    <section class="card fade-in stagger-2">
+        <div class="card-header">
+            <div class="card-icon">ℹ️</div>
+            <h2>Dettagli della Partita</h2>
+        </div>
+
+        <ul class="detail-list">
+            <li class="detail-item">
+                <span class="detail-label">
+                    <span>👨‍⚖️</span> Arbitro
+                </span>
+                <span class="detail-value" th:text="${partita.arbitro != null ? partita.arbitro.nome + ' ' + partita.arbitro.cognome : 'Da designare'}">Da designare</span>
+            </li>
+            <li class="detail-item">
+                <span class="detail-label">
+                    <span>🏠</span> Squadra di casa
+                </span>
+                <span class="detail-value">
+                    <a th:href="@{/squadre/{id}(id=${partita.squadraCasa.id})}" th:text="${partita.squadraCasa.nome}">Lazio</a>
+                </span>
+            </li>
+            <li class="detail-item">
+                <span class="detail-label">
+                    <span>✈️</span> Squadra ospite
+                </span>
+                <span class="detail-value">
+                    <a th:href="@{/squadre/{id}(id=${partita.squadraOspite.id})}" th:text="${partita.squadraOspite.nome}">Roma</a>
+                </span>
+            </li>
+        </ul>
+
+        <a class="back-link" th:href="@{/tornei/{id}(id=${partita.torneo.id})}">
+            ← Torna al torneo
+        </a>
+    </section>
+
+    <!-- ADMIN SECTION -->
+    <section class="card fade-in stagger-2" sec:authorize="hasAuthority('ADMIN')">
+        <div class="card-header">
+            <div class="card-icon">⚙️</div>
+            <h2>Gestione Partita</h2>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a th:href="@{'/admin/partite/' + ${partita.id} + '/edit'}" class="btn btn-secondary">✏️ Modifica Partita</a>
+            <a th:href="@{'/admin/partite/' + ${partita.id} + '/risultato'}" class="btn btn-primary">🏆 Inserisci/Modifica Risultato</a>
+            <form th:action="@{'/admin/partite/' + ${partita.id} + '/delete'}" method="POST" style="display:inline;">
+                <button type="button" class="btn btn-delete"
+                        th:attr="onclick=|apriModale('@{/admin/partite/{id}/delete(id=${partita.id})}', 'Partita ' + ${partita.squadraCasa.nome} + ' vs ' + ${partita.squadraOspite.nome})|">
+                    🗑️ Elimina Partita
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ===== COMMENTS SECTION ===== -->
+    <section class="card fade-in stagger-3">
+        <div class="card-header">
+            <div class="card-icon">💬</div>
+            <h2>Area Tifosi</h2>
+        </div>
+
+        <ul class="comment-list">
+            <li th:each="c : ${partita.commenti}" class="comment-item">
+
+                <!-- View Mode -->
+                <div th:id="'view-mode-' + ${c.id}">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="avatar" th:text="${#strings.substring(c.utente.username,0,1).toUpperCase()}">U</div>
+                            <div class="author-info">
+                                <span class="author-name" th:text="${c.utente.username}">Username</span>
+                                <span class="comment-time" th:text="${#temporals.format(c.dataOra, 'dd/MM/yyyy HH:mm')}">10/06/2026 15:00</span>
+                            </div>
+                        </div>
+                        <div class="comment-actions" th:if="${utenteLoggato != null and utenteLoggato.id == c.utente.id}">
+                            <button type="button" class="btn-icon" th:onclick="'toggleEdit(' + ${c.id} + ')'">
+                                ✏️ Modifica
+                            </button>
+                        </div>
+                    </div>
+                    <p class="comment-text" th:text="${c.testo}">Che bella partita!</p>
+                </div>
+
+                <!-- Edit Mode -->
+                <div th:id="'edit-mode-' + ${c.id}" class="edit-form" th:if="${utenteLoggato != null and utenteLoggato.id == c.utente.id}">
+                    <form th:action="@{/partite/{id}/commenti/{commentoId}/edit(id=${partita.id}, commentoId=${c.id})}" method="POST">
+                        <input type="text" name="testo" class="edit-input" th:value="${c.testo}" required />
+                        <div class="edit-actions">
+                            <button type="submit" class="btn btn-primary btn-sm">💾 Salva</button>
+                            <button type="button" class="btn btn-secondary btn-sm" th:onclick="'toggleEdit(' + ${c.id} + ')'">❌ Annulla</button>
+                        </div>
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        <!-- New Comment Form -->
+        <div class="comment-form" th:if="${utenteLoggato != null}">
+            <h3>📝 Lascia il tuo commento</h3>
+            <form th:action="@{/partite/{id}/commenti(id=${partita.id})}" method="POST">
+                <div class="textarea-wrapper">
+                    <textarea name="testo" class="comment-textarea" placeholder="Cosa ne pensi della partita?" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        ⚽ Pubblica commento
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Login CTA -->
+        <div class="login-cta" th:unless="${utenteLoggato != null}">
+            <p>🔒 Accedi per partecipare alla discussione</p>
+            <a th:href="@{/login}">Vai al login →</a>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    function toggleEdit(commentId) {
+        var viewDiv = document.getElementById('view-mode-' + commentId);
+        var editDiv = document.getElementById('edit-mode-' + commentId);
+
+        if (editDiv.classList.contains('active')) {
+            editDiv.classList.remove('active');
+            viewDiv.style.display = 'block';
+            setTimeout(() => { viewDiv.style.opacity = '1'; }, 50);
+        } else {
+            editDiv.classList.add('active');
+            viewDiv.style.opacity = '0';
+            setTimeout(() => { viewDiv.style.display = 'none'; }, 300);
+        }
+    }
+</script>
+
+
+<div th:replace="~{fragments/modale :: elimina}"></div>
+</body>
+</html>
+
+<!--v2-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="it" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title th:text="|${partita.squadraCasa.nome} vs ${partita.squadraOspite.nome} - Match Center|">-->
+<!--        Lazio vs Roma | Match Center-->
+<!--    </title>-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">-->
+<!--    <style>-->
+<!--        :root {-->
+<!--            &#45;&#45;bg: #0f172a;-->
+<!--            &#45;&#45;surface: #1e293b;-->
+<!--            &#45;&#45;surface-elevated: #334155;-->
+<!--            &#45;&#45;surface-hover: #475569;-->
+<!--            &#45;&#45;text-primary: #f8fafc;-->
+<!--            &#45;&#45;text-secondary: #94a3b8;-->
+<!--            &#45;&#45;text-tertiary: #64748b;-->
+<!--            &#45;&#45;border: #334155;-->
+<!--            &#45;&#45;border-light: #1e293b;-->
+<!--            &#45;&#45;accent: #3b82f6;-->
+<!--            &#45;&#45;accent-hover: #60a5fa;-->
+<!--            &#45;&#45;accent-glow: rgba(59,130,246,0.3);-->
+<!--            &#45;&#45;success: #22c55e;-->
+<!--            &#45;&#45;success-bg: rgba(34,197,94,0.15);-->
+<!--            &#45;&#45;danger: #ef4444;-->
+<!--            &#45;&#45;danger-bg: rgba(239,68,68,0.15);-->
+<!--            &#45;&#45;warning: #f59e0b;-->
+<!--            &#45;&#45;radius: 16px;-->
+<!--            &#45;&#45;radius-sm: 12px;-->
+<!--            &#45;&#45;radius-xs: 8px;-->
+<!--            &#45;&#45;shadow: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -2px rgba(0,0,0,0.3);-->
+<!--            &#45;&#45;shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.4), 0 8px 10px -6px rgba(0,0,0,0.3);-->
+<!--            &#45;&#45;shadow-glow: 0 0 40px rgba(59,130,246,0.15);-->
+<!--        }-->
+
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            min-height: 100vh;-->
+<!--            line-height: 1.5;-->
+<!--            -webkit-font-smoothing: antialiased;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 800px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 24px 16px;-->
+<!--        }-->
+
+<!--        /* ===== GLASS HEADER ===== */-->
+<!--        .glass-header {-->
+<!--            background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(51,65,85,0.8) 100%);-->
+<!--            backdrop-filter: blur(20px);-->
+<!--            -webkit-backdrop-filter: blur(20px);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: var(&#45;&#45;radius);-->
+<!--            padding: 32px 28px;-->
+<!--            margin-bottom: 24px;-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--            box-shadow: var(&#45;&#45;shadow-lg);-->
+<!--        }-->
+
+<!--        .glass-header::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            right: 0;-->
+<!--            height: 3px;-->
+<!--            background: linear-gradient(90deg, var(&#45;&#45;accent), var(&#45;&#45;accent-hover), var(&#45;&#45;accent));-->
+<!--            background-size: 200% 100%;-->
+<!--            animation: shimmer 3s ease-in-out infinite;-->
+<!--        }-->
+
+<!--        @keyframes shimmer {-->
+<!--            0%, 100% { background-position: 0% 50%; }-->
+<!--            50% { background-position: 100% 50%; }-->
+<!--        }-->
+
+<!--        .breadcrumb {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            font-size: 0.75rem;-->
+<!--            font-weight: 500;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            margin-bottom: 20px;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.08em;-->
+<!--        }-->
+
+<!--        .breadcrumb a {-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            text-decoration: none;-->
+<!--            transition: color 0.2s;-->
+<!--        }-->
+
+<!--        .breadcrumb a:hover {-->
+<!--            color: var(&#45;&#45;accent-hover);-->
+<!--        }-->
+
+<!--        .breadcrumb-sep {-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--        }-->
+
+<!--        .match-title {-->
+<!--            font-size: 2rem;-->
+<!--            font-weight: 800;-->
+<!--            letter-spacing: -0.03em;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            margin-bottom: 12px;-->
+<!--            line-height: 1.2;-->
+<!--        }-->
+
+<!--        .meta-grid {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));-->
+<!--            gap: 12px;-->
+<!--            margin-top: 16px;-->
+<!--        }-->
+
+<!--        .meta-chip {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            padding: 8px 14px;-->
+<!--            background: rgba(255,255,255,0.05);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            font-size: 0.8rem;-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            border: 1px solid rgba(255,255,255,0.05);-->
+<!--        }-->
+
+<!--        .meta-chip svg {-->
+<!--            width: 14px;-->
+<!--            height: 14px;-->
+<!--            color: var(&#45;&#45;accent);-->
+<!--            flex-shrink: 0;-->
+<!--        }-->
+
+<!--        /* ===== SCORE CARD ===== */-->
+<!--        .score-card {-->
+<!--            background: linear-gradient(145deg, var(&#45;&#45;surface) 0%, var(&#45;&#45;surface-elevated) 100%);-->
+<!--            border-radius: var(&#45;&#45;radius);-->
+<!--            padding: 40px 32px;-->
+<!--            margin-bottom: 24px;-->
+<!--            box-shadow: var(&#45;&#45;shadow-lg), var(&#45;&#45;shadow-glow);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .score-card::after {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            bottom: 0;-->
+<!--            left: 0;-->
+<!--            right: 0;-->
+<!--            height: 1px;-->
+<!--            background: linear-gradient(90deg, transparent, var(&#45;&#45;accent), transparent);-->
+<!--            opacity: 0.5;-->
+<!--        }-->
+
+<!--        .score-label {-->
+<!--            text-align: center;-->
+<!--            font-size: 0.75rem;-->
+<!--            font-weight: 600;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.15em;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            margin-bottom: 28px;-->
+<!--        }-->
+
+<!--        .score-board {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            gap: 48px;-->
+<!--        }-->
+
+<!--        .team-block {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            align-items: center;-->
+<!--            gap: 16px;-->
+<!--            min-width: 140px;-->
+<!--        }-->
+
+<!--        .team-badge {-->
+<!--            width: 80px;-->
+<!--            height: 80px;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;surface-elevated) 0%, var(&#45;&#45;surface-hover) 100%);-->
+<!--            border-radius: var(&#45;&#45;radius-sm);-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            font-size: 2rem;-->
+<!--            font-weight: 800;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            border: 2px solid var(&#45;&#45;border);-->
+<!--            box-shadow: 0 4px 12px rgba(0,0,0,0.3);-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .team-badge::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            right: 0;-->
+<!--            height: 50%;-->
+<!--            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);-->
+<!--        }-->
+
+<!--        .team-name {-->
+<!--            font-size: 1.25rem;-->
+<!--            font-weight: 700;-->
+<!--            text-align: center;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--        }-->
+
+<!--        .score-center {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            align-items: center;-->
+<!--            gap: 12px;-->
+<!--            min-width: 120px;-->
+<!--        }-->
+
+<!--        .score-value {-->
+<!--            font-size: 4.5rem;-->
+<!--            font-weight: 900;-->
+<!--            letter-spacing: -0.04em;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            line-height: 1;-->
+<!--            font-variant-numeric: tabular-nums;-->
+<!--            text-shadow: 0 0 30px var(&#45;&#45;accent-glow);-->
+<!--        }-->
+
+<!--        .score-separator {-->
+<!--            font-size: 2rem;-->
+<!--            font-weight: 300;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--        }-->
+
+<!--        .status-badge {-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            padding: 8px 18px;-->
+<!--            border-radius: 50px;-->
+<!--            font-size: 0.75rem;-->
+<!--            font-weight: 700;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.08em;-->
+<!--        }-->
+
+<!--        .status-finished {-->
+<!--            background: var(&#45;&#45;success-bg);-->
+<!--            color: var(&#45;&#45;success);-->
+<!--            border: 1px solid rgba(34,197,94,0.3);-->
+<!--        }-->
+
+<!--        .status-live {-->
+<!--            background: var(&#45;&#45;danger-bg);-->
+<!--            color: var(&#45;&#45;danger);-->
+<!--            border: 1px solid rgba(239,68,68,0.3);-->
+<!--        }-->
+
+<!--        .status-dot {-->
+<!--            width: 6px;-->
+<!--            height: 6px;-->
+<!--            border-radius: 50%;-->
+<!--            background: currentColor;-->
+<!--        }-->
+
+<!--        .status-live .status-dot {-->
+<!--            animation: pulse-dot 2s ease-in-out infinite;-->
+<!--        }-->
+
+<!--        @keyframes pulse-dot {-->
+<!--            0%, 100% { opacity: 1; transform: scale(1); }-->
+<!--            50% { opacity: 0.4; transform: scale(0.8); }-->
+<!--        }-->
+
+<!--        /* ===== CARD BASE ===== */-->
+<!--        .card {-->
+<!--            background: var(&#45;&#45;surface);-->
+<!--            border-radius: var(&#45;&#45;radius);-->
+<!--            box-shadow: var(&#45;&#45;shadow);-->
+<!--            margin-bottom: 20px;-->
+<!--            overflow: hidden;-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            transition: transform 0.3s ease, box-shadow 0.3s ease;-->
+<!--        }-->
+
+<!--        .card:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: var(&#45;&#45;shadow-lg);-->
+<!--        }-->
+
+<!--        .card-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            padding: 20px 24px;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);-->
+<!--        }-->
+
+<!--        .card-title {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 10px;-->
+<!--            font-size: 0.875rem;-->
+<!--            font-weight: 700;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.08em;-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--        }-->
+
+<!--        .card-title-icon {-->
+<!--            width: 32px;-->
+<!--            height: 32px;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;accent) 0%, var(&#45;&#45;accent-hover) 100%);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: white;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+
+<!--        .card-badge {-->
+<!--            font-size: 0.75rem;-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            background: rgba(255,255,255,0.05);-->
+<!--            padding: 4px 12px;-->
+<!--            border-radius: 50px;-->
+<!--        }-->
+
+<!--        .card-body {-->
+<!--            padding: 24px;-->
+<!--        }-->
+
+<!--        /* ===== DETAILS LIST ===== */-->
+<!--        .detail-list {-->
+<!--            list-style: none;-->
+<!--        }-->
+
+<!--        .detail-item {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            padding: 16px 0;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--            transition: background 0.2s;-->
+<!--        }-->
+
+<!--        .detail-item:hover {-->
+<!--            background: rgba(255,255,255,0.02);-->
+<!--            margin: 0 -24px;-->
+<!--            padding: 16px 24px;-->
+<!--        }-->
+
+<!--        .detail-item:last-child {-->
+<!--            border-bottom: none;-->
+<!--        }-->
+
+<!--        .detail-label {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 12px;-->
+<!--            font-size: 0.9rem;-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .detail-label-icon {-->
+<!--            width: 28px;-->
+<!--            height: 28px;-->
+<!--            background: rgba(59,130,246,0.1);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: var(&#45;&#45;accent);-->
+<!--            font-size: 0.8rem;-->
+<!--        }-->
+
+<!--        .detail-value {-->
+<!--            font-size: 0.95rem;-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--        }-->
+
+<!--        .detail-value a {-->
+<!--            color: var(&#45;&#45;accent-hover);-->
+<!--            text-decoration: none;-->
+<!--            transition: all 0.2s;-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 4px;-->
+<!--        }-->
+
+<!--        .detail-value a:hover {-->
+<!--            color: var(&#45;&#45;accent);-->
+<!--            text-decoration: underline;-->
+<!--        }-->
+
+<!--        .detail-value a::after {-->
+<!--            content: '→';-->
+<!--            font-size: 0.8em;-->
+<!--            transition: transform 0.2s;-->
+<!--        }-->
+
+<!--        .detail-value a:hover::after {-->
+<!--            transform: translateX(3px);-->
+<!--        }-->
+
+<!--        .detail-value.muted {-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            font-weight: 400;-->
+<!--            font-style: italic;-->
+<!--        }-->
+
+<!--        /* ===== COMMENTS ===== */-->
+<!--        .comment-list {-->
+<!--            list-style: none;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            gap: 0;-->
+<!--        }-->
+
+<!--        .comment-item {-->
+<!--            padding: 20px 0;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--            transition: background 0.2s;-->
+<!--        }-->
+
+<!--        .comment-item:hover {-->
+<!--            background: rgba(255,255,255,0.02);-->
+<!--            margin: 0 -24px;-->
+<!--            padding: 20px 24px;-->
+<!--        }-->
+
+<!--        .comment-item:last-child {-->
+<!--            border-bottom: none;-->
+<!--        }-->
+
+<!--        .comment-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            margin-bottom: 12px;-->
+<!--        }-->
+
+<!--        .comment-author {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 14px;-->
+<!--        }-->
+
+<!--        .avatar {-->
+<!--            width: 40px;-->
+<!--            height: 40px;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;accent) 0%, var(&#45;&#45;accent-hover) 100%);-->
+<!--            border-radius: 50%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            font-weight: 700;-->
+<!--            font-size: 0.9rem;-->
+<!--            color: white;-->
+<!--            flex-shrink: 0;-->
+<!--            box-shadow: 0 2px 8px rgba(59,130,246,0.3);-->
+<!--        }-->
+
+<!--        .author-info {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            gap: 2px;-->
+<!--        }-->
+
+<!--        .author-name {-->
+<!--            font-weight: 600;-->
+<!--            font-size: 0.95rem;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--        }-->
+
+<!--        .comment-time {-->
+<!--            font-size: 0.8rem;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .comment-actions {-->
+<!--            display: flex;-->
+<!--            gap: 8px;-->
+<!--        }-->
+
+<!--        .btn-text {-->
+<!--            background: none;-->
+<!--            border: none;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            font-size: 0.8rem;-->
+<!--            font-weight: 600;-->
+<!--            cursor: pointer;-->
+<!--            padding: 6px 12px;-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            transition: all 0.2s;-->
+<!--            font-family: inherit;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.04em;-->
+<!--        }-->
+
+<!--        .btn-text:hover {-->
+<!--            color: var(&#45;&#45;accent-hover);-->
+<!--            background: rgba(59,130,246,0.1);-->
+<!--        }-->
+
+<!--        .comment-text {-->
+<!--            font-size: 0.95rem;-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            line-height: 1.7;-->
+<!--            padding-left: 54px;-->
+<!--        }-->
+
+<!--        /* ===== EDIT FORM ===== */-->
+<!--        .edit-form {-->
+<!--            display: none;-->
+<!--            margin-top: 14px;-->
+<!--            padding-left: 54px;-->
+<!--        }-->
+
+<!--        .edit-form.active {-->
+<!--            display: block;-->
+<!--            animation: slideDown 0.3s ease;-->
+<!--        }-->
+
+<!--        @keyframes slideDown {-->
+<!--            from { opacity: 0; transform: translateY(-8px); }-->
+<!--            to { opacity: 1; transform: translateY(0); }-->
+<!--        }-->
+
+<!--        .edit-input {-->
+<!--            width: 100%;-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            padding: 12px 16px;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            font-size: 0.95rem;-->
+<!--            font-family: inherit;-->
+<!--            margin-bottom: 12px;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+
+<!--        .edit-input:focus {-->
+<!--            outline: none;-->
+<!--            border-color: var(&#45;&#45;accent);-->
+<!--            box-shadow: 0 0 0 3px var(&#45;&#45;accent-glow);-->
+<!--        }-->
+
+<!--        .edit-actions {-->
+<!--            display: flex;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        /* ===== COMMENT FORM ===== */-->
+<!--        .comment-form {-->
+<!--            margin-top: 28px;-->
+<!--            padding-top: 28px;-->
+<!--            border-top: 1px solid var(&#45;&#45;border);-->
+<!--        }-->
+
+<!--        .comment-form-title {-->
+<!--            font-size: 1rem;-->
+<!--            font-weight: 700;-->
+<!--            margin-bottom: 16px;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        .comment-form-title::before {-->
+<!--            content: '';-->
+<!--            width: 4px;-->
+<!--            height: 20px;-->
+<!--            background: linear-gradient(180deg, var(&#45;&#45;accent) 0%, var(&#45;&#45;accent-hover) 100%);-->
+<!--            border-radius: 2px;-->
+<!--        }-->
+
+<!--        .textarea-wrapper {-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .comment-textarea {-->
+<!--            width: 100%;-->
+<!--            min-height: 100px;-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            padding: 16px;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            font-size: 0.95rem;-->
+<!--            font-family: inherit;-->
+<!--            resize: vertical;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+
+<!--        .comment-textarea:focus {-->
+<!--            outline: none;-->
+<!--            border-color: var(&#45;&#45;accent);-->
+<!--            box-shadow: 0 0 0 3px var(&#45;&#45;accent-glow);-->
+<!--        }-->
+
+<!--        .comment-textarea::placeholder {-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--        }-->
+
+<!--        .form-actions {-->
+<!--            display: flex;-->
+<!--            justify-content: flex-end;-->
+<!--            margin-top: 16px;-->
+<!--        }-->
+
+<!--        /* ===== BUTTONS ===== */-->
+<!--        .btn {-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            padding: 12px 24px;-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            font-size: 0.875rem;-->
+<!--            font-weight: 600;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.2s;-->
+<!--            border: none;-->
+<!--            font-family: inherit;-->
+<!--        }-->
+
+<!--        .btn-primary {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;accent) 0%, var(&#45;&#45;accent-hover) 100%);-->
+<!--            color: white;-->
+<!--            box-shadow: 0 4px 14px rgba(59,130,246,0.4);-->
+<!--        }-->
+
+<!--        .btn-primary:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 6px 20px rgba(59,130,246,0.5);-->
+<!--        }-->
+
+<!--        .btn-secondary {-->
+<!--            background: var(&#45;&#45;surface-elevated);-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--        }-->
+
+<!--        .btn-secondary:hover {-->
+<!--            background: var(&#45;&#45;surface-hover);-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            border-color: var(&#45;&#45;text-tertiary);-->
+<!--        }-->
+
+<!--        .btn-sm {-->
+<!--            padding: 8px 16px;-->
+<!--            font-size: 0.8rem;-->
+<!--        }-->
+
+<!--        /* ===== LOGIN CTA ===== */-->
+<!--        .login-cta {-->
+<!--            text-align: center;-->
+<!--            padding: 40px 24px;-->
+<!--            background: linear-gradient(145deg, var(&#45;&#45;surface-elevated) 0%, var(&#45;&#45;surface) 100%);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        .login-cta-text {-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            font-size: 0.9rem;-->
+<!--            margin-bottom: 16px;-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .login-cta a {-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            color: var(&#45;&#45;accent-hover);-->
+<!--            text-decoration: none;-->
+<!--            font-weight: 700;-->
+<!--            font-size: 0.9rem;-->
+<!--            transition: all 0.2s;-->
+<!--            padding: 10px 20px;-->
+<!--            background: rgba(59,130,246,0.1);-->
+<!--            border-radius: var(&#45;&#45;radius-xs);-->
+<!--            border: 1px solid rgba(59,130,246,0.2);-->
+<!--        }-->
+
+<!--        .login-cta a:hover {-->
+<!--            background: rgba(59,130,246,0.2);-->
+<!--            color: var(&#45;&#45;accent);-->
+<!--            transform: translateY(-1px);-->
+<!--        }-->
+
+<!--        /* ===== EMPTY STATE ===== */-->
+<!--        .empty-state {-->
+<!--            text-align: center;-->
+<!--            padding: 48px 24px;-->
+<!--            color: var(&#45;&#45;text-tertiary);-->
+<!--            font-size: 0.9rem;-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        /* ===== ANIMATIONS ===== */-->
+<!--        .fade-in {-->
+<!--            animation: fadeIn 0.5s ease-out forwards;-->
+<!--            opacity: 0;-->
+<!--        }-->
+
+<!--        @keyframes fadeIn {-->
+<!--            from { opacity: 0; transform: translateY(12px); }-->
+<!--            to { opacity: 1; transform: translateY(0); }-->
+<!--        }-->
+
+<!--        .stagger-1 { animation-delay: 0.1s; }-->
+<!--        .stagger-2 { animation-delay: 0.2s; }-->
+<!--        .stagger-3 { animation-delay: 0.3s; }-->
+
+<!--        /* ===== RESPONSIVE ===== */-->
+<!--        @media (max-width: 600px) {-->
+<!--            .container {-->
+<!--                padding: 16px 12px;-->
+<!--            }-->
+
+<!--            .glass-header {-->
+<!--                padding: 24px 20px;-->
+<!--            }-->
+
+<!--            .match-title {-->
+<!--                font-size: 1.5rem;-->
+<!--            }-->
+
+<!--            .score-board {-->
+<!--                gap: 24px;-->
+<!--            }-->
+
+<!--            .score-value {-->
+<!--                font-size: 3rem;-->
+<!--            }-->
+
+<!--            .team-badge {-->
+<!--                width: 64px;-->
+<!--                height: 64px;-->
+<!--                font-size: 1.5rem;-->
+<!--            }-->
+
+<!--            .team-name {-->
+<!--                font-size: 1rem;-->
+<!--            }-->
+
+<!--            .card-body {-->
+<!--                padding: 16px;-->
+<!--            }-->
+
+<!--            .comment-text {-->
+<!--                padding-left: 0;-->
+<!--            }-->
+
+<!--            .edit-form {-->
+<!--                padding-left: 0;-->
+<!--            }-->
+
+<!--            .detail-item:hover {-->
+<!--                margin: 0 -16px;-->
+<!--                padding: 16px;-->
+<!--            }-->
+
+<!--            .comment-item:hover {-->
+<!--                margin: 0 -16px;-->
+<!--                padding: 20px 16px;-->
+<!--            }-->
+<!--        }-->
+
+<!--        /* ===== SCROLLBAR ===== */-->
+<!--        ::-webkit-scrollbar {-->
+<!--            width: 8px;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-track {-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-thumb {-->
+<!--            background: var(&#45;&#45;border);-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-thumb:hover {-->
+<!--            background: var(&#45;&#45;accent);-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+
+<!--    &lt;!&ndash; ===== GLASS HEADER ===== &ndash;&gt;-->
+<!--    <header class="glass-header fade-in">-->
+<!--        <nav class="breadcrumb">-->
+<!--            <a th:href="@{/tornei/{id}(id=${partita.torneo.id})}" th:text="${partita.torneo.nome}">Serie A</a>-->
+<!--            <span class="breadcrumb-sep">/</span>-->
+<!--            <span th:text="|Edizione ${partita.torneo.anno}|">Edizione 2026</span>-->
+<!--            <span class="breadcrumb-sep">/</span>-->
+<!--            <span>Partita</span>-->
+<!--        </nav>-->
+<!--        <h1 class="match-title" th:text="|${partita.squadraCasa.nome} vs ${partita.squadraOspite.nome}|">Lazio vs Roma</h1>-->
+<!--        <div class="meta-grid">-->
+<!--            <div class="meta-chip">-->
+<!--                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>-->
+<!--                <span th:text="${partita.luogo}">Stadio Olimpico</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </header>-->
+
+<!--    &lt;!&ndash; ===== SCORE CARD ===== &ndash;&gt;-->
+<!--    <section class="score-card fade-in stagger-1">-->
+<!--        <div class="score-label">Risultato Finale</div>-->
+<!--        <div class="score-board">-->
+<!--            <div class="team-block">-->
+<!--                <div class="team-badge" th:text="${#strings.substring(partita.squadraCasa.nome,0,1).toUpperCase()}">L</div>-->
+<!--                <div class="team-name" th:text="${partita.squadraCasa.nome}">Lazio</div>-->
+<!--            </div>-->
+<!--            <div class="score-center">-->
+<!--                <div class="score-value" th:text="|${partita.goalsHome} - ${partita.goalsAway}|">1 - 1</div>-->
+<!--                <span class="status-badge status-finished">-->
+<!--                    <span class="status-dot"></span>-->
+<!--                    Terminata-->
+<!--                </span>-->
+<!--            </div>-->
+<!--            <div class="team-block">-->
+<!--                <div class="team-badge" th:text="${#strings.substring(partita.squadraOspite.nome,0,1).toUpperCase()}">R</div>-->
+<!--                <div class="team-name" th:text="${partita.squadraOspite.nome}">Roma</div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; ===== DETAILS CARD ===== &ndash;&gt;-->
+<!--    <section class="card fade-in stagger-2">-->
+<!--        <div class="card-header">-->
+<!--            <div class="card-title">-->
+<!--                <div class="card-title-icon">i</div>-->
+<!--                Dettagli Partita-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <ul class="detail-list">-->
+<!--                <li class="detail-item">-->
+<!--                    <span class="detail-label">-->
+<!--                        <div class="detail-label-icon">A</div>-->
+<!--                        Arbitro-->
+<!--                    </span>-->
+<!--                    <span class="detail-value" th:classappend="${partita.arbitro == null} ? 'muted' : ''" th:text="${partita.arbitro != null ? partita.arbitro.nome + ' ' + partita.arbitro.cognome : 'Da designare'}">Da designare</span>-->
+<!--                </li>-->
+<!--                <li class="detail-item">-->
+<!--                    <span class="detail-label">-->
+<!--                        <div class="detail-label-icon">H</div>-->
+<!--                        Squadra di casa-->
+<!--                    </span>-->
+<!--                    <span class="detail-value">-->
+<!--                        <a th:href="@{/squadre/{id}(id=${partita.squadraCasa.id})}" th:text="${partita.squadraCasa.nome}">Lazio</a>-->
+<!--                    </span>-->
+<!--                </li>-->
+<!--                <li class="detail-item">-->
+<!--                    <span class="detail-label">-->
+<!--                        <div class="detail-label-icon">A</div>-->
+<!--                        Squadra ospite-->
+<!--                    </span>-->
+<!--                    <span class="detail-value">-->
+<!--                        <a th:href="@{/squadre/{id}(id=${partita.squadraOspite.id})}" th:text="${partita.squadraOspite.nome}">Roma</a>-->
+<!--                    </span>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; ===== COMMENTS CARD ===== &ndash;&gt;-->
+<!--    <section class="card fade-in stagger-3">-->
+<!--        <div class="card-header">-->
+<!--            <div class="card-title">-->
+<!--                <div class="card-title-icon">C</div>-->
+<!--                Area Tifosi-->
+<!--            </div>-->
+<!--            <span class="card-badge" th:text="|${#lists.size(partita.commenti)} commenti|">3 commenti</span>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <ul class="comment-list">-->
+<!--                <li th:each="c : ${partita.commenti}" class="comment-item">-->
+
+<!--                    &lt;!&ndash; View Mode &ndash;&gt;-->
+<!--                    <div th:id="'view-mode-' + ${c.id}">-->
+<!--                        <div class="comment-header">-->
+<!--                            <div class="comment-author">-->
+<!--                                <div class="avatar" th:text="${#strings.substring(c.utente.username,0,1).toUpperCase()}">U</div>-->
+<!--                                <div class="author-info">-->
+<!--                                    <span class="author-name" th:text="${c.utente.username}">Username</span>-->
+<!--                                    <span class="comment-time" th:text="${#temporals.format(c.dataOra, 'dd MMM yyyy, HH:mm')}">10 giu 2026, 15:00</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="comment-actions" th:if="${utenteLoggato != null and utenteLoggato.id == c.utente.id}">-->
+<!--                                <button type="button" class="btn-text" th:onclick="'toggleEdit(' + ${c.id} + ')'">Modifica</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <p class="comment-text" th:text="${c.testo}">Che bella partita!</p>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Edit Mode &ndash;&gt;-->
+<!--                    <div th:id="'edit-mode-' + ${c.id}" class="edit-form" th:if="${utenteLoggato != null and utenteLoggato.id == c.utente.id}">-->
+<!--                        <form th:action="@{/partite/{id}/commenti/{commentoId}/edit(id=${partita.id}, commentoId=${c.id})}" method="POST">-->
+<!--                            <input type="text" name="testo" class="edit-input" th:value="${c.testo}" required />-->
+<!--                            <div class="edit-actions">-->
+<!--                                <button type="submit" class="btn btn-primary btn-sm">Salva</button>-->
+<!--                                <button type="button" class="btn btn-secondary btn-sm" th:onclick="'toggleEdit(' + ${c.id} + ')'">Annulla</button>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </li>-->
+<!--            </ul>-->
+
+<!--            &lt;!&ndash; New Comment Form &ndash;&gt;-->
+<!--            <div class="comment-form" th:if="${utenteLoggato != null}">-->
+<!--                <h3 class="comment-form-title">Lascia un commento</h3>-->
+<!--                <form th:action="@{/partite/{id}/commenti(id=${partita.id})}" method="POST">-->
+<!--                    <div class="textarea-wrapper">-->
+<!--                        <textarea name="testo" class="comment-textarea" placeholder="Scrivi il tuo commento..." required></textarea>-->
+<!--                    </div>-->
+<!--                    <div class="form-actions">-->
+<!--                        <button type="submit" class="btn btn-primary">Pubblica commento</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Login CTA &ndash;&gt;-->
+<!--            <div class="login-cta" th:unless="${utenteLoggato != null}">-->
+<!--                <p class="login-cta-text">Accedi per partecipare alla discussione</p>-->
+<!--                <a th:href="@{/login}">Vai al login →</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
+<!--</div>-->
+
+<!--<script>-->
+<!--    function toggleEdit(commentId) {-->
+<!--        var viewDiv = document.getElementById('view-mode-' + commentId);-->
+<!--        var editDiv = document.getElementById('edit-mode-' + commentId);-->
+
+<!--        if (editDiv.classList.contains('active')) {-->
+<!--            editDiv.classList.remove('active');-->
+<!--            viewDiv.style.display = 'block';-->
+<!--        } else {-->
+<!--            editDiv.classList.add('active');-->
+<!--            viewDiv.style.display = 'none';-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squadre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+    <h1>👥 Squadre</h1>
+    <p class="page-lead">Totale squadre: <span th:text="${squadre.size()}">0</span></p>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{/admin/squadre/new}" class="btn btn-create">➕ Crea Nuova Squadra</a>
+    </div>
+
+    <ul style="list-style:none; padding:0;">
+        <li th:each="squadra: ${squadre}" class="item-card">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <span class="team-logo" style="width:44px; height:44px; font-size:1.1rem; margin:0;"
+                      th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
+                <a th:href="@{'/squadre/' + ${squadra.id}}" style="font-weight:700; font-size:1.1rem; color:var(--text); text-decoration:none;" th:text="${squadra.nome}">Lazio</a>
+                <span style="color:var(--text-muted); font-size:0.9rem;" th:text="${squadra.citta}">Roma</span>
+            </div>
+            <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px;">
+                <a th:href="@{'/admin/squadre/' + ${squadra.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+                <button type="button" class="btn btn-delete"
+                        th:attr="onclick=|apriModale('@{/admin/squadre/{id}/delete(id=${squadra.id})}', '${squadra.nome}')|">
+                    🗑️ Elimina
+                </button>
+            </div>
+        </li>
+    </ul>
+
+    <a href="/" class="back-link">← Torna alla home</a>
+</div>
+
+<div th:replace="~{fragments/modale :: elimina}"></div>
+
+</body>
+</html>

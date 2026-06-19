@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIW Tornei di Calcio</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Tema unico condiviso con tutte le pagine Thymeleaf -->
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+
+<!-- Punto di mount della Home React (bundle Vite) -->
+<div id="root"></div>
+
+<!--
+    Stato di autenticazione + token CSRF iniettati dal server (HomeController + Spring Security)
+    e letti dalla SPA React in window.__APP__.
+-->
+<script th:inline="javascript">
+    window.__APP__ = {
+        authenticated: /*[[${isAuth}]]*/ false,
+        isAdmin: /*[[${isAdmin}]]*/ false,
+        username: /*[[${username}]]*/ null,
+        csrf: {
+            param: /*[[${_csrf != null ? _csrf.parameterName : '_csrf'}]]*/ '_csrf',
+            token: /*[[${_csrf != null ? _csrf.token : ''}]]*/ ''
+        }
+    };
+</script>
+
+<!-- Bundle React buildato da Vite (frontend/) → src/main/resources/static/app/home.js -->
+<script type="module" src="/app/home.js"></script>
+
+</body>
+</html>

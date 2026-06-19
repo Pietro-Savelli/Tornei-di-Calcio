@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tornei</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+    <h1>🏆 Tornei</h1>
+    <p class="page-lead">Totale tornei: <span th:text="${tornei.size()}">0</span></p>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{/admin/tornei/new}" class="btn btn-create">➕ Crea Nuovo Torneo</a>
+    </div>
+
+    <ul style="list-style:none; padding:0;">
+        <li th:each="torneo: ${tornei}" class="item-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a th:href="@{'/tornei/' + ${torneo.id}}" style="font-weight:700; font-size:1.1rem; color:var(--text); text-decoration:none;" th:text="${torneo.nome}">Serie A</a>
+                <span style="color:var(--text-muted); font-size:0.9rem;" th:text="'(' + ${torneo.anno} + ')'">(2024)</span>
+            </div>
+            <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px;">
+                <a th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+                <button type="button" class="btn btn-delete"
+                        th:attr="onclick=|apriModale('@{/admin/tornei/{id}/delete(id=${torneo.id})}', '${torneo.nome}')|">
+                    🗑️ Elimina
+                </button>
+            </div>
+        </li>
+    </ul>
+
+    <a href="/" class="back-link">← Torna alla home</a>
+</div>
+
+<div th:replace="~{fragments/modale :: elimina}"></div>
+
+</body>
+</html>

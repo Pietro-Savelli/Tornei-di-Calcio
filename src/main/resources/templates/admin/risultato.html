@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
+                       ? 'Modifica Risultato' : 'Inserisci Risultato'">
+        Risultato
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/stile.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+
+<h1 class="page-title"
+    th:text="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
+              ? '✏️ Modifica Risultato' : '⚽ Inserisci Risultato'">
+    Risultato
+</h1>
+
+<p class="partita-info">
+    <span>📅 <span th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}">data</span></span>
+    <span>📍 <span th:text="${partita.luogo}">luogo</span></span>
+    <span th:if="${partita.torneo != null}">
+        🏆 <span th:text="${partita.torneo.nome}">Torneo</span>
+    </span>
+</p>
+
+<div class="form-card" style="max-width:520px;">
+
+    <form th:action="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
+                         ? @{/admin/partite/{id}/risultato/edit(id=${partita.id})}
+                         : @{/admin/partite/{id}/risultato(id=${partita.id})}"
+          method="POST">
+
+        <!-- Visualizzazione affiancata delle due squadre con i campi gol -->
+        <div class="vs-box">
+            <div class="vs-team">
+                <div class="team-name" th:text="${partita.squadraCasa.nome}">Lazio</div>
+                <input type="number" id="goalsHome" name="goalsHome"
+                       th:value="${partita.goalsHome != null ? partita.goalsHome : 0}"
+                       min="0" max="99" required />
+                <div style="font-size:0.8rem; color:#888; margin-top:6px;">Casa</div>
+            </div>
+
+            <div class="vs-separator">VS</div>
+
+            <div class="vs-team">
+                <div class="team-name" th:text="${partita.squadraOspite.nome}">Roma</div>
+                <input type="number" id="goalsAway" name="goalsAway"
+                       th:value="${partita.goalsAway != null ? partita.goalsAway : 0}"
+                       min="0" max="99" required />
+                <div style="font-size:0.8rem; color:#888; margin-top:6px;">Ospite</div>
+            </div>
+        </div>
+
+        <!--
+            Se lo stato è già FINISHED mostriamo un avviso:
+            stiamo modificando un risultato già inserito.
+        -->
+        <div class="warn-box" th:if="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}">
+            ⚠️ Questa partita ha già un risultato. Salvando, il risultato verrà aggiornato.
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success"
+                    th:text="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
+                               ? '💾 Aggiorna Risultato' : '✅ Salva Risultato'">
+                Salva
+            </button>
+            <a th:href="@{/partite/{id}(id=${partita.id})}" class="btn btn-secondary">
+                ↩️ Annulla
+            </a>
+        </div>
+    </form>
+</div>
+
+<a th:href="@{/partite/{id}(id=${partita.id})}" class="back-link">
+    ← Torna alla partita
+</a>
+
+</div>
+
+</body>
+</html>

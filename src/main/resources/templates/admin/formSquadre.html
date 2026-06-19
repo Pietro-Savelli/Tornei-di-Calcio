@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${squadra.id != null} ? 'Modifica Squadra' : 'Nuova Squadra'">Squadra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/stile.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+
+<h1 class="page-title"
+    th:text="${squadra.id != null} ? '✏️ Modifica Squadra' : '➕ Nuova Squadra'">
+</h1>
+<p class="page-subtitle"
+   th:text="${squadra.id != null}
+       ? 'Modifica i dati della squadra o gestisci i giocatori iscritti.'
+       : 'Compila i campi per aggiungere una nuova squadra.'">
+</p>
+
+<!-- SEZIONE DATI SQUADRA -->
+<div class="form-card">
+    <h2>📋 Dati Squadra</h2>
+
+    <form th:action="${squadra.id != null}
+                    ? @{/admin/squadre/{id}/edit(id=${squadra.id})}
+                    : @{/admin/squadre/new}"
+          th:object="${squadra}"
+          method="POST">
+
+        <input type="hidden" th:if="${squadra.id != null}" th:field="*{id}" />
+
+        <!-- Errore globale di business (es. nome squadra già esistente) -->
+        <div class="form-group" th:if="${#fields.hasGlobalErrors()}">
+            <div class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="nome">Nome squadra</label>
+            <input type="text" id="nome" th:field="*{nome}" placeholder="es. S.S. Lazio" required />
+            <span class="field-error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="citta">Città</label>
+            <input type="text" id="citta" th:field="*{citta}" placeholder="es. Roma" required />
+            <span class="field-error" th:if="${#fields.hasErrors('citta')}" th:errors="*{citta}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="annoFondazione">Anno di fondazione</label>
+            <input type="number" id="annoFondazione" th:field="*{annoFondazione}"
+                   min="1800" max="2100" placeholder="es. 1900" />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success"
+                    th:text="${squadra.id != null} ? '💾 Salva Modifiche' : '➕ Crea Squadra'">
+            </button>
+            <a th:href="@{/squadre/}" class="btn btn-secondary">↩️ Annulla</a>
+        </div>
+    </form>
+</div>
+
+<!--
+    SEZIONE GIOCATORI — visibile solo in modalità modifica (quando la squadra esiste già).
+    In creazione non ha senso: prima si crea la squadra, poi si aggiungono i giocatori.
+-->
+<div class="form-card" th:if="${squadra.id != null}" style="max-width:650px;">
+    <h2>👥 Giocatori della Squadra</h2>
+
+    <!-- Lista giocatori attuali -->
+    <ul class="item-list" th:if="${not #sets.isEmpty(squadra.giocatori)}">
+        <li th:each="g : ${squadra.giocatori}">
+            <span class="item-name">
+                <a th:href="@{/giocatori/{id}(id=${g.id})}"
+                   th:text="${g.cognome + ' ' + g.nome + ' — ' + g.ruolo}">
+                    Rossi Marco — ATTACCANTE
+                </a>
+            </span>
+            <span class="actions">
+                <!-- Modifica giocatore -->
+                <a th:href="@{/admin/giocatori/{id}/edit(id=${g.id})}"
+                   class="btn btn-warning" style="padding:5px 10px; font-size:0.85rem;">
+                    ✏️
+                </a>
+                <!-- Rimuovi giocatore dalla squadra (non lo cancella, lo slega) -->
+                <form th:action="@{/admin/squadre/{sid}/giocatori/{gid}/remove(sid=${squadra.id},gid=${g.id})}"
+                      method="POST" class="inline-form">
+                    <button type="submit" class="btn btn-danger"
+                            style="padding:5px 10px; font-size:0.85rem;"
+                            onclick="return confirm('Rimuovere ' + /*[[${g.cognome}]]*/ '' + ' dalla squadra?')">
+                        🗑️
+                    </button>
+                </form>
+            </span>
+        </li>
+    </ul>
+
+    <p class="empty-msg" th:if="${#sets.isEmpty(squadra.giocatori)}">
+        Nessun giocatore in questa squadra.
+    </p>
+
+    <!-- Link per aggiungere un nuovo giocatore direttamente a questa squadra -->
+    <div style="margin-top: 16px;">
+        <a th:href="@{/admin/giocatori/new}" class="btn btn-success" style="font-size:0.9rem;">
+            ➕ Aggiungi Giocatore
+        </a>
+    </div>
+</div>
+
+<a href="/squadre/" class="back-link">← Torna all'elenco squadre</a>
+
+</div>
+
+</body>
+</html>

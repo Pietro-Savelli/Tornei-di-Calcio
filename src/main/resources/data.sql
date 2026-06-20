@@ -1,116 +1,116 @@
--- ==========================================
--- UTENTI E CREDENTIALS
--- ==========================================
-INSERT INTO utente(id, username, password, ruolo, name) VALUES (nextval('utente_seq'), 'p', '{noop}p', null, 'p');
-INSERT INTO credentials (id, username, password, role) VALUES (nextval('credentials_seq'), 'admin', '$2a$10$yWAIDyuEr78BBBFZ5cYh8.Nw4gUHFTRG5FwaWqNCGeOD8M4mh3.xy', 'ADMIN');
-INSERT INTO credentials (id, username, password, role, utente_id) VALUES (nextval('credentials_seq'), 'pietro', '$2a$10$yWAIDyuEr78BBBFZ5cYh8.Nw4gUHFTRG5FwaWqNCGeOD8M4mh3.xy', 'DEFAULT', 1);
-
--- ==========================================
--- TORNEI (5 totali)
--- ==========================================
-INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2025, 'Campionato italiano di massima serie', 'Serie A');
-INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2024, 'La competizione europea più prestigiosa', 'Champions League');
-INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2024, 'Coppa nazionale italiana', 'Coppa Italia');
-INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2025, 'Seconda competizione europea per club', 'Europa League');
-INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2025, 'Supercoppa tra campioni e vincitori di coppa', 'Supercoppa Italiana');
-
--- ==========================================
--- SQUADRE (11 selezionate)
--- ==========================================
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1900, 'Roma', 'Lazio', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1927, 'Roma', 'Roma', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1899, 'Milano', 'Milan', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1908, 'Milano', 'Inter', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1897, 'Torino', 'Juventus', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1926, 'Napoli', 'Napoli', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1906, 'Torino', 'Torino', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1909, 'Bologna', 'Bologna', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1893, 'Genova', 'Genoa', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1902, 'Firenze', 'Fiorentina', false);
-INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1907, 'Bergamo', 'Atalanta', false);
-
--- ==========================================
--- ISCRIZIONI SQUADRE-TORNEI
--- ==========================================
--- Serie A: tutte le 11 squadre
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Lazio'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Roma'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Milan'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Inter'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Juventus'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Napoli'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Torino'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Bologna'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Genoa'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Atalanta'));
-
--- Champions League: Milan, Inter, Juventus, Napoli
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Milan'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Inter'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Juventus'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Napoli'));
-
--- Coppa Italia: Lazio, Roma, Fiorentina, Atalanta
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Lazio'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Roma'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Atalanta'));
-
--- Europa League: Torino, Bologna, Genoa
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Europa League'), (SELECT id FROM squadra WHERE nome = 'Torino'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Europa League'), (SELECT id FROM squadra WHERE nome = 'Bologna'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Europa League'), (SELECT id FROM squadra WHERE nome = 'Genoa'));
-
--- Supercoppa Italiana: Juventus, Napoli
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Juventus'));
-INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Napoli'));
-
--- ==========================================
--- GIOCATORI (3 per squadra = 33 totali)
--- ==========================================
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore1', 'Cognome1', '1995-06-15', 'PORTIERE', 180, (SELECT id FROM squadra WHERE nome = 'Lazio'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore2', 'Cognome2', '1995-06-15', 'CENTROCAMPISTA', 180, (SELECT id FROM squadra WHERE nome = 'Lazio'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore3', 'Cognome3', '1995-06-15', 'ATTACCANTE', 180, (SELECT id FROM squadra WHERE nome = 'Lazio'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore4', 'Cognome4', '1995-06-15', 'PORTIERE', 180, (SELECT id FROM squadra WHERE nome = 'Roma'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore5', 'Cognome5', '1995-06-15', 'CENTROCAMPISTA', 180, (SELECT id FROM squadra WHERE nome = 'Roma'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore6', 'Cognome6', '1995-06-15', 'ATTACCANTE', 180, (SELECT id FROM squadra WHERE nome = 'Roma'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore7', 'Cognome7', '1995-06-15', 'PORTIERE', 180, (SELECT id FROM squadra WHERE nome = 'Milan'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore8', 'Cognome8', '1995-06-15', 'CENTROCAMPISTA', 180, (SELECT id FROM squadra WHERE nome = 'Milan'));
-INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore9', 'Cognome9', '1995-06-15', 'ATTACCANTE', 180, (SELECT id FROM squadra WHERE nome = 'Milan'));
-
--- ==========================================
--- PARTITE SERIE A (20 partite)
--- ==========================================
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Lazio', 2, 1, '2025-08-24 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Roma'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Roma', 1, 1, '2025-08-31 18:30:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Roma'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Milan', 3, 0, '2025-09-07 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Milan'), (SELECT id FROM squadra WHERE nome = 'Lazio'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Inter', 2, 2, '2025-09-14 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Inter'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Juventus', 1, 0, '2025-09-21 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Juventus'), (SELECT id FROM squadra WHERE nome = 'Milan'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Napoli', 4, 1, '2025-09-28 18:30:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Napoli'), (SELECT id FROM squadra WHERE nome = 'Atalanta'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Atalanta', 2, 3, '2025-10-05 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Atalanta'), (SELECT id FROM squadra WHERE nome = 'Inter'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Fiorentina', 0, 2, '2025-10-19 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'), (SELECT id FROM squadra WHERE nome = 'Napoli'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Torino', 1, 1, '2025-10-26 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Torino'), (SELECT id FROM squadra WHERE nome = 'Roma'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Bologna', 2, 0, '2025-11-02 18:30:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Bologna'), (SELECT id FROM squadra WHERE nome = 'Genoa'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Genoa', 0, 3, '2025-11-09 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Genoa'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Lazio', 3, 2, '2025-11-23 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Torino'), false);
-
--- ==========================================
--- PARTITE CHAMPIONS LEAGUE (3 partite)
--- ==========================================
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'San Siro, Milano', 2, 1, '2026-02-18 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Milan'), (SELECT id FROM squadra WHERE nome = 'Napoli'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Napoli', 1, 1, '2026-03-10 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Napoli'), (SELECT id FROM squadra WHERE nome = 'Inter'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'San Siro, Milano', 0, 0, '2026-04-08 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Inter'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
-
--- ==========================================
--- PARTITE COPPA ITALIA (3 partite)
--- ==========================================
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Lazio', 3, 0, '2026-02-25 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Roma', 2, 1, '2026-03-04 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Roma'), (SELECT id FROM squadra WHERE nome = 'Atalanta'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Olimpico', 1, 0, '2026-05-15 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Roma'), false);
-
--- ==========================================
--- PARTITE SUPERCOPPA ITALIANA (2 partite)
--- ==========================================
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Juventus', 2, 1, '2025-12-22 20:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Juventus'), (SELECT id FROM squadra WHERE nome = 'Napoli'), false);
-INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Napoli', 3, 2, '2026-01-15 20:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Napoli'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
+-- -- ==========================================
+-- -- UTENTI E CREDENTIALS
+-- -- ==========================================
+-- INSERT INTO utente(id, username, password, ruolo, name) VALUES (nextval('utente_seq'), 'p', '{noop}p', null, 'p');
+-- INSERT INTO credentials (id, username, password, role) VALUES (nextval('credentials_seq'), 'admin', '$2a$10$yWAIDyuEr78BBBFZ5cYh8.Nw4gUHFTRG5FwaWqNCGeOD8M4mh3.xy', 'ADMIN');
+-- INSERT INTO credentials (id, username, password, role, utente_id) VALUES (nextval('credentials_seq'), 'pietro', '$2a$10$yWAIDyuEr78BBBFZ5cYh8.Nw4gUHFTRG5FwaWqNCGeOD8M4mh3.xy', 'DEFAULT', 1);
+--
+-- -- ==========================================
+-- -- TORNEI (5 totali)
+-- -- ==========================================
+-- INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2025, 'Campionato italiano di massima serie', 'Serie A');
+-- INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2024, 'La competizione europea più prestigiosa', 'Champions League');
+-- INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2024, 'Coppa nazionale italiana', 'Coppa Italia');
+-- INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2025, 'Seconda competizione europea per club', 'Europa League');
+-- INSERT INTO torneo (id, anno, descrizione, nome) VALUES (nextval('torneo_seq'), 2025, 'Supercoppa tra campioni e vincitori di coppa', 'Supercoppa Italiana');
+--
+-- -- ==========================================
+-- -- SQUADRE (11 selezionate)
+-- -- ==========================================
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1900, 'Roma', 'Lazio', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1927, 'Roma', 'Roma', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1899, 'Milano', 'Milan', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1908, 'Milano', 'Inter', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1897, 'Torino', 'Juventus', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1926, 'Napoli', 'Napoli', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1906, 'Torino', 'Torino', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1909, 'Bologna', 'Bologna', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1893, 'Genova', 'Genoa', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1902, 'Firenze', 'Fiorentina', false);
+-- INSERT INTO squadra (id, anno_fondazione, citta, nome, eliminata) VALUES (nextval('squadra_seq'), 1907, 'Bergamo', 'Atalanta', false);
+--
+-- -- ==========================================
+-- -- ISCRIZIONI SQUADRE-TORNEI
+-- -- ==========================================
+-- -- Serie A: tutte le 11 squadre
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Lazio'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Roma'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Milan'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Inter'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Juventus'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Napoli'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Torino'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Bologna'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Genoa'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Atalanta'));
+--
+-- -- Champions League: Milan, Inter, Juventus, Napoli
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Milan'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Inter'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Juventus'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Napoli'));
+--
+-- -- Coppa Italia: Lazio, Roma, Fiorentina, Atalanta
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Lazio'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Roma'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Atalanta'));
+--
+-- -- Europa League: Torino, Bologna, Genoa
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Europa League'), (SELECT id FROM squadra WHERE nome = 'Torino'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Europa League'), (SELECT id FROM squadra WHERE nome = 'Bologna'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Europa League'), (SELECT id FROM squadra WHERE nome = 'Genoa'));
+--
+-- -- Supercoppa Italiana: Juventus, Napoli
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Juventus'));
+-- INSERT INTO torneo_squadre (tornei_id, squadre_id) VALUES ((SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Napoli'));
+--
+-- -- ==========================================
+-- -- GIOCATORI (3 per squadra = 33 totali)
+-- -- ==========================================
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore1', 'Cognome1', '1995-06-15', 'PORTIERE', 180, (SELECT id FROM squadra WHERE nome = 'Lazio'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore2', 'Cognome2', '1995-06-15', 'CENTROCAMPISTA', 180, (SELECT id FROM squadra WHERE nome = 'Lazio'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore3', 'Cognome3', '1995-06-15', 'ATTACCANTE', 180, (SELECT id FROM squadra WHERE nome = 'Lazio'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore4', 'Cognome4', '1995-06-15', 'PORTIERE', 180, (SELECT id FROM squadra WHERE nome = 'Roma'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore5', 'Cognome5', '1995-06-15', 'CENTROCAMPISTA', 180, (SELECT id FROM squadra WHERE nome = 'Roma'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore6', 'Cognome6', '1995-06-15', 'ATTACCANTE', 180, (SELECT id FROM squadra WHERE nome = 'Roma'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore7', 'Cognome7', '1995-06-15', 'PORTIERE', 180, (SELECT id FROM squadra WHERE nome = 'Milan'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore8', 'Cognome8', '1995-06-15', 'CENTROCAMPISTA', 180, (SELECT id FROM squadra WHERE nome = 'Milan'));
+-- INSERT INTO giocatore (id, nome, cognome, data_di_nascita, ruolo, altezza, squadra_id) VALUES (nextval('giocatore_seq'), 'Giocatore9', 'Cognome9', '1995-06-15', 'ATTACCANTE', 180, (SELECT id FROM squadra WHERE nome = 'Milan'));
+--
+-- -- ==========================================
+-- -- PARTITE SERIE A (20 partite)
+-- -- ==========================================
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Lazio', 2, 1, '2025-08-24 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Roma'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Roma', 1, 1, '2025-08-31 18:30:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Roma'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Milan', 3, 0, '2025-09-07 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Milan'), (SELECT id FROM squadra WHERE nome = 'Lazio'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Inter', 2, 2, '2025-09-14 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Inter'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Juventus', 1, 0, '2025-09-21 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Juventus'), (SELECT id FROM squadra WHERE nome = 'Milan'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Napoli', 4, 1, '2025-09-28 18:30:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Napoli'), (SELECT id FROM squadra WHERE nome = 'Atalanta'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Atalanta', 2, 3, '2025-10-05 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Atalanta'), (SELECT id FROM squadra WHERE nome = 'Inter'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Fiorentina', 0, 2, '2025-10-19 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'), (SELECT id FROM squadra WHERE nome = 'Napoli'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Torino', 1, 1, '2025-10-26 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Torino'), (SELECT id FROM squadra WHERE nome = 'Roma'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Bologna', 2, 0, '2025-11-02 18:30:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Bologna'), (SELECT id FROM squadra WHERE nome = 'Genoa'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Genoa', 0, 3, '2025-11-09 20:45:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Genoa'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Lazio', 3, 2, '2025-11-23 15:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Serie A'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Torino'), false);
+--
+-- -- ==========================================
+-- -- PARTITE CHAMPIONS LEAGUE (3 partite)
+-- -- ==========================================
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'San Siro, Milano', 2, 1, '2026-02-18 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Milan'), (SELECT id FROM squadra WHERE nome = 'Napoli'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Napoli', 1, 1, '2026-03-10 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Napoli'), (SELECT id FROM squadra WHERE nome = 'Inter'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'San Siro, Milano', 0, 0, '2026-04-08 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Champions League'), (SELECT id FROM squadra WHERE nome = 'Inter'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);
+--
+-- -- ==========================================
+-- -- PARTITE COPPA ITALIA (3 partite)
+-- -- ==========================================
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Lazio', 3, 0, '2026-02-25 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Fiorentina'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Roma', 2, 1, '2026-03-04 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Roma'), (SELECT id FROM squadra WHERE nome = 'Atalanta'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Olimpico', 1, 0, '2026-05-15 21:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Coppa Italia'), (SELECT id FROM squadra WHERE nome = 'Lazio'), (SELECT id FROM squadra WHERE nome = 'Roma'), false);
+--
+-- -- ==========================================
+-- -- PARTITE SUPERCOPPA ITALIANA (2 partite)
+-- -- ==========================================
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Juventus', 2, 1, '2025-12-22 20:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Juventus'), (SELECT id FROM squadra WHERE nome = 'Napoli'), false);
+-- INSERT INTO partita (id, luogo, goals_home, goals_away, data_ora, stato, arbitro_id, torneo_id, squadra_casa_id, squadra_ospite_id, eliminata) VALUES (nextval('partita_seq'), 'Stadio Napoli', 3, 2, '2026-01-15 20:00:00', 'FINISHED', NULL, (SELECT id FROM torneo WHERE nome = 'Supercoppa Italiana'), (SELECT id FROM squadra WHERE nome = 'Napoli'), (SELECT id FROM squadra WHERE nome = 'Juventus'), false);

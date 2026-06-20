@@ -2,13 +2,32 @@ import React from 'react';
 import FinishedMatch from './FinishedMatch';
 import UpcomingMatch from './UpcomingMatch';
 import { matchUrl } from '../utils/helpers';
+import { APP } from '../config/appConfig';
 
-function TorneoCard({ t }) {
+function TorneoCard({ t, onTogglePreferito }) {
   return (
     <article className="torneo-card">
       <div className="torneo-card-head">
-        <span className="torneo-badge">{t.anno}</span>
-        <span className="torneo-meta">{t.numeroSquadre} squadre</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
+          <span className="torneo-badge">{t.anno}</span>
+          <span className="torneo-meta">{t.numeroSquadre} squadre</span>
+            {APP.authenticated && (
+                <button
+                    className={`preferito-btn ${t.preferito ? 'active' : ''}`}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onTogglePreferito(t.id);
+                    }}
+                    title={t.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
+                    aria-label={t.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
+                >
+                    <svg viewBox="0 0 24 24" className="preferito-star" aria-hidden="true">
+                        <path d="M12 2.5l2.92 6.34 6.98.62-5.27 4.66 1.6 6.88L12 17.6l-6.23 3.4 1.6-6.88L2.1 9.46l6.98-.62L12 2.5z" />
+                    </svg>
+                </button>
+            )}
+        </div>
       </div>
       <a className="torneo-card-title" href={`/tornei/${t.id}`}>{t.nome}</a>
       <p className="torneo-card-desc">{t.descrizione}</p>

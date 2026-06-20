@@ -25,7 +25,6 @@ public class PartitaService {
         return partitaRepository.findFirstByTorneoIdAndDataOraAfterOrderByDataOraAsc(id, LocalDateTime.now());
     }
 
-    // ===== PAGINAZIONE PARTITE (Requisito 3) =====
     // Ritorna UNA pagina di partite attive del torneo (size=1 → una partita alla volta).
     @Transactional(readOnly = true)
     public Page<Partita> getPaginaPartite(Long torneoId, int page, int size) {

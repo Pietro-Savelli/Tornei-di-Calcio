@@ -1,14 +1,14 @@
 package it.uniroma3.torneidicalcio.controller;
 
-import it.uniroma3.torneidicalcio.model.Partita;
-import it.uniroma3.torneidicalcio.model.Squadra;
-import it.uniroma3.torneidicalcio.model.Torneo;
+import it.uniroma3.torneidicalcio.model.*;
+import it.uniroma3.torneidicalcio.service.CredentialsService;
+import it.uniroma3.torneidicalcio.service.PreferitoService;
 import it.uniroma3.torneidicalcio.service.TorneoService;
+import it.uniroma3.torneidicalcio.service.UtenteService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +20,13 @@ import java.util.Map;
 public class ApiController {
 
     private final TorneoService torneoService;
+    private final PreferitoService preferitoService;
+    private final CredentialsService credentialsService;
 
-    public ApiController(TorneoService torneoService) {
+    public ApiController(TorneoService torneoService, PreferitoService preferitoService, UtenteService utenteService, CredentialsService credentialsService) {
         this.torneoService = torneoService;
+        this.preferitoService = preferitoService;
+        this.credentialsService = credentialsService;
     }
 
     @GetMapping("/tornei/{id}/partite")
@@ -79,4 +83,36 @@ public class ApiController {
         }
         return ResponseEntity.ok(squadre);
     }
+
+    @PostMapping("/tornei/{id}/preferito")
+    public ResponseEntity<Void> aggiungi(@PathVariable Long id, Authentication auth) {
+        Utente utente = getUtente(auth);
+        if (utente == null) return ResponseEntity.status(401).build();
+        preferitoService.aggiungi(utente, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/tornei/{id}/preferito")
+    public ResponseEntity<Void> rimuovi(@PathVariable Long id, Authentication auth) {
+        Utente utente = getUtente(auth);
+        if (utente == null) return ResponseEntity.status(401).build();
+        preferitoService.rimuovi(utente, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/utente/preferiti")
+    public ResponseEntity<java.util.Set<Long>> getPreferiti(Authentication auth) {
+        Utente utente = getUtente(auth);
+        if (utente == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(preferitoService.getTorneoIdsPreferiti(utente));
+    }
+
+    private Utente getUtente(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) return null;
+
+        String username = auth.getName();
+        Credentials credentials = credentialsService.getCredentials(username);
+        return (credentials != null) ? credentials.getUtente() : null;
+    }
+
 }

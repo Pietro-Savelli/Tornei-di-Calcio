@@ -46,8 +46,8 @@ public class TorneoController {
         prossima.ifPresent(p -> model.addAttribute("prossimaPartita", p));
         model.addAttribute("classifica", this.torneoService.calcolaClassifica(id));
 
-        // PAGINAZIONE PARTITE (Requisito 3): una sola partita per pagina, con Precedente/Successivo
-        Page<Partita> paginaPartite = this.partitaService.getPaginaPartite(id, Math.max(partitaPage, 0), 1);
+        //10 partite per pagina, con Precedente/Successivo
+        Page<Partita> paginaPartite = this.partitaService.getPaginaPartite(id, Math.max(partitaPage, 0), 10);
         model.addAttribute("paginaPartite", paginaPartite);
         model.addAttribute("partitaCorrente",
                 paginaPartite.hasContent() ? paginaPartite.getContent().get(0) : null);

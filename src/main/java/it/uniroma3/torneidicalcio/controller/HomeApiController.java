@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * API JSON consumata dalla Home React (Requisito 1).
- * Espone i tornei con le ultime/prossime partite e l'elenco squadre.
- */
 @RestController
 @RequestMapping("/api")
 public class HomeApiController {

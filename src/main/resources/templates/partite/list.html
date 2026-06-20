@@ -1,20 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>calendario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
 </head>
 <body>
-<h1>Partite </h1>
-<h2>Totale = [[${calendario.size()}]] </h2>
-<ul>
-    <li th:each="partita: ${calendario}">
-        <a th:href= "@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/'+${partita.id}}"
-           th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome}">USA vs Mexico</a>
-        <span th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}">11/05/2026 11:30</span>
-    </li>
-    <h1>Da modificare </h1>
 
-</ul>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+    <h1>📅 Calendario partite</h1>
+    <p class="page-lead">Totale partite: <span th:text="${calendario.size()}">0</span></p>
+
+    <section class="card">
+        <a th:each="partita: ${calendario}" class="match-row"
+           th:href="@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/' + ${partita.id}}">
+            <span class="match-team home" th:text="${partita.squadraCasa.nome}">USA</span>
+            <span th:if="${partita.stato != null and partita.stato.name() == 'FINISHED'}" class="match-score"
+                  th:text="${partita.goalsHome} + ' : ' + ${partita.goalsAway}">2 : 1</span>
+            <span th:unless="${partita.stato != null and partita.stato.name() == 'FINISHED'}" class="match-vs">
+                <span class="vs">VS</span>
+                <span class="match-date" th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') : 'da definire'}">11/05/2026 11:30</span>
+            </span>
+            <span class="match-team away" th:text="${partita.squadraOspite.nome}">Mexico</span>
+        </a>
+        <p class="match-empty" th:if="${calendario.isEmpty()}">Nessuna partita in calendario.</p>
+    </section>
+
+    <div sec:authorize="hasAuthority('ADMIN')" th:if="${!calendario.isEmpty()}" style="margin-top:16px;">
+        <a class="btn btn-edit" th:href="@{'/admin/tornei/' + ${calendario[0].torneo.id} + '/edit'}">⚙️ Gestisci il torneo</a>
+    </div>
+
+    <a th:href="@{/tornei/}" class="back-link">← Torna ai tornei</a>
+</div>
+
 </body>
 </html>

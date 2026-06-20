@@ -24,7 +24,7 @@ public class Torneo {
     @ManyToMany
     private Set<Squadra> squadre = new HashSet<>();
 
-    @OneToMany(mappedBy = "torneo", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "torneo", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Partita> partite = new HashSet<>();
 
     public Torneo(Integer anno, String descrizione, String nome) {
@@ -88,7 +88,7 @@ public class Torneo {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Torneo torneo = (Torneo) o;
-        return id == torneo.id;
+        return Objects.equals(id, torneo.id);
     }
 
     @Override

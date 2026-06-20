@@ -1,6 +1,8 @@
 package it.uniroma3.torneidicalcio.service;
 
 import it.uniroma3.torneidicalcio.dto.RigaClassificaDto;
+import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
+import it.uniroma3.torneidicalcio.exception.TorneoDuplicataException;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Stato;
@@ -28,9 +30,16 @@ public class TorneoService {
         return torneoRepository.findById(id).orElse(null);// ritorno del torneo se esiste se no null
     }
 
+    public long conta(){
+        return  torneoRepository.count();
+    }
+
     //ADMIN
     @Transactional
     public Torneo save(Torneo torneo) {
+        if (torneoRepository.existsByNomeAndAnno(torneo.getNome(), torneo.getAnno())) {
+            throw new TorneoDuplicataException(torneo.getNome(), torneo.getAnno());
+        }
         return torneoRepository.save(torneo);
     }
 
@@ -44,6 +53,13 @@ public class TorneoService {
     @Transactional
     public Torneo update(Long id, Torneo torneoAggiornato) {
         Torneo torneo = findById(id);
+
+        Torneo esistente = torneoRepository.findByNomeAndAnno(torneo.getNome(), torneo.getAnno());
+
+        if (esistente != null && !esistente.getId().equals(id)) {
+            throw new TorneoDuplicataException(torneo.getNome(), torneo.getAnno());
+        }
+
         if (torneo != null) {
             torneo.setNome(torneoAggiornato.getNome());
             torneo.setAnno(torneoAggiornato.getAnno());
@@ -71,13 +87,26 @@ public class TorneoService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Torneo findByIdWithDetails(Long id) {
+        // Carica partite e squadre in due query separate per evitare il prodotto cartesiano
+        // tra due collezioni @OneToMany/@ManyToMany dello stesso padre.
+        // Hibernate ritrova la stessa istanza di Torneo in L1 cache e popola entrambe le collezioni.
+        Torneo torneo = torneoRepository.findTorneoWithPartite(id);
+        torneoRepository.findTorneoWithSquadre(id);
+        return torneo;
+    }
+
     public @Nullable Object findCalendarioByTorneoId(Long id) {
         return torneoRepository.findCalendarioByTorneoId(id);
     }
 
     @Transactional(readOnly = true)
     public List<RigaClassificaDto> calcolaClassifica(Long torneoId) {
-        Torneo torneo = torneoRepository.findTorneoWithPartiteEFeat(torneoId);
+        // Stesso pattern: una query per il grafo partite, una per le squadre iscritte.
+        // Nessun prodotto cartesiano; il DB trasferisce solo le righe necessarie.
+        Torneo torneo = torneoRepository.findTorneoWithPartite(torneoId);
+        torneoRepository.findTorneoWithSquadre(torneoId);
         Map<Long, RigaClassificaDto> classificaMap = new HashMap<>();
 
         for (Squadra squadra : torneo.getSquadre()) {

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head><meta charset="UTF-8"></head>
+<body>
+
+<!--
+    Navbar condivisa da TUTTE le pagine Thymeleaf.
+    Usa le stesse classi CSS (stile.css) della navbar React → aspetto identico.
+    Inclusa con: <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+-->
+<nav th:fragment="navbar" class="navbar">
+    <div class="navbar-inner container">
+        <a class="navbar-brand" href="/">
+            <span class="brand-ball"></span> SIW <span class="brand-accent">Tornei</span>
+        </a>
+        <div class="navbar-links">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" th:href="@{/tornei/}">Tornei</a>
+            <a class="nav-link" th:href="@{/squadre/}">Squadre</a>
+        </div>
+        <div class="navbar-auth">
+            <span class="navbar-auth" sec:authorize="!isAuthenticated()">
+                <a class="btn btn-ghost" th:href="@{/login}">Login</a>
+                <a class="btn btn-accent" th:href="@{/register}">Registrati</a>
+            </span>
+            <span class="navbar-auth" sec:authorize="isAuthenticated()">
+                <span class="nav-user"><span sec:authentication="name">utente</span></span>
+                <a class="btn btn-ghost" sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin}">Area Admin</a>
+                <form class="logout-form" th:action="@{/logout}" method="POST">
+                    <button type="submit" class="btn btn-accent">Logout</button>
+                </form>
+            </span>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

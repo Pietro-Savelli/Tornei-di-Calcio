@@ -13,7 +13,7 @@ public class Utente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     private String username;
     private String password;
@@ -75,7 +75,7 @@ public class Utente {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Utente utente = (Utente) o;
-        return id == utente.id;
+        return Objects.equals(id, utente.id);
     }
 
     @Override

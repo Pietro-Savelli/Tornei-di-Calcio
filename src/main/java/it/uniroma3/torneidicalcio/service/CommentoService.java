@@ -36,6 +36,8 @@ public class CommentoService {
     }
 
     public boolean canUserModify(Commento commento, Utente utenteLoggato) {
-        return commento != null && utenteLoggato != null && commento.getUtente().equals(utenteLoggato);
+        // FIX: invertito l'equals per evitare NPE se commento.getUtente() è null;
+        // un utente può modificare SOLO i commenti di cui è autore (requisito di sicurezza USER).
+        return commento != null && utenteLoggato != null && utenteLoggato.equals(commento.getUtente());
     }
 }

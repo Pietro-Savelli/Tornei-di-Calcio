@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/giocatori") // FIX: era "/" → il link "/giocatori/{id}" non aveva handler (404) e "/{id}" a root era una rotta troppo ampia
 class GiocatoreController {
     private final GiocatoreService giocatoreService;
     private final SquadraService squadraService;

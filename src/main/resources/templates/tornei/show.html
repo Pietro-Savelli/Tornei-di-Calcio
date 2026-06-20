@@ -1,149 +1,148 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title th:text="${torneo.nome}"></title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1 th:text="${torneo.nome}">Serie A </h1>-->
-<!--<h2 th:text="${torneo.descrizione}">Descrizione</h2>-->
-
-<!--<ul>-->
-<!--  Id: <span th:text= "${torneo.id}">1</span> <br>-->
-<!--  Year: <span th:text="${torneo.anno}">2009</span> <br>-->
-<!--</ul>-->
-<!--<h2>-->
-<!--    &lt;!&ndash; Il link generale al calendario rimane sempre visibile &ndash;&gt;-->
-<!--    <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">Calendario</a>-->
-
-<!--    &lt;!&ndash; Avvolgiamo il "SOON" in uno span con th:if &ndash;&gt;-->
-<!--    <span th:if="${prossimaPartita != null}">-->
-<!--        ->SOON: <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${prossimaPartita.id}}">-->
-<!--            <span th:text="${prossimaPartita.squadraCasa.nome + ' vs ' + prossimaPartita.squadraOspite.nome}">Lazio vs Roma</span>-->
-<!--        </a>-->
-<!--    </span>-->
-<!--</h2>-->
-
-<!--<h2>Squadre:</h2>-->
-<!--<ul>-->
-<!--    <li th:each="squadra: ${torneo.squadre}">-->
-<!--        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"-->
-<!--           th:text="${squadra.nome}">Lazio</a>-->
-<!--    </li>-->
-<!--</ul>-->
-
-
-<!--<h1>Classifica:</h1>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th style="width: 8%;">Pos</th>-->
-<!--        <th class="left-align" style="width: 32%;">Squadra</th>-->
-<!--        <th style="width: 10%;">Punti</th>-->
-<!--        <th style="width: 8%;">PG</th>-->
-<!--        <th style="width: 7%;">V</th>-->
-<!--        <th style="width: 7%;">N</th>-->
-<!--        <th style="width: 7%;">S</th>-->
-<!--        <th style="width: 10%;">GF</th>-->
-<!--        <th style="width: 11%;">GS</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr th:each="riga, iterStat : ${classifica}" th:classappend="${iterStat.first} ? 'pos-1'">-->
-<!--        <td th:text="${iterStat.count}">1</td>-->
-<!--        <td class="left-align" th:text="${riga.nomeSquadra}">Nome Squadra</td>-->
-<!--        <td class="bold-text" th:text="${riga.punti}">0</td>-->
-<!--        <td th:text="${riga.partiteGiocate}">0</td>-->
-<!--        <td th:text="${riga.vittorie}">0</td>-->
-<!--        <td th:text="${riga.pareggi}">0</td>-->
-<!--        <td th:text="${riga.sconfitte}">0</td>-->
-<!--        <td th:text="${riga.golFatti}">0</td>-->
-<!--        <td th:text="${riga.golSubiti}">0</td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-
-
-<!--<li><a href="/tornei/">Torna alla pagina dei tornei </a></li>-->
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
-<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${torneo.nome}"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${torneo.nome}">Torneo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
 </head>
 <body>
-<h1 th:text="${torneo.nome}">Serie A </h1>
-<h2 th:text="${torneo.descrizione}">Descrizione</h2>
 
-<ul>
-    Id: <span th:text= "${torneo.id}">1</span> <br>
-    Year: <span th:text="${torneo.anno}">2009</span> <br>
-</ul>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<div sec:authorize="hasAuthority('ADMIN')">
-    <a th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}">✏️ Modifica Torneo</a>
-    <form th:action="@{'/admin/tornei/' + ${torneo.id} + '/delete'}" method="POST" style="display:inline;">
-        <button type="submit" onclick="return confirm('Sei sicuro?')">🗑️ Elimina Torneo</button>
-    </form>
-    <a th:href="@{/admin/partite/new}">➕ Aggiungi Partita</a>
+<div class="container page">
+
+    <!--  HEADER TORNEO -->
+    <section class="hero fade-in">
+        <div class="tournament-badge" th:text="'Edizione ' + ${torneo.anno}">Edizione 2025</div>
+        <h1 class="match-title" th:text="${torneo.nome}">Serie A</h1>
+        <p class="muted" style="margin-top:10px;" th:text="${torneo.descrizione}">Descrizione</p>
+        <div style="margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <a class="btn btn-ghost" th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">📅 Calendario completo</a>
+            <span th:if="${prossimaPartita != null}">
+                <a class="btn btn-accent"
+                   th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${prossimaPartita.id}}"
+                   th:text="'⚡ Prossima: ' + ${prossimaPartita.squadraCasa.nome} + ' vs ' + ${prossimaPartita.squadraOspite.nome}">
+                    Prossima partita
+                </a>
+            </span>
+        </div>
+        <!-- AZIONI ADMIN -->
+        <div sec:authorize="hasAuthority('ADMIN')" style="margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <a class="btn btn-edit" th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}">Modifica Torneo</a>
+            <a class="btn btn-primary" th:href="@{/admin/partite/new(torneoId=${torneo.id})}">Aggiungi Partita</a>
+            <button type="button" class="btn btn-delete"
+                    th:attr="onclick=|apriModale('@{/admin/tornei/{id}/delete(id=${torneo.id})}', '${torneo.nome}')|">
+                Elimina Torneo
+            </button>
+        </div>
+    </section>
+
+    <!-- PAGINAZIONE PARTITE -->
+    <section class="card match-pager-card fade-in stagger-1">
+        <div class="card-header" style="justify-content:center;">
+            <h2>Partite del torneo</h2>
+        </div>
+
+        <div th:if="${not paginaPartite.isEmpty()}">
+
+            <a th:each="partita : ${paginaPartite.content}"
+               class="match-row" style="max-width:520px; margin:0 auto 10px auto;"
+               th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${partita.id}}">
+
+                <span class="match-team home" th:text="${partita.squadraCasa.nome}">Casa</span>
+
+                <span th:if="${partita.stato != null and partita.stato.name() == 'FINISHED'}"
+                      class="match-score"
+                      th:text="${partita.goalsHome} + ' : ' + ${partita.goalsAway}">1 : 0</span>
+
+                <span th:unless="${partita.stato != null and partita.stato.name() == 'FINISHED'}" class="match-vs">
+                <span class="vs">VS</span>
+                <span class="match-date"
+                      th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') : 'da definire'}">data</span>
+            </span>
+
+                <span class="match-team away" th:text="${partita.squadraOspite.nome}">Ospite</span>
+            </a>
+
+            <div class="pager" style="max-width:520px; margin:18px auto 0;">
+                <a class="pager-btn"
+                   th:classappend="${paginaPartite.first} ? ' disabled'"
+                   th:href="@{/tornei/{id}(id=${torneo.id}, partitaPage=${paginaPartite.number - 1})}">← Precedente</a>
+
+                <span class="pager-info"
+                      th:text="'Pagina ' + (${paginaPartite.number} + 1) + ' di ' + ${paginaPartite.totalPages}">
+                Pagina 1 di X
+            </span>
+
+                <a class="pager-btn"
+                   th:classappend="${paginaPartite.last} ? ' disabled'"
+                   th:href="@{/tornei/{id}(id=${torneo.id}, partitaPage=${paginaPartite.number + 1})}">Successiva →</a>
+            </div>
+        </div>
+
+        <p class="match-empty" th:if="${#lists.isEmpty(paginaPartite.content)}" style="text-align:center;">
+            Nessuna partita registrata per questo torneo.
+        </p>
+    </section>
+
+    <!-- ===== SQUADRE ISCRITTE ===== -->
+    <section class="card fade-in stagger-2">
+        <div class="card-header">
+            <h2>Squadre iscritte</h2>
+        </div>
+        <div class="team-carousel">
+            <a class="team-chip" th:each="squadra : ${torneo.squadre}" th:href="@{'/squadre/' + ${squadra.id}}">
+                <span class="team-logo" th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
+                <span class="team-chip-name" th:text="${squadra.nome}">Lazio</span>
+                <span class="team-chip-city" th:text="${squadra.citta}">Roma</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== CLASSIFICA ===== -->
+    <section class="card fade-in stagger-3">
+        <div class="card-header">
+            <h2>Classifica</h2>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 8%;">Pos</th>
+                <th class="left-align" style="width: 32%;">Squadra</th>
+                <th style="width: 10%;">Punti</th>
+                <th style="width: 8%;">PG</th>
+                <th style="width: 7%;">V</th>
+                <th style="width: 7%;">N</th>
+                <th style="width: 7%;">S</th>
+                <th style="width: 10%;">GF</th>
+                <th style="width: 11%;">GS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="riga, iterStat : ${classifica}" th:classappend="${iterStat.first} ? 'pos-1'">
+                <td th:text="${iterStat.count}">1</td>
+                <td class="left-align" th:text="${riga.nomeSquadra}">Nome Squadra</td>
+                <td class="bold-text">
+                    <span th:if="${riga.ritirata}" style="color:var(--accent-light); font-weight:700;">🔴 Ritirata</span>
+                    <span th:unless="${riga.ritirata}" th:text="${riga.punti}">0</span>
+                </td>
+                <td th:text="${riga.partiteGiocate}">0</td>
+                <td th:text="${riga.vittorie}">0</td>
+                <td th:text="${riga.pareggi}">0</td>
+                <td th:text="${riga.sconfitte}">0</td>
+                <td th:text="${riga.golFatti}">0</td>
+                <td th:text="${riga.golSubiti}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <a href="/tornei/" class="back-link">← Torna ai tornei</a>
 </div>
 
-<h2>
-    <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">Calendario</a>
-
-    <span th:if="${prossimaPartita != null}">
-        ->SOON: <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${prossimaPartita.id}}">
-            <span th:text="${prossimaPartita.squadraCasa.nome + ' vs ' + prossimaPartita.squadraOspite.nome}">Lazio vs Roma</span>
-        </a>
-    </span>
-</h2>
-
-<h2>Squadre:</h2>
-<ul>
-    <li th:each="squadra: ${torneo.squadre}">
-        <a th:href="@{'/squadre' + '/' + ${squadra.id}}"
-           th:text="${squadra.nome}">Lazio</a>
-    </li>
-</ul>
-
-<h1>Classifica:</h1>
-<table>
-    <thead>
-    <tr>
-        <th style="width: 8%;">Pos</th>
-        <th class="left-align" style="width: 32%;">Squadra</th>
-        <th style="width: 10%;">Punti</th>
-        <th style="width: 8%;">PG</th>
-        <th style="width: 7%;">V</th>
-        <th style="width: 7%;">N</th>
-        <th style="width: 7%;">S</th>
-        <th style="width: 10%;">GF</th>
-        <th style="width: 11%;">GS</th>
-    </tr>
-    </thead>
-    <tr th:each="riga, iterStat : ${classifica}" th:classappend="${iterStat.first} ? 'pos-1'">
-        <td th:text="${iterStat.count}">1</td>
-        <td class="left-align" th:text="${riga.nomeSquadra}">Nome Squadra</td>
-
-        <td class="bold-text">
-            <span th:if="${riga.ritirata}" style="color:#e94560; font-weight:700;">🔴 Ritirata</span>
-            <span th:unless="${riga.ritirata}" th:text="${riga.punti}">0</span>
-        </td>
-
-        <td th:text="${riga.partiteGiocate}">0</td>
-        <td th:text="${riga.vittorie}">0</td>
-        <td th:text="${riga.pareggi}">0</td>
-        <td th:text="${riga.sconfitte}">0</td>
-        <td th:text="${riga.golFatti}">0</td>
-        <td th:text="${riga.golSubiti}">0</td>
-    </tr>
-    </tbody>
-</table>
-
-<li><a href="/tornei/">Torna alla pagina dei tornei </a></li>
+<div th:replace="~{fragments/modale :: elimina}"></div>
 </body>
 </html>

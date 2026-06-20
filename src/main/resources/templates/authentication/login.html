@@ -1,49 +1,41 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>
-        Torneo - Login
-    </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login · SIW Tornei</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/stile.css" />
 </head>
-
 <body>
-<header>
-    <div th:if="${userDetails}">
-        <span th:text="${userDetails.username}"></span>
-        <form th:action="@{/logout}" method="POST" style="display:inline;">
-            <button type="submit">Logout</button>
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1>⚽ Accedi</h1>
+        <p class="auth-sub">Bentornato! Inserisci le tue credenziali.</p>
+
+        <div th:if="${param.error != null}" class="auth-error" style="text-align:center; margin-bottom:14px;">
+            Username o password errati
+        </div>
+
+        <form th:action="@{/login}" method="POST">
+            <div class="auth-field">
+                <label>Username</label>
+                <input name="username" type="text" placeholder="Username" required />
+            </div>
+            <div class="auth-field">
+                <label>Password</label>
+                <input name="password" type="password" placeholder="Password" required />
+            </div>
+            <div class="auth-actions">
+                <button type="submit" class="btn btn-accent">Login</button>
+            </div>
         </form>
-    </div>
-    <div th:unless="${userDetails}">
-        <a href="/login">Login</a>
-    </div>
-</header>
 
-<div>
-    <a href="/"><img src="/images/logo-siw.png" width="50%"/></a>
+        <p class="auth-foot">Non hai un account? <a th:href="@{/register}">Registrati</a></p>
+        <p class="auth-foot"><a href="/">← Torna alla home</a></p>
+    </div>
 </div>
-<h1>Login</h1>
-<form th:action="@{/login}" method="POST">
-    <div>
-        <span>Username:</span>
-        <span><input name="username" type="text" required /></span>
-    </div>
-    <div>
-        <span>Password:</span>
-        <span><input name="password" type="password" required /></span>
-    </div>
-    <div>
-        <span th:if="${param.error != null}">Username o password errati</span>
-    </div>
-    <div>
-        <span><button type="submit">Login</button></span>
-    </div>
-</form>
-<div>
-    <a th:href="@{/register}" th:text="Registrati">Registrati</a>
-</div>
+
 </body>
-
 </html>

@@ -1,16 +1,17 @@
 package it.uniroma3.torneidicalcio.model;
 
 import jakarta.persistence.Entity;
- import jakarta.persistence.*;
- import jakarta.validation.constraints.NotBlank;
- 
- import java.time.LocalDateTime;
- import java.util.List;
- import java.util.Objects;
- 
- 
- @Entity
- public class Partita {
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
+
+@Entity
+public class Partita {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long  id;
@@ -23,26 +24,29 @@ import jakarta.persistence.Entity;
     @Enumerated(EnumType.STRING)
     private Stato stato;
 
-    @ManyToOne
+    @NotNull // una partita deve sempre appartenere a un torneo
+    @ManyToOne(fetch = FetchType.LAZY)
     private Torneo torneo;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Arbitro arbitro;
 
     //Una partita coinvolge due squadre (Casa e Trasferta)
-    @ManyToOne
+    @NotNull // la squadra di casa è obbligatoria
+    @ManyToOne(fetch = FetchType.LAZY)
     private Squadra squadraCasa;
 
-     @ManyToOne
-     private Squadra squadraOspite;
+    @NotNull // la squadra ospite è obbligatoria
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Squadra squadraOspite;
 
-     @OneToMany(mappedBy = "partita", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-     private List<Commento> commenti;
+    @OneToMany(mappedBy = "partita", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Commento> commenti;
 
-     @Column(nullable = false)
-     private boolean eliminata = false;
- 
- 
-     public Partita(String luogo, Integer goalsAway, Integer goalsHome, LocalDateTime dataOra, Stato stato) {
+    @Column(nullable = false)
+    private boolean eliminata = false;
+
+
+    public Partita(String luogo, Integer goalsAway, Integer goalsHome, LocalDateTime dataOra, Stato stato) {
         this.luogo = luogo;
         this.goalsAway = goalsAway;
         this.goalsHome = goalsHome;
@@ -127,26 +131,26 @@ import jakarta.persistence.Entity;
         return squadraOspite;
     }
 
-     public void setSquadraOspite(Squadra squadraOspite) {
-         this.squadraOspite = squadraOspite;
-     }
- 
-     public List<Commento> getCommenti() {
-         return commenti;
-     }
- 
-     public void setCommenti(List<Commento> commenti) {
-         this.commenti = commenti;
-     }
+    public void setSquadraOspite(Squadra squadraOspite) {
+        this.squadraOspite = squadraOspite;
+    }
 
-     public boolean isEliminata() { return eliminata; }
-     public void setEliminata(boolean eliminata) { this.eliminata = eliminata; }
+    public List<Commento> getCommenti() {
+        return commenti;
+    }
 
-     @Override
+    public void setCommenti(List<Commento> commenti) {
+        this.commenti = commenti;
+    }
+
+    public boolean isEliminata() { return eliminata; }
+    public void setEliminata(boolean eliminata) { this.eliminata = eliminata; }
+
+    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Partita partita = (Partita) o;
-        return id == partita.id;
+        return Objects.equals(id, partita.id); // FIX: Long è un oggetto, == confronta riferimenti non valori
     }
 
     @Override

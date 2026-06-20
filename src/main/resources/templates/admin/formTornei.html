@@ -1,35 +1,195 @@
 <!DOCTYPE html>
-<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${torneo.id != null} ? 'Modifica Torneo' : 'Nuovo Torneo'">Torneo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${torneo.id != null} ? 'Modifica ' + ${torneo.nome} : 'Nuovo Torneo'">Torneo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/stile.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
 </head>
 <body>
-<h1 th:text="${torneo.id != null} ? 'Modifica Torneo' : 'Crea Nuovo Torneo'">Form Torneo</h1>
 
-<form th:action="${torneo.id != null} ? @{/admin/tornei/{id}/edit(id=${torneo.id})} : @{/admin/tornei/new}"
-      th:object="${torneo}" method="POST">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-    <div>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" th:field="*{nome}" required />
-        <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore nome</span>
+<div class="container page">
+
+<!-- HEADER -->
+<h1 th:text="${torneo.id != null} ? ${torneo.nome} : 'Nuovo Torneo'">Serie A</h1>
+<h2 th:text="${torneo.id != null} ? ${torneo.descrizione} : 'Crea un nuovo torneo'">Descrizione</h2>
+
+<ul class="info" th:if="${torneo.id != null}">
+    Id: <span th:text="${torneo.id}">1</span> <br>
+    Year: <span th:text="${torneo.anno}">2009</span> <br>
+</ul>
+
+<!-- DATI TORNEO -->
+<div class="admin-box">
+    <h2>📝 Dati Torneo</h2>
+    <form th:action="${torneo.id != null} ? @{/admin/tornei/{id}/edit(id=${torneo.id})} : @{/admin/tornei/new}"
+          th:object="${torneo}" method="POST">
+
+        <!-- Errore globale di business (es. torneo duplicato) -->
+        <div class="form-group" th:if="${#fields.hasGlobalErrors()}">
+            <div class="error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" th:field="*{nome}" required />
+            <span class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore nome</span>
+        </div>
+
+        <div class="form-group">
+            <label for="anno">Anno:</label>
+            <input type="number" id="anno" th:field="*{anno}" min="1900" max="2100" required />
+            <span class="error" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}">Errore anno</span>
+        </div>
+
+        <div class="form-group">
+            <label for="descrizione">Descrizione:</label>
+            <textarea id="descrizione" th:field="*{descrizione}" maxlength="500" required></textarea>
+            <span class="error" th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}">Errore descrizione</span>
+        </div>
+
+        <div style="margin-left: 135px;">
+            <button type="submit" class="btn btn-success"
+                    th:text="${torneo.id != null} ? '💾 Salva Modifiche' : '➕ Crea Torneo'">Salva</button>
+            <a th:href="@{/tornei/}" class="btn btn-secondary">↩️ Annulla</a>
+        </div>
+    </form>
+</div>
+
+<!-- SQUADRE -->
+<div class="admin-box" th:if="${torneo.id != null}">
+    <h2>⚽ Squadre Iscritte</h2>
+
+    <!-- Squadre attive -->
+    <ul class="clean-list" th:if="${squadreAttive != null and !squadreAttive.isEmpty()}">
+        <li th:each="squadra : ${squadreAttive}">
+            <span>
+                <a th:href="@{'/squadre/' + ${squadra.id}}" th:text="${squadra.nome}">Lazio</a>
+            </span>
+            <span class="actions">
+                <!-- data-* attributes + onclick senza variabili -->
+                <button type="button" class="btn btn-danger"
+                        th:data-url="@{/admin/tornei/{tid}/squadre/{sid}/remove(tid=${torneo.id},sid=${squadra.id})}"
+                        th:data-nome="${squadra.nome}"
+                        onclick="apriModale(this.dataset.url, this.dataset.nome)">
+                    🗑️ Rimuovi
+                </button>
+            </span>
+        </li>
+    </ul>
+    <p class="empty-msg" th:if="${squadreAttive == null or squadreAttive.isEmpty()}">
+        Nessuna squadra iscritta a questo torneo.
+    </p>
+
+    <!-- Squadre eliminate (se presenti) -->
+    <div th:if="${squadreEliminate != null and !squadreEliminate.isEmpty()}">
+        <h3>🗑️ Squadre Eliminate</h3>
+        <ul class="clean-list">
+            <li th:each="squadra : ${squadreEliminate}" class="deleted-item">
+                <span th:text="${squadra.nome}">Lazio</span>
+                <span class="badge-soft-delete">ELIMINATA</span>
+            </li>
+        </ul>
     </div>
 
-    <div>
-        <label for="anno">Anno:</label>
-        <input type="number" id="anno" th:field="*{anno}" min="1900" max="2100" required />
-        <span th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}">Errore anno</span>
-    </div>
+    <h3>➕ Aggiungi Squadra Esistente</h3>
+    <form th:action="@{/admin/tornei/{id}/squadre/add(id=${torneo.id})}" method="POST">
+        <select name="squadraId" required>
+            <option value="">-- Seleziona una squadra --</option>
+            <option th:each="s : ${squadreDisponibili}" th:value="${s.id}" th:text="${s.nome}">Roma</option>
+        </select>
+        <button type="submit" class="btn btn-success">Aggiungi al torneo</button>
+    </form>
+    <p style="margin-top: 10px;">
+        <a th:href="@{/admin/squadre/new(torneoId=${torneo.id})}">+ Crea nuova squadra e aggiungila</a>
+    </p>
+</div>
 
-    <div>
-        <label for="descrizione">Descrizione:</label>
-        <textarea id="descrizione" th:field="*{descrizione}" maxlength="500" required></textarea>
-        <span th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}">Errore descrizione</span>
-    </div>
+<!-- PARTITE -->
+<div class="admin-box" th:if="${torneo.id != null}">
+    <h2>🏟️ Partite Programmate</h2>
 
-    <button type="submit" th:text="${torneo.id != null} ? 'Salva Modifiche' : 'Crea Torneo'">Salva</button>
-    <a th:href="@{/tornei/}">Annulla</a>
-</form>
+    <p>
+        <a class="btn btn-primary" th:href="@{/admin/partite/new(torneoId=${torneo.id})}">
+            ➕ Aggiungi Nuova Partita
+        </a>
+    </p>
+
+    <!-- Partite attive -->
+    <table th:if="${partiteAttive != null and !partiteAttive.isEmpty()}">
+        <thead>
+        <tr>
+            <th class="left-align" style="width: 40%;">Incontro</th>
+            <th style="width: 25%;">Data e Ora</th>
+            <th style="width: 20%;">Stato</th>
+            <th style="width: 15%;">Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="partita : ${partiteAttive}">
+            <td class="left-align">
+                <a th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${partita.id}}"
+                   th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome}">
+                    Lazio vs Roma
+                </a>
+            </td>
+            <td th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') : 'Data da definire'}">
+                11/05/2026 11:30
+            </td>
+            <td>
+                <span th:if="${partita.stato != null}" th:text="${partita.stato}">SCHEDULED</span>
+                <span th:if="${partita.stato == null}">-</span>
+            </td>
+            <td class="actions">
+                <a th:href="@{'/admin/partite/' + ${partita.id} + '/edit'}" class="btn btn-warning">✏️</a>
+                <!-- data-* attributes + onclick senza variabili -->
+                <button type="button" class="btn btn-danger"
+                        th:data-url="@{/admin/partite/{id}/delete(id=${partita.id})}"
+                        th:data-nome="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome}"
+                        onclick="apriModale(this.dataset.url, this.dataset.nome)">
+                    🗑️
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="empty-msg" th:if="${partiteAttive == null or partiteAttive.isEmpty()}">
+        Nessuna partita inserita. Usa il pulsante sopra per aggiungerne una.
+    </p>
+
+    <!-- Partite eliminate (se presenti) -->
+    <div th:if="${partiteEliminate != null and !partiteEliminate.isEmpty()}">
+        <h3>🗑️ Partite Eliminate</h3>
+        <table>
+            <thead>
+            <tr>
+                <th class="left-align" style="width: 60%;">Incontro</th>
+                <th style="width: 20%;">Data</th>
+                <th style="width: 20%;">Stato</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="partita : ${partiteEliminate}" class="deleted-item">
+                <td class="left-align" th:text="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome}">Lazio vs Roma</td>
+                <td th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') : '-'}">11/05/2026</td>
+                <td><span class="badge-soft-delete">ELIMINATA</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="/tornei/">↩️ Torna alla pagina dei tornei</a>
+</div>
+
+</div>
+
+<div th:replace="~{fragments/modale :: elimina}"></div>
+
 </body>
 </html>

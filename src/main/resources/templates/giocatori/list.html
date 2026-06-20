@@ -1,35 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Rosa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Rosa ' + ${squadra.nome}">Rosa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
 </head>
-<h2 th:text="Rosa Giocatori ${squadra.nome}">Rosa Giocatori</h2>
+<body>
 
-<div sec:authorize="hasAuthority('ADMIN')">
-    <a th:href="@{/admin/giocatori/new}">➕ Aggiungi Giocatore</a>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
+    <h1 th:text="'🎽 Rosa ' + ${squadra.nome}">Rosa Giocatori</h1>
+    <p class="page-lead">Giocatori registrati: <span th:text="${#sets.size(squadra.giocatori)}">0</span></p>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{/admin/giocatori/new}" class="btn btn-create">➕ Aggiungi Giocatore</a>
+    </div>
+
+    <section class="card">
+        <table>
+            <thead>
+            <tr>
+                <th class="left-align">Nome e Cognome</th>
+                <th>Ruolo</th>
+                <th>Dettagli</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="g : ${squadra.giocatori}">
+                <td class="left-align" th:text="${g.nome} + ' ' + ${g.cognome}">Marco Rossi</td>
+                <td th:text="${g.ruolo}">ATTACCANTE</td>
+                <td><a th:href="@{/squadre/{sid}/giocatori/{gid}(sid=${squadra.id}, gid=${g.id})}">Vedi profilo →</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="match-empty" th:if="${#sets.isEmpty(squadra.giocatori)}">Nessun giocatore registrato per questa squadra.</p>
+    </section>
+
+    <a th:href="@{'/squadre/' + ${squadra.id}}" class="back-link">← Torna alla squadra</a>
 </div>
 
-<div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-
-    <table style="width: 100%; text-align: left;">
-        <thead>
-        <tr style="background-color: #f2f2f2;">
-            <th>Nome e Cognome</th>
-            <th>Ruolo</th>
-            <th>Dettagli</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="g : ${squadra.giocatori}">
-            <td th:text="${g.nome} + ' ' + ${g.cognome}"></td>
-            <td th:text="${g.ruolo}"></td>
-            <td>
-                <a th:href="@{/giocatori/{id}(id=${g.id})}">Vedi Profilo</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p th:if="${#lists.isEmpty(squadra.giocatori)}">Nessun giocatore registrato per questa squadra.</p>
-</div>
+</body>
+</html>

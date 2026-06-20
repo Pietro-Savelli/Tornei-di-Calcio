@@ -2,14 +2,18 @@
 <html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tornei</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/stile.css" />
 </head>
-<body class="dark-theme">
+<body>
 
-<div class="container">
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container page">
     <h1>🏆 Tornei</h1>
-    <h2 style="color:var(--text-muted);">Totale = [[${tornei.size()}]]</h2>
+    <p class="page-lead">Totale tornei: <span th:text="${tornei.size()}">0</span></p>
 
     <div sec:authorize="hasAuthority('ADMIN')">
         <a th:href="@{/admin/tornei/new}" class="btn btn-create">➕ Crea Nuovo Torneo</a>
@@ -31,7 +35,7 @@
         </li>
     </ul>
 
-    <a href="/tornei/" style="color:var(--text-muted);">↩ Torna ai tornei</a>
+    <a href="/" class="back-link">← Torna alla home</a>
 </div>
 
 <div th:replace="~{fragments/modale :: elimina}"></div>

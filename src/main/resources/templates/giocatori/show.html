@@ -1,40 +1,55 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <title>Dettaglio Giocatore</title>
-  <link rel="stylesheet" href="/css/stile.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Giocatore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stile.css" />
 </head>
 <body>
-<div>
-  <a href="/tornei/">Torna ai Tornei</a>
-</div>
 
-<h1>Dettaglio <strong th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Cognome></strong></h1>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<div style="border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
-  <h2 th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Cognome</h2>
+<div class="container page">
 
-  <ul>
-    <li><strong>Ruolo:</strong> <span th:text="${giocatore.ruolo}"></span></li>
-    <li><strong>Data di nascita:</strong> <span th:text="${giocatore.dataDiNascita}"></span></li>
-    <li><strong>Altezza:</strong> <span th:text="${giocatore.altezza != null ? giocatore.altezza + ' cm' : 'Non specificata'}"></span></li>
+    <section class="hero fade-in">
+        <span class="team-logo" style="margin:0 auto 14px;"
+              th:text="${#strings.substring(giocatore.nome,0,1).toUpperCase()}">P</span>
+        <h1 class="match-title" th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Cognome</h1>
+        <div class="stadium-info"><span th:text="${giocatore.ruolo}">RUOLO</span></div>
+    </section>
 
-    <li><strong>Squadra:</strong>
-      <a th:if="${giocatore.squadra != null}"
-         th:href="@{/squadre/{id}(id=${giocatore.squadra.id})}"
-         th:text="${giocatore.squadra.nome}">Nome Squadra</a>
-      <span th:unless="${giocatore.squadra != null}">Svincolato</span>
-    </li>
-  </ul>
-  <div sec:authorize="hasAuthority('ADMIN')">
-    <a th:href="@{'/admin/giocatori/' + ${giocatore.id} + '/edit'}">✏️ Modifica Giocatore</a>
-    <form th:action="@{'/admin/giocatori/' + ${giocatore.id} + '/delete'}" method="POST" style="display:inline;">
-      <button type="button" class="btn btn-delete"
-              th:attr="onclick=|apriModale('@{/admin/giocatori/{id}/delete(id=${giocatore.id})}', '${giocatore.nome} ' + ${giocatore.cognome})|">
-        🗑️ Elimina
-      </button>
-    </form>
-  </div>
+    <section class="card fade-in stagger-1" style="max-width:620px; margin:0 auto;">
+        <div class="card-header">
+            <div class="card-icon">ℹ️</div>
+            <h2>Dettagli giocatore</h2>
+        </div>
+        <ul class="detail-list">
+            <li class="detail-item"><span class="detail-label">🎽 Ruolo</span>
+                <span class="detail-value" th:text="${giocatore.ruolo}">ATTACCANTE</span></li>
+            <li class="detail-item"><span class="detail-label">🎂 Data di nascita</span>
+                <span class="detail-value" th:text="${giocatore.dataDiNascita}">01/01/2000</span></li>
+            <li class="detail-item"><span class="detail-label">📏 Altezza</span>
+                <span class="detail-value" th:text="${giocatore.altezza != null ? giocatore.altezza + ' cm' : 'Non specificata'}">182 cm</span></li>
+            <li class="detail-item"><span class="detail-label">🛡️ Squadra</span>
+                <span class="detail-value">
+                    <a th:if="${giocatore.squadra != null}" th:href="@{/squadre/{id}(id=${giocatore.squadra.id})}"
+                       th:text="${giocatore.squadra.nome}">Squadra</a>
+                    <span th:unless="${giocatore.squadra != null}">Svincolato</span>
+                </span></li>
+        </ul>
+
+        <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px; margin-top:18px;">
+            <a th:href="@{'/admin/giocatori/' + ${giocatore.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+            <button type="button" class="btn btn-delete"
+                    th:attr="onclick=|apriModale('@{/admin/giocatori/{id}/delete(id=${giocatore.id})}', '${giocatore.nome} ' + ${giocatore.cognome})|">
+                🗑️ Elimina
+            </button>
+        </div>
+    </section>
+
+    <a th:href="${giocatore.squadra != null ? '/squadre/' + giocatore.squadra.id : '/squadre/'}" class="back-link">← Indietro</a>
 </div>
 
 <div th:replace="~{fragments/modale :: elimina}"></div>

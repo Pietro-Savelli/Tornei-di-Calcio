@@ -47,15 +47,20 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authorize -> {
             // PUBBLICO
             authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/css/**", "/images/**", "/favicon.ico").permitAll();
+            // Asset statici della SPA React (build Vite) + API della Home
+            authorize.requestMatchers(HttpMethod.GET, "/app/**", "/assets/**", "/js/**", "/api/home").permitAll();
             authorize.requestMatchers("/login", "/register").permitAll();
-            // 4.1
+            // API preferiti (autenticate)
+            authorize.requestMatchers("/api/tornei/*/preferito", "/api/utente/preferiti").authenticated();
+
+            //TORNEI SQUADRE GIOCATORI
             authorize.requestMatchers(HttpMethod.GET, "/tornei/**", "/squadre/**", "/giocatori/**").permitAll();
 
-            // UTENTI REGISTRATI 4.2
+            // UTENTI REGISTRATI
             authorize.requestMatchers("/partite/*/commenti/**").authenticated();
 
             // ADMIN
-            // Tutte le operazioni di gestione (Requisito 4.3)
+            // Tutte le operazioni di gestione
             authorize.requestMatchers("/admin/**").hasAnyAuthority(ADMIN_ROLE);
 
             authorize.anyRequest().authenticated();
@@ -75,6 +80,9 @@ public class SecurityConfiguration {
             logout.clearAuthentication(true);
             logout.permitAll();
         });
+
+        // API REST: disabilita CSRF per le chiamate AJAX da React (stesso dominio)
+        httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
 
         return httpSecurity.build();
     }

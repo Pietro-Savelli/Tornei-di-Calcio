@@ -44,3 +44,5 @@ Thumbs.db
 # File temporanei
 *.tmp
 *.swp
+
+node_modules/

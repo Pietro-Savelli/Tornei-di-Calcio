@@ -8,6 +8,9 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "torneo", indexes = {
+    @Index(name = "idx_torneo_anno", columnList = "anno")
+})
 public class Torneo {
 
     @Id

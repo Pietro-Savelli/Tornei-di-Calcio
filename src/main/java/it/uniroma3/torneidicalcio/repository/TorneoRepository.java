@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface TorneoRepository extends CrudRepository<Torneo, Long> {
 
-    @Query("SELECT t FROM Torneo t ORDER BY t.anno desc")
+    @Query("SELECT DISTINCT t FROM Torneo t LEFT JOIN FETCH t.squadre ORDER BY t.anno desc")
     List<Torneo> findAllOrdinatiPerAnno();
 
     @Query("SELECT p FROM Partita p WHERE p.torneo.id =  :idTorneo AND p.eliminata = false")

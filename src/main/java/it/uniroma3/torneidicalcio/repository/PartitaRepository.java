@@ -36,6 +36,7 @@ public interface PartitaRepository extends CrudRepository<Partita, Long> {
     @Query("SELECT p FROM Partita p " +
             "LEFT JOIN FETCH p.squadraCasa " +
             "LEFT JOIN FETCH p.squadraOspite " +
+            "LEFT JOIN FETCH p.torneo " +
             "WHERE p.torneo.id = :torneoId AND p.eliminata = false AND p.stato = :stato " +
             "ORDER BY p.dataOra DESC")
     List<Partita> findUltimePartiteGiocate(@Param("torneoId") Long torneoId,
@@ -46,6 +47,7 @@ public interface PartitaRepository extends CrudRepository<Partita, Long> {
     @Query("SELECT p FROM Partita p " +
             "LEFT JOIN FETCH p.squadraCasa " +
             "LEFT JOIN FETCH p.squadraOspite " +
+            "LEFT JOIN FETCH p.torneo " +
             "WHERE p.torneo.id = :torneoId AND p.eliminata = false " +
             "AND p.dataOra > :adesso AND p.stato <> :statoFinita " +
             "ORDER BY p.dataOra ASC")

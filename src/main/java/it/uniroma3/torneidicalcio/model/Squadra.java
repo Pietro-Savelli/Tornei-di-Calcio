@@ -1,6 +1,8 @@
 package it.uniroma3.torneidicalcio.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.HashSet;
@@ -17,7 +19,9 @@ public class Squadra {
 
     @NotBlank
     private String nome;
-    //da aggiugere un vinocolo delle date accettabili
+
+    @Min(1800)
+    @Max(2035)
     private Integer annoFondazione;
     @NotBlank
     private String citta;

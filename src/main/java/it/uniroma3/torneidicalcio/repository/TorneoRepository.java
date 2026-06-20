@@ -36,4 +36,9 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
             "LEFT JOIN FETCH t.squadre " +
             "WHERE t.id = :torneoId")
     Torneo findTorneoWithSquadre(@Param("torneoId") Long torneoId);
+
+
+    boolean existsByNomeAndAnno(String nome, Integer anno);
+
+    Torneo findByNomeAndAnno(String nome, Integer anno);
 }

@@ -1,5 +1,6 @@
 package it.uniroma3.torneidicalcio.service;
 
+import it.uniroma3.torneidicalcio.exception.PartitaDuplicataException;
 import it.uniroma3.torneidicalcio.exception.PartitaNotFoundException;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Stato;
@@ -51,6 +52,16 @@ public class PartitaService {
     //ADMIN
     @Transactional
     public Partita save(Partita partita) {
+        if (partitaRepository.existsByTorneoDataOraSquadre(
+                partita.getTorneo().getId(),
+                partita.getDataOra(),
+                partita.getSquadraCasa().getId(),
+                partita.getSquadraOspite().getId())) {
+            throw new PartitaDuplicataException(
+                    partita.getSquadraCasa().getNome(),
+                    partita.getSquadraOspite().getNome(),
+                    partita.getDataOra().toString());
+        }
         return partitaRepository.save(partita);
     }
 
@@ -58,15 +69,6 @@ public class PartitaService {
     public void deleteById(Long id) {
         Partita partita = findById(id);
         if (partita == null) return;
-
-//        if (partita.getStato() == Stato.FINISHED) {
-//            // Partita giocata: soft delete per non sballare la classifica
-//            partita.setEliminata(true);
-//            partitaRepository.save(partita);
-//        } else {
-//            // Partita non giocata: hard delete, nessun danno storico
-//            partitaRepository.deleteById(id);
-//        }
         partitaRepository.deleteById(id);
     }
 
@@ -74,6 +76,18 @@ public class PartitaService {
     public Partita update(Long id, Partita partitaAggiornata) {
         Partita partita = findById(id);
         if (partita == null) return null;
+
+        if (partitaRepository.existsByTorneoDataOraSquadreEscludendoId(
+                partitaAggiornata.getTorneo().getId(),
+                partitaAggiornata.getDataOra(),
+                partitaAggiornata.getSquadraCasa().getId(),
+                partitaAggiornata.getSquadraOspite().getId(),
+                id)) {
+            throw new PartitaDuplicataException(
+                    partitaAggiornata.getSquadraCasa().getNome(),
+                    partitaAggiornata.getSquadraOspite().getNome(),
+                    partitaAggiornata.getDataOra().toString());
+        }
 
         partita.setLuogo(partitaAggiornata.getLuogo());
         partita.setDataOra(partitaAggiornata.getDataOra());

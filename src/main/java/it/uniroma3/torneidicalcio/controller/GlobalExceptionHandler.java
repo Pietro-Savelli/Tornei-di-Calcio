@@ -1,7 +1,9 @@
 package it.uniroma3.torneidicalcio.controller;
 
+import it.uniroma3.torneidicalcio.exception.PartitaDuplicataException;
 import it.uniroma3.torneidicalcio.exception.PartitaNotFoundException;
 import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
+import it.uniroma3.torneidicalcio.exception.TorneoDuplicataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -9,11 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-/*
- * Handler globale per eccezioni non gestite direttamente nei Controller.
- * Separa la logica di gestione degli errori (cross-cutting concern) dai Controller,
- * mantenendo il codice di business pulito.
- */
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,14 +21,29 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PartitaNotFoundException.class)
     public String handlePartitaNotFound(PartitaNotFoundException ex, Model model) {
-        String msg = messageSource.getMessage("error.partita.notfound", null, ex.getMessage(), LocaleContextHolder.getLocale());
+        String msg = messageSource.getMessage("partita.notfound", null, ex.getMessage(), LocaleContextHolder.getLocale());
         model.addAttribute("errorMessage", msg);
         return "error/404";
     }
 
     @ExceptionHandler(SquadraDuplicataException.class)
     public String handleSquadraDuplicata(SquadraDuplicataException ex, Model model) {
-        String msg = messageSource.getMessage("error.squadra.duplicata", new Object[]{ex.getNomeSquadra()}, ex.getMessage(), LocaleContextHolder.getLocale());
+        String msg = messageSource.getMessage("squadra.duplicata", new Object[]{ex.getNomeSquadra()}, ex.getMessage(), LocaleContextHolder.getLocale());
+        model.addAttribute("errorMessage", msg);
+        return "error/400";
+    }
+
+    @ExceptionHandler(TorneoDuplicataException.class)
+    public String handleTorneoDuplicataException(TorneoDuplicataException ex, Model model) {
+        // Fallback per sicurezza: se l'eccezione dovesse propagarsi oltre il controller
+        String msg = messageSource.getMessage("torneo.duplicato", null, ex.getMessage(), LocaleContextHolder.getLocale());
+        model.addAttribute("errorMessage", msg);
+        return "error/400";
+    }
+
+    @ExceptionHandler(PartitaDuplicataException.class)
+    public String handlePartitaDuplicataException(PartitaDuplicataException ex, Model model) {
+        String msg = messageSource.getMessage("partita.duplicata", null, ex.getMessage(), LocaleContextHolder.getLocale());
         model.addAttribute("errorMessage", msg);
         return "error/400";
     }

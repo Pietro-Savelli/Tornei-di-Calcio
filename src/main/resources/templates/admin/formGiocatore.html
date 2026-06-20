@@ -15,7 +15,7 @@
 <div class="container page">
 
 <h1 class="page-title"
-    th:text="${giocatore.id != null} ? '✏️ Modifica Giocatore' : '➕ Nuovo Giocatore'">
+    th:text="${giocatore.id != null} ? 'Modifica Giocatore' : 'Nuovo Giocatore'">
 </h1>
 <p class="page-subtitle"
    th:text="${giocatore.id != null}
@@ -24,7 +24,7 @@
 </p>
 
 <div class="form-card">
-    <h2>👤 Dati Giocatore</h2>
+    <h2>Dati Giocatore</h2>
 
     <form th:action="${giocatore.id != null}
                     ? @{/admin/giocatori/{id}/edit(id=${giocatore.id})}

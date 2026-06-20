@@ -53,4 +53,25 @@ public interface PartitaRepository extends CrudRepository<Partita, Long> {
                                       @Param("adesso") LocalDateTime adesso,
                                       @Param("statoFinita") Stato statoFinita,
                                       Pageable pageable);
+
+
+    //verifica per eccezioni
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Partita p " +
+            "WHERE p.torneo.id = :torneoId AND p.dataOra = :dataOra " +
+            "AND p.squadraCasa.id = :squadraCasaId AND p.squadraOspite.id = :squadraOspiteId " +
+            "AND p.eliminata = false")
+    boolean existsByTorneoDataOraSquadre(@Param("torneoId") Long torneoId,
+                                         @Param("dataOra") LocalDateTime dataOra,
+                                         @Param("squadraCasaId") Long squadraCasaId,
+                                         @Param("squadraOspiteId") Long squadraOspiteId);
+
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Partita p " +
+            "WHERE p.torneo.id = :torneoId AND p.dataOra = :dataOra " +
+            "AND p.squadraCasa.id = :squadraCasaId AND p.squadraOspite.id = :squadraOspiteId " +
+            "AND p.id != :id AND p.eliminata = false")
+    boolean existsByTorneoDataOraSquadreEscludendoId(@Param("torneoId") Long torneoId,
+                                                      @Param("dataOra") LocalDateTime dataOra,
+                                                      @Param("squadraCasaId") Long squadraCasaId,
+                                                      @Param("squadraOspiteId") Long squadraOspiteId,
+                                                      @Param("id") Long id);
 }

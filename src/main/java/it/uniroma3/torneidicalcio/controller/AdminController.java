@@ -1,6 +1,8 @@
 package it.uniroma3.torneidicalcio.controller;
 
+import it.uniroma3.torneidicalcio.exception.PartitaDuplicataException;
 import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
+import it.uniroma3.torneidicalcio.exception.TorneoDuplicataException;
 import it.uniroma3.torneidicalcio.model.Giocatore;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Squadra;
@@ -45,13 +47,18 @@ public class AdminController {
     }
 
     @PostMapping("/tornei/new")
-    public String createTorneo(@Valid @ModelAttribute("torneo") Torneo torneo,
-                               BindingResult bindingResult) {
+    public String createTorneo(@Valid @ModelAttribute("torneo") Torneo torneo, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/formTornei";
         }
-        this.torneoService.save(torneo);
-        return "redirect:/tornei/";
+        try {
+            this.torneoService.save(torneo);
+            return "redirect:/tornei/";
+        }
+        catch (TorneoDuplicataException e) {
+            bindingResult.reject("torneo.duplicato", null);
+        }
+        return "admin/formTornei";
     }
 
     @GetMapping("/tornei/{id}/edit")
@@ -59,7 +66,6 @@ public class AdminController {
         Torneo torneo = this.torneoService.findByIdWithDetails(id);
         if (torneo == null) return "redirect:/tornei/";
 
-        // RIMOSSE le Hibernate.initialize() — ora i dati sono già in memoria
         Set<Partita> partite = torneo.getPartite();
         Set<Squadra> squadre = torneo.getSquadre();
 
@@ -86,8 +92,14 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             return "admin/formTornei";
         }
-        this.torneoService.update(id, torneo);
-        return "redirect:/tornei/" + id;
+        try {
+            this.torneoService.update(id, torneo);
+            return "redirect:/tornei/" + id;
+        }
+        catch (TorneoDuplicataException e) {
+            bindingResult.reject("torneo.duplicato", null);
+        }
+        return "admin/formTornei";
     }
 
     @PostMapping("/tornei/{id}/squadre/add")
@@ -138,7 +150,7 @@ public class AdminController {
             Squadra salvata = this.squadraService.iscriviSquadra(squadra);
             return "redirect:/squadre/" + salvata.getId();
         } catch (SquadraDuplicataException e) {
-            bindingResult.reject("error.squadra.duplicata", new Object[]{e.getNomeSquadra()}, null);
+            bindingResult.reject("squadra.duplicata", new Object[]{e.getNomeSquadra()}, null);
             return "admin/formSquadre";
         }
     }
@@ -254,9 +266,15 @@ public class AdminController {
             popolaFormPartita(model);
             return "admin/formPartite";
         }
-        partita.setStato(Stato.SCHEDULED);
-        Partita salvata = this.partitaService.save(partita);
-        return "redirect:/tornei/" + salvata.getTorneo().getId();
+        try {
+            partita.setStato(Stato.SCHEDULED);
+            Partita salvata = this.partitaService.save(partita);
+            return "redirect:/tornei/" + salvata.getTorneo().getId();
+        } catch (PartitaDuplicataException e) {
+            bindingResult.reject("partita.duplicata", null);
+            popolaFormPartita(model);
+            return "admin/formPartite";
+        }
     }
 
     private void popolaFormPartita(Model model) {
@@ -285,8 +303,14 @@ public class AdminController {
             popolaFormPartita(model);
             return "admin/formPartite";
         }
-        this.partitaService.update(id, partita);
-        return "redirect:/partite/" + id;
+        try {
+            this.partitaService.update(id, partita);
+            return "redirect:/partite/" + id;
+        } catch (PartitaDuplicataException e) {
+            bindingResult.reject("partita.duplicata", null);
+            popolaFormPartita(model);
+            return "admin/formPartite";
+        }
     }
 
     @PostMapping("/partite/{id}/delete")

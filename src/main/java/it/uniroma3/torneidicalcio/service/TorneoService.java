@@ -1,6 +1,8 @@
 package it.uniroma3.torneidicalcio.service;
 
 import it.uniroma3.torneidicalcio.dto.RigaClassificaDto;
+import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
+import it.uniroma3.torneidicalcio.exception.TorneoDuplicataException;
 import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Stato;
@@ -35,6 +37,9 @@ public class TorneoService {
     //ADMIN
     @Transactional
     public Torneo save(Torneo torneo) {
+        if (torneoRepository.existsByNomeAndAnno(torneo.getNome(), torneo.getAnno())) {
+            throw new TorneoDuplicataException(torneo.getNome(), torneo.getAnno());
+        }
         return torneoRepository.save(torneo);
     }
 
@@ -48,6 +53,13 @@ public class TorneoService {
     @Transactional
     public Torneo update(Long id, Torneo torneoAggiornato) {
         Torneo torneo = findById(id);
+
+        Torneo esistente = torneoRepository.findByNomeAndAnno(torneo.getNome(), torneo.getAnno());
+
+        if (esistente != null && !esistente.getId().equals(id)) {
+            throw new TorneoDuplicataException(torneo.getNome(), torneo.getAnno());
+        }
+
         if (torneo != null) {
             torneo.setNome(torneoAggiornato.getNome());
             torneo.setAnno(torneoAggiornato.getAnno());

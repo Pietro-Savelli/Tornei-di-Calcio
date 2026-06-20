@@ -15,30 +15,30 @@
 
     <section class="hero fade-in">
         <div class="tournament-badge">AREA RISERVATA</div>
-        <h1 class="match-title">🔧 Pannello Amministratore</h1>
+        <h1 class="match-title">Pannello Amministratore</h1>
         <p class="muted" style="margin-top:10px;">Gestisci tornei, squadre, giocatori e partite del sistema.</p>
     </section>
 
     <section class="card fade-in stagger-1">
         <div class="card-header">
-            <div class="card-icon">⚙️</div>
+            <div class="card-icon"></div>
             <h2>Azioni rapide</h2>
         </div>
         <div class="torneo-cards" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
             <a class="torneo-card" th:href="@{/admin/tornei/new}" style="align-items:center; text-align:center;">
-                <span style="font-size:2rem;">🏆</span>
+                <span style="font-size:2rem;"></span>
                 <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Crea Torneo</span>
             </a>
             <a class="torneo-card" th:href="@{/admin/squadre/new}" style="align-items:center; text-align:center;">
-                <span style="font-size:2rem;">👥</span>
+                <span style="font-size:2rem;"></span>
                 <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Crea Squadra</span>
             </a>
             <a class="torneo-card" th:href="@{/admin/giocatori/new}" style="align-items:center; text-align:center;">
-                <span style="font-size:2rem;">⚽</span>
+                <span style="font-size:2rem;"></span>
                 <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Crea Giocatore</span>
             </a>
             <a class="torneo-card" th:href="@{/admin/partite/new}" style="align-items:center; text-align:center;">
-                <span style="font-size:2rem;">📅</span>
+                <span style="font-size:2rem;"></span>
                 <span class="torneo-card-title" style="font-size:1.1rem; margin-top:8px;">Registra Partita</span>
             </a>
         </div>
@@ -46,12 +46,12 @@
 
     <section class="card fade-in stagger-2">
         <div class="card-header">
-            <div class="card-icon">🗂️</div>
+            <div class="card-icon"></div>
             <h2>Gestione contenuti</h2>
         </div>
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <a class="btn btn-ghost" th:href="@{/tornei/}">🏆 Elenco Tornei</a>
-            <a class="btn btn-ghost" th:href="@{/squadre/}">👥 Elenco Squadre</a>
+            <a class="btn btn-ghost" th:href="@{/tornei/}"> Elenco Tornei</a>
+            <a class="btn btn-ghost" th:href="@{/squadre/}"> Elenco Squadre</a>
         </div>
     </section>
 

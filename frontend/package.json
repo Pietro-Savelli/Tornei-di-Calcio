@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Home page React (stile FIFA) per il sistema Tornei di Calcio. Build con Vite, output in src/main/resources/static/app.",
+  "description": "Home page React per il sistema Tornei di Calcio. Build con Vite, output in src/main/resources/static/app.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

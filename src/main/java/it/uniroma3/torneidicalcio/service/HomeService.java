@@ -43,7 +43,9 @@ public class HomeService {
                 .map(this::toSquadraHomeDto)
                 .toList();
 
-        return new HomeDto(tornei, squadre);
+        long n = torneoService.conta();
+
+        return new HomeDto(tornei, squadre, n);
     }
 
     private TorneoHomeDto toTorneoHomeDto(Torneo t) {

@@ -77,47 +77,4 @@ public class TorneoController {
         return "partite/show";
     }
 
-//    // ADMIN->CREAZIONE TORNEO
-//    @GetMapping("/new")
-//    public String createTorneoForm(Model model) {
-//        model.addAttribute("torneo", new Torneo());
-//        return "formSquadre";
-//    }
-//
-//    @PostMapping("/new")
-//    public String createTorneo(@Valid @ModelAttribute("torneo") Torneo torneo,
-//                               BindingResult bindingResult, Model model) {
-//        if (bindingResult.hasErrors()) {
-//            return "formSquadre";
-//        }
-//        this.torneoService.save(torneo);
-//        return "redirect:/tornei/";
-//    }
-//
-//    // ADMIN->MODIFICA TORNEO
-//    @GetMapping("/{id}/edit")
-//    public String editTorneoForm(@PathVariable("id") Long id, Model model) {
-//        Torneo torneo = this.torneoService.findById(id);
-//        if (torneo == null) return "redirect:/tornei/";
-//        model.addAttribute("torneo", torneo);
-//        return "formSquadre";
-//    }
-//
-//    @PostMapping("/{id}/edit")
-//    public String editTorneo(@PathVariable("id") Long id,
-//                             @Valid @ModelAttribute("torneo") Torneo torneo,
-//                             BindingResult bindingResult, Model model) {
-//        if (bindingResult.hasErrors()) {
-//            return "formSquadre";
-//        }
-//        this.torneoService.update(id, torneo);
-//        return "redirect:/tornei/" + id;
-//    }
-//
-//    // ADMIN->ELIMINAZIONE TORNEO
-//    @PostMapping("/{id}/delete")
-//    public String deleteTorneo(@PathVariable("id") Long id) {
-//        this.torneoService.deleteById(id);
-//        return "redirect:/tornei/";
-//    }
 }

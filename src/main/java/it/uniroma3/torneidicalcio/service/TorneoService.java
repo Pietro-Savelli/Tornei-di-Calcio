@@ -28,6 +28,10 @@ public class TorneoService {
         return torneoRepository.findById(id).orElse(null);// ritorno del torneo se esiste se no null
     }
 
+    public long conta(){
+        return  torneoRepository.count();
+    }
+
     //ADMIN
     @Transactional
     public Torneo save(Torneo torneo) {

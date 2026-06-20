@@ -6,24 +6,24 @@
 
 /* ===== VARIABILI GLOBALI ===== */
 :root {
-    --bg-0: #0b1020;
-    --bg-1: #0f1530;
-    --bg-grad: radial-gradient(1200px 600px at 80% -10%, #1b2350 0%, transparent 60%),
-               radial-gradient(900px 500px at -10% 10%, #16213e 0%, transparent 55%),
-               linear-gradient(135deg, #0b0f24 0%, #0c1330 55%, #0a0e22 100%);
-    --primary: #1a1a2e;
-    --secondary: #16213e;
-    --accent: #e94560;
-    --accent-light: #ff6b6b;
-    --accent-2: #00d9a5;
-    --text: #f3f4f8;
-    --text-muted: #9aa3bd;
-    --card-bg: #141a33;
-    --card-bg-2: #182040;
-    --card-border: #243056;
-    --card-border-strong: #2f3d6e;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+    --bg-0: #0a0a0a;
+    --bg-1: #121212;
+    --bg-grad: radial-gradient(circle at 50% 0%, #4a0404 0%, transparent 50%),
+    linear-gradient(135deg, #0a0a0a 0%, #171717 100%);
+    --primary: #171717;
+    --secondary: #262626;
+    --accent: #dc2626; /* Rosso Corsa profondo */
+    --accent-light: #ef4444; /* Rosso vibrante per hover */
+    --accent-2: #facc15; /* Giallo racing per forte contrasto nei dati */
+    --text: #fafafa;
+    --text-muted: #a3a3a3;
+    --card-bg: #141414;
+    --card-bg-2: #1c1c1c;
+    --card-border: #262626;
+    --card-border-strong: #404040;
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.95);
     --radius: 16px;
     --radius-sm: 10px;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

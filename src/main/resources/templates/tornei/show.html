@@ -14,7 +14,7 @@
 
 <div class="container page">
 
-    <!-- ===== HEADER TORNEO ===== -->
+    <!--  HEADER TORNEO -->
     <section class="hero fade-in">
         <div class="tournament-badge" th:text="'Edizione ' + ${torneo.anno}">Edizione 2025</div>
         <h1 class="match-title" th:text="${torneo.nome}">Serie A</h1>
@@ -40,10 +40,9 @@
         </div>
     </section>
 
-    <!-- ===== PAGINAZIONE PARTITE: UNA ALLA VOLTA (Requisito 3) ===== -->
+    <!-- PAGINAZIONE PARTITE -->
     <section class="card match-pager-card fade-in stagger-1">
         <div class="card-header" style="justify-content:center;">
-            <div class="card-icon">⚽</div>
             <h2>Partite del torneo</h2>
         </div>
 
@@ -69,7 +68,7 @@
                    th:href="@{/tornei/{id}(id=${torneo.id}, partitaPage=${paginaPartite.number - 1})}">← Precedente</a>
 
                 <span class="pager-info"
-                      th:text="'Partita ' + (${paginaPartite.number} + 1) + ' di ' + ${paginaPartite.totalElements}">
+                      th:text="'Pagina ' + (${paginaPartite.number} + 1) + ' di ' + ${paginaPartite.totalElements}">
                     Partita 1 di 10
                 </span>
 
@@ -87,7 +86,6 @@
     <!-- ===== SQUADRE ISCRITTE ===== -->
     <section class="card fade-in stagger-2">
         <div class="card-header">
-            <div class="card-icon">👥</div>
             <h2>Squadre iscritte</h2>
         </div>
         <div class="team-carousel">
@@ -102,7 +100,6 @@
     <!-- ===== CLASSIFICA ===== -->
     <section class="card fade-in stagger-3">
         <div class="card-header">
-            <div class="card-icon">🏆</div>
             <h2>Classifica</h2>
         </div>
         <table>

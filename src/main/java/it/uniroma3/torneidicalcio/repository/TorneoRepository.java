@@ -19,8 +19,9 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
 
     @Query("SELECT p FROM Partita p WHERE p.torneo.id = :id AND p.eliminata = false")
     List<Partita> findCalendarioAttivoByTorneoId(Long id);
+
     // Query 1: carica il torneo con le partite e le squadre coinvolte (Casa/Trasferta).
-    // N.B.  qui c'è un solo "bag" (t.partite), quindi NON c'è prodotto cartesiano.
+    //  NON c'è prodotto cartesiano in questa query
     @Query("SELECT DISTINCT t FROM Torneo t " +
             "LEFT JOIN FETCH t.partite p " +
             "LEFT JOIN FETCH p.squadraCasa " +

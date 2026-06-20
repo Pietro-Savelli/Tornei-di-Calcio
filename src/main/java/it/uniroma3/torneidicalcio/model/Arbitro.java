@@ -10,7 +10,7 @@ import java.util.Set;
 public class Arbitro {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     private String nome;
     private String cognome;
@@ -64,7 +64,7 @@ public class Arbitro {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Arbitro arbitro = (Arbitro) o;
-        return id == arbitro.id;
+        return Objects.equals(id, arbitro.id);
     }
 
     @Override

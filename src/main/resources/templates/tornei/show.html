@@ -31,11 +31,11 @@
         </div>
         <!-- AZIONI ADMIN -->
         <div sec:authorize="hasAuthority('ADMIN')" style="margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-            <a class="btn btn-edit" th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}">✏️ Modifica Torneo</a>
-            <a class="btn btn-primary" th:href="@{/admin/partite/new(torneoId=${torneo.id})}">➕ Aggiungi Partita</a>
+            <a class="btn btn-edit" th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}">Modifica Torneo</a>
+            <a class="btn btn-primary" th:href="@{/admin/partite/new(torneoId=${torneo.id})}">Aggiungi Partita</a>
             <button type="button" class="btn btn-delete"
                     th:attr="onclick=|apriModale('@{/admin/tornei/{id}/delete(id=${torneo.id})}', '${torneo.nome}')|">
-                🗑️ Elimina Torneo
+                Elimina Torneo
             </button>
         </div>
     </section>
@@ -46,31 +46,36 @@
             <h2>Partite del torneo</h2>
         </div>
 
-        <div th:if="${partitaCorrente != null}">
-            <a class="match-row" style="max-width:520px; margin:0 auto;"
-               th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${partitaCorrente.id}}">
-                <span class="match-team home" th:text="${partitaCorrente.squadraCasa.nome}">Casa</span>
-                <span th:if="${partitaCorrente.stato != null and partitaCorrente.stato.name() == 'FINISHED'}"
+        <div th:if="${not paginaPartite.isEmpty()}">
+
+            <a th:each="partita : ${paginaPartite.content}"
+               class="match-row" style="max-width:520px; margin:0 auto 10px auto;"
+               th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${partita.id}}">
+
+                <span class="match-team home" th:text="${partita.squadraCasa.nome}">Casa</span>
+
+                <span th:if="${partita.stato != null and partita.stato.name() == 'FINISHED'}"
                       class="match-score"
-                      th:text="${partitaCorrente.goalsHome} + ' : ' + ${partitaCorrente.goalsAway}">1 : 0</span>
-                <span th:unless="${partitaCorrente.stato != null and partitaCorrente.stato.name() == 'FINISHED'}" class="match-vs">
-                    <span class="vs">VS</span>
-                    <span class="match-date"
-                          th:text="${partitaCorrente.dataOra != null ? #temporals.format(partitaCorrente.dataOra, 'dd/MM/yyyy HH:mm') : 'da definire'}">data</span>
-                </span>
-                <span class="match-team away" th:text="${partitaCorrente.squadraOspite.nome}">Ospite</span>
+                      th:text="${partita.goalsHome} + ' : ' + ${partita.goalsAway}">1 : 0</span>
+
+                <span th:unless="${partita.stato != null and partita.stato.name() == 'FINISHED'}" class="match-vs">
+                <span class="vs">VS</span>
+                <span class="match-date"
+                      th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') : 'da definire'}">data</span>
+            </span>
+
+                <span class="match-team away" th:text="${partita.squadraOspite.nome}">Ospite</span>
             </a>
 
-            <!-- Controlli Precedente / Successivo -->
             <div class="pager" style="max-width:520px; margin:18px auto 0;">
                 <a class="pager-btn"
                    th:classappend="${paginaPartite.first} ? ' disabled'"
                    th:href="@{/tornei/{id}(id=${torneo.id}, partitaPage=${paginaPartite.number - 1})}">← Precedente</a>
 
                 <span class="pager-info"
-                      th:text="'Pagina ' + (${paginaPartite.number} + 1) + ' di ' + ${paginaPartite.totalElements}">
-                    Partita 1 di 10
-                </span>
+                      th:text="'Pagina ' + (${paginaPartite.number} + 1) + ' di ' + ${paginaPartite.totalPages}">
+                Pagina 1 di X
+            </span>
 
                 <a class="pager-btn"
                    th:classappend="${paginaPartite.last} ? ' disabled'"
@@ -78,7 +83,7 @@
             </div>
         </div>
 
-        <p class="match-empty" th:if="${partitaCorrente == null}" style="text-align:center;">
+        <p class="match-empty" th:if="${#lists.isEmpty(paginaPartite.content)}" style="text-align:center;">
             Nessuna partita registrata per questo torneo.
         </p>
     </section>

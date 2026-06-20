@@ -25,20 +25,19 @@ public class PartitaService {
         return partitaRepository.findFirstByTorneoIdAndDataOraAfterOrderByDataOraAsc(id, LocalDateTime.now());
     }
 
-    // Ritorna UNA pagina di partite attive del torneo (size=1 → una partita alla volta).
+    // Ritorna una pagine contenente size partite
     @Transactional(readOnly = true)
     public Page<Partita> getPaginaPartite(Long torneoId, int page, int size) {
         return partitaRepository.findPaginaPartiteByTorneoId(torneoId, PageRequest.of(page, size));
     }
 
-    // ===== DATI HOME (Requisito 1) =====
-    // Le 3 partite più recenti già giocate (FINISHED) del torneo.
+    // Le 3 partite più recenti FINISHED
     @Transactional(readOnly = true)
     public List<Partita> getUltimePartiteGiocate(Long torneoId, int quante) {
         return partitaRepository.findUltimePartiteGiocate(torneoId, Stato.FINISHED, PageRequest.of(0, quante));
     }
 
-    // Le prossime 3 partite in programma (data futura) del torneo.
+    // Le prossime 3 partite in programma
     @Transactional(readOnly = true)
     public List<Partita> getProssimePartite(Long torneoId, int quante) {
         return partitaRepository.findProssimePartite(torneoId, LocalDateTime.now(), Stato.FINISHED, PageRequest.of(0, quante));
@@ -60,14 +59,15 @@ public class PartitaService {
         Partita partita = findById(id);
         if (partita == null) return;
 
-        if (partita.getStato() == Stato.FINISHED) {
-            // Partita giocata: soft delete per non sballare la classifica
-            partita.setEliminata(true);
-            partitaRepository.save(partita);
-        } else {
-            // Partita non giocata: hard delete, nessun danno storico
-            partitaRepository.deleteById(id);
-        }
+//        if (partita.getStato() == Stato.FINISHED) {
+//            // Partita giocata: soft delete per non sballare la classifica
+//            partita.setEliminata(true);
+//            partitaRepository.save(partita);
+//        } else {
+//            // Partita non giocata: hard delete, nessun danno storico
+//            partitaRepository.deleteById(id);
+//        }
+        partitaRepository.deleteById(id);
     }
 
     @Transactional
@@ -114,4 +114,9 @@ public class PartitaService {
             partitaRepository.save(partita);
         }
     }
+
+    public void deleteSoft(Partita partita) {
+        partita.setEliminata(true);
+    }
+
 }

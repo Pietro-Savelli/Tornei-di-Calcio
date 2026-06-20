@@ -4,11 +4,9 @@ import it.uniroma3.torneidicalcio.model.*;
 import it.uniroma3.torneidicalcio.service.CredentialsService;
 import it.uniroma3.torneidicalcio.service.PreferitoService;
 import it.uniroma3.torneidicalcio.service.TorneoService;
-import it.uniroma3.torneidicalcio.service.UtenteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ public class ApiController {
     private final PreferitoService preferitoService;
     private final CredentialsService credentialsService;
 
-    public ApiController(TorneoService torneoService, PreferitoService preferitoService, UtenteService utenteService, CredentialsService credentialsService) {
+    public ApiController(TorneoService torneoService, PreferitoService preferitoService, CredentialsService credentialsService) {
         this.torneoService = torneoService;
         this.preferitoService = preferitoService;
         this.credentialsService = credentialsService;

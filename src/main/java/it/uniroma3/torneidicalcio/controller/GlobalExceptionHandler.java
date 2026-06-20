@@ -1,6 +1,10 @@
 package it.uniroma3.torneidicalcio.controller;
 
 import it.uniroma3.torneidicalcio.exception.PartitaNotFoundException;
+import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,23 +17,29 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    /*
-     * Cattura eccezioni di risorsa non trovata (es. partita inesistente)
-     * e mostra la pagina 404 personalizzata passando il messaggio al Model.
-     */
+    @Autowired
+    private MessageSource messageSource;
+
+
     @ExceptionHandler(PartitaNotFoundException.class)
     public String handlePartitaNotFound(PartitaNotFoundException ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
+        String msg = messageSource.getMessage("error.partita.notfound", null, ex.getMessage(), LocaleContextHolder.getLocale());
+        model.addAttribute("errorMessage", msg);
         return "error/404";
     }
 
-    /*
-     * Cattura qualsiasi altra eccezione imprevista (errori 500).
-     * Ritorna la vista generica di errore del server.
-     */
+    @ExceptionHandler(SquadraDuplicataException.class)
+    public String handleSquadraDuplicata(SquadraDuplicataException ex, Model model) {
+        String msg = messageSource.getMessage("error.squadra.duplicata", new Object[]{ex.getNomeSquadra()}, ex.getMessage(), LocaleContextHolder.getLocale());
+        model.addAttribute("errorMessage", msg);
+        return "error/400";
+    }
+
+
     @ExceptionHandler(Exception.class)
     public String handleGenericException(Exception ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
+        String msg = messageSource.getMessage("error.generic", null, ex.getMessage(), LocaleContextHolder.getLocale());
+        model.addAttribute("errorMessage", msg);
         return "error/500";
     }
 }

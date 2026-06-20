@@ -8,7 +8,6 @@ import it.uniroma3.torneidicalcio.repository.TorneoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,14 +16,9 @@ public class PreferitoService {
 
     private final PreferitoRepository preferitoRepository;
     private final TorneoRepository torneoRepository;
-    private final UtenteService utenteService;
-
-    public PreferitoService(PreferitoRepository preferitoRepository,
-                            TorneoRepository torneoRepository,
-                            UtenteService utenteService) {
+    public PreferitoService(PreferitoRepository preferitoRepository, TorneoRepository torneoRepository) {
         this.preferitoRepository = preferitoRepository;
         this.torneoRepository = torneoRepository;
-        this.utenteService = utenteService;
     }
 
     @Transactional(readOnly = true)

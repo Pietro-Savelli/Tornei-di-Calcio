@@ -37,10 +37,7 @@ public class AdminController {
         this.partitaService = partitaService;
     }
 
-    // =========================================================
     // TORNEI
-    // =========================================================
-
     @GetMapping("/tornei/new")
     public String createTorneoForm(Model model) {
         model.addAttribute("torneo", new Torneo());
@@ -85,9 +82,7 @@ public class AdminController {
     }
 
     @PostMapping("/tornei/{id}/edit")
-    public String editTorneo(@PathVariable Long id,
-                             @Valid @ModelAttribute("torneo") Torneo torneo,
-                             BindingResult bindingResult) {
+    public String editTorneo(@PathVariable Long id,  @Valid @ModelAttribute("torneo") Torneo torneo, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/formTornei";
         }
@@ -96,8 +91,7 @@ public class AdminController {
     }
 
     @PostMapping("/tornei/{id}/squadre/add")
-    public String addSquadraToTorneo(@PathVariable Long id,
-                                     @RequestParam Long squadraId) {
+    public String addSquadraToTorneo(@PathVariable Long id, @RequestParam Long squadraId) {
         Torneo torneo = this.torneoService.findById(id);
         Squadra squadra = this.squadraService.findById(squadraId);
         if (torneo != null && squadra != null) {
@@ -107,7 +101,6 @@ public class AdminController {
         return "redirect:/admin/tornei/" + id + "/edit";
     }
 
-    // FIX: questo metodo era chiamato dal bottone "Rimuovi" in formTornei ma non esisteva
     @PostMapping("/tornei/{tid}/squadre/{sid}/remove")
     public String removeSquadraFromTorneo(@PathVariable Long tid, @PathVariable Long sid) {
         Torneo torneo = this.torneoService.findById(tid);
@@ -127,10 +120,7 @@ public class AdminController {
     }
 
 
-    // =========================================================
     // SQUADRE
-    // =========================================================
-
     @GetMapping("/squadre/new")
     public String createSquadraForm(Model model) {
         model.addAttribute("squadra", new Squadra());
@@ -140,19 +130,15 @@ public class AdminController {
     @PostMapping("/squadre/new")
     public String createSquadra(@Valid @ModelAttribute("squadra") Squadra squadra,
                                 BindingResult bindingResult) {
-        // 1. Validazione sintattica: campi @NotBlank, formati, ecc.
         if (bindingResult.hasErrors()) {
             return "admin/formSquadre";
         }
 
-        // 2. Validazione semantica: regola di business nel Service (transazionale)
         try {
             Squadra salvata = this.squadraService.iscriviSquadra(squadra);
             return "redirect:/squadre/" + salvata.getId();
         } catch (SquadraDuplicataException e) {
-            // 3. Intercetta l'errore di business e lo registra nel BindingResult
-            //    reject(String errorCode) aggiunge un errore globale non legato a un campo specifico
-            bindingResult.reject("squadra.duplicata", e.getMessage());
+            bindingResult.reject("error.squadra.duplicata", new Object[]{e.getNomeSquadra()}, null);
             return "admin/formSquadre";
         }
     }
@@ -166,9 +152,7 @@ public class AdminController {
     }
 
     @PostMapping("/squadre/{id}/edit")
-    public String editSquadra(@PathVariable Long id,
-                              @Valid @ModelAttribute("squadra") Squadra squadra,
-                              BindingResult bindingResult) {
+    public String editSquadra(@PathVariable Long id, @Valid @ModelAttribute("squadra") Squadra squadra, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/formSquadre";
         }
@@ -176,7 +160,7 @@ public class AdminController {
         return "redirect:/squadre/" + id;
     }
 
-    // Soft delete: la squadra viene marcata come eliminata, non cancellata dal DB
+    // la squadra viene marcata come eliminata, non cancellata dal DB
     @PostMapping("/squadre/{id}/delete")
     public String deleteSquadra(@PathVariable Long id) {
         Squadra squadra = this.squadraService.findById(id);
@@ -191,17 +175,15 @@ public class AdminController {
     public String removeGiocatoreFromSquadra(@PathVariable Long sid, @PathVariable Long gid) {
         Giocatore giocatore = this.giocatoreService.findById(gid);
         if (giocatore != null) {
-            giocatore.setSquadra(null);  // slega il giocatore, non lo cancella
+            giocatore.setSquadra(null);  // toglie il giocatore dalla squadra
             this.giocatoreService.save(giocatore);
         }
         return "redirect:/admin/squadre/" + sid + "/edit";
     }
 
 
-    // =========================================================
-    // GIOCATORI
-    // =========================================================
 
+    // GIOCATORI
     @GetMapping("/giocatori/new")
     public String createGiocatoreForm(Model model) {
         model.addAttribute("giocatore", new Giocatore());
@@ -210,8 +192,7 @@ public class AdminController {
     }
 
     @PostMapping("/giocatori/new")
-    public String createGiocatore(@Valid @ModelAttribute("giocatore") Giocatore giocatore,
-                                  BindingResult bindingResult, Model model) {
+    public String createGiocatore(@Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("squadre", this.squadraService.fidAll());
             return "admin/formGiocatore";
@@ -230,9 +211,7 @@ public class AdminController {
     }
 
     @PostMapping("/giocatori/{id}/edit")
-    public String editGiocatore(@PathVariable Long id,
-                                @Valid @ModelAttribute("giocatore") Giocatore giocatore,
-                                BindingResult bindingResult, Model model) {
+    public String editGiocatore(@PathVariable Long id, @Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("squadre", this.squadraService.fidAll());
             return "admin/formGiocatore";
@@ -241,7 +220,6 @@ public class AdminController {
         return "redirect:/giocatori/" + id;
     }
 
-    // FIX: metodo delete giocatore mancava del tutto
     @PostMapping("/giocatori/{id}/delete")
     public String deleteGiocatore(@PathVariable Long id) {
         Giocatore giocatore = this.giocatoreService.findById(id);
@@ -254,14 +232,11 @@ public class AdminController {
     }
 
 
-    // =========================================================
-    // PARTITE
-    // =========================================================
 
+    // PARTITE
     @GetMapping("/partite/new")
     public String createPartitaForm(@RequestParam(required = false) Long torneoId, Model model) {
         Partita partita = new Partita();
-        // FIX: se si arriva da un link con ?torneoId=X, pre-seleziona il torneo nel form
         if (torneoId != null) {
             Torneo torneo = this.torneoService.findById(torneoId);
             if (torneo != null) partita.setTorneo(torneo);
@@ -274,25 +249,23 @@ public class AdminController {
     }
 
     @PostMapping("/partite/new")
-    public String createPartita(@Valid @ModelAttribute("partita") Partita partita,
-                                BindingResult bindingResult, Model model) {
-        // FIX: aggiunta validazione @Valid (torneo/squadre @NotNull) prima del salvataggio
+    public String createPartita(@Valid @ModelAttribute("partita") Partita partita, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             popolaFormPartita(model);
             return "admin/formPartite";
         }
         partita.setStato(Stato.SCHEDULED);
         Partita salvata = this.partitaService.save(partita);
-        return "redirect:/tornei/" + salvata.getTorneo().getId() + "/calendario";
+        return "redirect:/tornei/" + salvata.getTorneo().getId();
     }
 
-    // Popola le tendine (tornei + squadre attive) per ri-renderizzare il form partita in caso di errore
     private void popolaFormPartita(Model model) {
         model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
         model.addAttribute("squadre", this.squadraService.fidAll().stream()
                 .filter(s -> !s.isEliminata()).toList());
     }
 
+    //da modificare, aggiungi il fatto che le squadre che vedi giocano nel torneo
     @GetMapping("/partite/{id}/edit")
     public String editPartitaForm(@PathVariable Long id, Model model) {
         Partita partita = this.partitaService.findById(id);
@@ -308,34 +281,27 @@ public class AdminController {
     public String editPartita(@PathVariable Long id,
                               @Valid @ModelAttribute("partita") Partita partita,
                               BindingResult bindingResult, Model model) {
-        // FIX: aggiunta validazione @Valid prima dell'update
         if (bindingResult.hasErrors()) {
             popolaFormPartita(model);
             return "admin/formPartite";
         }
-        // FIX: update non sovrascrive lo stato della partita (gestito nel service)
         this.partitaService.update(id, partita);
         return "redirect:/partite/" + id;
     }
 
-    // FIX: rimossa la doppia chiamata findById ridondante
     @PostMapping("/partite/{id}/delete")
     public String deletePartita(@PathVariable Long id) {
         Partita partita = this.partitaService.findById(id);
         if (partita == null) return "redirect:/tornei/";
         Long torneoId = partita.getTorneo() != null ? partita.getTorneo().getId() : null;
-        partita.setEliminata(true);
-        this.partitaService.save(partita);
+        partitaService.deleteById(partita.getId());
         return torneoId != null
-                ? "redirect:/tornei/" + torneoId + "/calendario"
+                ? "redirect:/tornei/" + torneoId
                 : "redirect:/tornei/";
     }
 
 
-    // =========================================================
     // RISULTATI
-    // =========================================================
-
     @GetMapping("/partite/{id}/risultato")
     public String risultatoForm(@PathVariable Long id, Model model) {
         Partita partita = this.partitaService.findById(id);
@@ -345,17 +311,13 @@ public class AdminController {
     }
 
     @PostMapping("/partite/{id}/risultato")
-    public String inserisciRisultato(@PathVariable Long id,
-                                     @RequestParam Integer goalsHome,
-                                     @RequestParam Integer goalsAway) {
+    public String inserisciRisultato(@PathVariable Long id, @RequestParam Integer goalsHome, @RequestParam Integer goalsAway) {
         this.partitaService.inserisciRisultato(id, goalsHome, goalsAway);
         return "redirect:/partite/" + id;
     }
 
     @PostMapping("/partite/{id}/risultato/edit")
-    public String modificaRisultato(@PathVariable Long id,
-                                    @RequestParam Integer goalsHome,
-                                    @RequestParam Integer goalsAway) {
+    public String modificaRisultato(@PathVariable Long id, @RequestParam Integer goalsHome, @RequestParam Integer goalsAway) {
         this.partitaService.modificaRisultato(id, goalsHome, goalsAway);
         return "redirect:/partite/" + id;
     }

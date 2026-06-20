@@ -13,9 +13,11 @@ public class Commento {
     private LocalDateTime dataOra;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Utente utente;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Partita partita;
 
     public Long getId() {

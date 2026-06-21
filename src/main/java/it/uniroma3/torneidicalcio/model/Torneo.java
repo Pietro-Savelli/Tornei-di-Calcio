@@ -8,9 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "torneo", indexes = {
-    @Index(name = "idx_torneo_anno", columnList = "anno")
-})
 public class Torneo {
 
     @Id
@@ -24,7 +21,7 @@ public class Torneo {
     @NotBlank  //da aggiungere un vincolo per la lunghezza massima
     private String descrizione;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Squadra> squadre = new HashSet<>();
 
     @OneToMany(mappedBy = "torneo", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

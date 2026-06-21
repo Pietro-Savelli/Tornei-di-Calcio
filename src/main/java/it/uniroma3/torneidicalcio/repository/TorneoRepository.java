@@ -41,4 +41,7 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
     boolean existsByNomeAndAnno(String nome, Integer anno);
 
     Torneo findByNomeAndAnno(String nome, Integer anno);
+
+    @Query("SELECT COUNT(s) FROM Torneo t JOIN t.squadre s WHERE t.id = :torneoId")
+    int countSquadreByTorneoId(@Param("torneoId") Long torneoId);
 }

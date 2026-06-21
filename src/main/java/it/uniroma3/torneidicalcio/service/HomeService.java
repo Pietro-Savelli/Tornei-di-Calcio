@@ -5,6 +5,7 @@ import it.uniroma3.torneidicalcio.dto.PartitaHomeDto;
 import it.uniroma3.torneidicalcio.dto.SquadraHomeDto;
 import it.uniroma3.torneidicalcio.dto.TorneoHomeDto;
 import it.uniroma3.torneidicalcio.model.*;
+import it.uniroma3.torneidicalcio.repository.TorneoRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -31,19 +32,22 @@ public class HomeService {
     private final SquadraService squadraService;
     private final PreferitoService preferitoService;
     private final CredentialsService credentialsService;
+    private final TorneoRepository torneoRepository;
 
     public HomeService(TorneoService torneoService,
                        PartitaService partitaService,
                        SquadraService squadraService,
                        PreferitoService preferitoService,
-                       CredentialsService credentialsService) {
+                       CredentialsService credentialsService, TorneoRepository torneoRepository) {
         this.torneoService = torneoService;
         this.partitaService = partitaService;
         this.squadraService = squadraService;
         this.preferitoService = preferitoService;
         this.credentialsService = credentialsService;
+        this.torneoRepository = torneoRepository;
     }
 
+    // da elimidare i  temi per test
     @Transactional(readOnly = true)
     public HomeDto getHomeData() {
         Utente utente = getUtenteLoggato();
@@ -52,17 +56,26 @@ public class HomeService {
                 ? preferitoService.getTorneoIdsPreferiti(utente)
                 : Set.of();
 
+        long t0 = System.currentTimeMillis();
         List<Torneo> entitaTornei = torneoService.findAllOrdinatiPerAnno();
+        System.out.println("findAllOrdinatiPerAnno: " + (System.currentTimeMillis() - t0) + "ms");
+
         List<TorneoHomeDto> tornei = new ArrayList<>();
 
+        long t3 = System.currentTimeMillis();
         for (Torneo t : entitaTornei) {
             TorneoHomeDto dto = toTorneoHomeDto(t, preferiti);
             tornei.add(dto);
         }
+        System.out.println("loop tornei: " + (System.currentTimeMillis() - t3) + "ms");
+
 
         tornei.sort((t1, t2) -> Boolean.compare(t2.preferito(), t1.preferito()));
 
+        long t2 = System.currentTimeMillis();
         List<Squadra> entitaSquadre = squadraService.fidAll();
+        System.out.println("fidAll: " + (System.currentTimeMillis() - t2) + "ms");
+
         List<SquadraHomeDto> squadre = new ArrayList<>();
 
         for (Squadra s : entitaSquadre) {
@@ -85,7 +98,7 @@ public class HomeService {
 
         return new TorneoHomeDto(
                 t.getId(), t.getNome(), t.getAnno(), t.getDescrizione(),
-                t.getSquadre().size(), isPreferito, recenti, prossime);
+                torneoRepository.countSquadreByTorneoId(t.getId()), isPreferito, recenti, prossime);
     }
 
     private PartitaHomeDto toPartitaHomeDto(Partita p) {

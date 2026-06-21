@@ -11,9 +11,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "squadra", indexes = {
-    @Index(name = "idx_squadra_eliminata", columnList = "eliminata")
-})
 public class Squadra {
 
     @Id

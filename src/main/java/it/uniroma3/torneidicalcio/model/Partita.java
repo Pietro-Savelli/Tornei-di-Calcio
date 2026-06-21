@@ -11,12 +11,6 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "partita", indexes = {
-    @Index(name = "idx_partita_torneo", columnList = "torneo_id"),
-    @Index(name = "idx_partita_stato", columnList = "stato"),
-    @Index(name = "idx_partita_data_ora", columnList = "data_ora"),
-    @Index(name = "idx_partita_eliminata", columnList = "eliminata")
-})
 public class Partita {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

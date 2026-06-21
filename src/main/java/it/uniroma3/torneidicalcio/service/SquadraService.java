@@ -38,11 +38,7 @@ public class SquadraService {
         return squadraRepository.save(squadra);
     }
 
-    /**
-     * Validazione semantica di business: prima di salvare verifica che non esista
-     * già una squadra (non eliminata) con lo stesso nome. Se il controllo fallisce,
-     * lancia un'eccezione di dominio che verrà gestita nel Controller.
-     */
+
     @Transactional
     public Squadra iscriviSquadra(Squadra squadra) {
         if (squadraRepository.existsByNomeAndEliminataFalse(squadra.getNome())) {

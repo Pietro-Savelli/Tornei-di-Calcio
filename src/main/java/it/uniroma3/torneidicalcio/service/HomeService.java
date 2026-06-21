@@ -18,9 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Assembla il payload della Home consumato dalla SPA React via /api/home.
- */
 @Service
 public class HomeService {
 
@@ -94,9 +91,12 @@ public class HomeService {
 
         boolean isPreferito = preferiti.contains(t.getId());
 
+//        return new TorneoHomeDto(
+//                t.getId(), t.getNome(), t.getAnno(), t.getDescrizione(),
+//                torneoRepository.countSquadreByTorneoId(t.getId()), isPreferito, prossime);
         return new TorneoHomeDto(
                 t.getId(), t.getNome(), t.getAnno(), t.getDescrizione(),
-                torneoRepository.countSquadreByTorneoId(t.getId()), isPreferito, prossime);
+                t.getSquadre().size(), isPreferito, prossime);
     }
 
     private PartitaHomeDto toPartitaHomeDto(Partita p) {

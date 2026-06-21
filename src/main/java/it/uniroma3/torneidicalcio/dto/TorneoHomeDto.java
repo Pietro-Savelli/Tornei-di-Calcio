@@ -11,6 +11,5 @@ public record TorneoHomeDto(
         String descrizione,
         int numeroSquadre,
         boolean preferito,
-        List<PartitaHomeDto> partiteRecenti,
         List<PartitaHomeDto> prossimePartite
 ) {}

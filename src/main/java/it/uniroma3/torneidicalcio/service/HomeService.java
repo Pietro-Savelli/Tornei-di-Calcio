@@ -89,8 +89,6 @@ public class HomeService {
     }
 
     private TorneoHomeDto toTorneoHomeDto(Torneo t, Set<Long> preferiti) {
-        List<PartitaHomeDto> recenti = partitaService.getUltimePartiteGiocate(t.getId(), N_PARTITE)
-                .stream().map(this::toPartitaHomeDto).toList();
         List<PartitaHomeDto> prossime = partitaService.getProssimePartite(t.getId(), N_PARTITE)
                 .stream().map(this::toPartitaHomeDto).toList();
 
@@ -98,7 +96,7 @@ public class HomeService {
 
         return new TorneoHomeDto(
                 t.getId(), t.getNome(), t.getAnno(), t.getDescrizione(),
-                torneoRepository.countSquadreByTorneoId(t.getId()), isPreferito, recenti, prossime);
+                torneoRepository.countSquadreByTorneoId(t.getId()), isPreferito, prossime);
     }
 
     private PartitaHomeDto toPartitaHomeDto(Partita p) {

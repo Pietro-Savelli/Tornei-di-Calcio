@@ -33,12 +33,12 @@ function TorneoCard({ t, onTogglePreferito }) {
       <p className="torneo-card-desc">{t.descrizione}</p>
 
       <div className="torneo-card-cols">
-        <div className="match-col">
+          {/*<div className="match-col">
           <h4 className="match-col-title">Ultime partite</h4>
           {t.partiteRecenti.length > 0
             ? t.partiteRecenti.map((m) => <FinishedMatch key={m.id} m={m} />)
             : <p className="match-empty">Nessuna partita giocata.</p>}
-        </div>
+        </div>*/}
         <div className="match-col">
           <h4 className="match-col-title">Prossime partite</h4>
           {t.prossimePartite.length > 0

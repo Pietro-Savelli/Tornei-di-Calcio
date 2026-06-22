@@ -12,7 +12,7 @@
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <div class="container page">
-    <h1>📅 Calendario partite</h1>
+    <h1>Calendario partite</h1>
     <p class="page-lead">Totale partite: <span th:text="${calendario.size()}">0</span></p>
 
     <section class="card">
@@ -31,7 +31,7 @@
     </section>
 
     <div sec:authorize="hasAuthority('ADMIN')" th:if="${!calendario.isEmpty()}" style="margin-top:16px;">
-        <a class="btn btn-edit" th:href="@{'/admin/tornei/' + ${calendario[0].torneo.id} + '/edit'}">⚙️ Gestisci il torneo</a>
+        <a class="btn btn-edit" th:href="@{'/admin/tornei/' + ${calendario[0].torneo.id} + '/edit'}">Gestisci il torneo</a>
     </div>
 
     <a th:href="@{/tornei/}" class="back-link">← Torna ai tornei</a>

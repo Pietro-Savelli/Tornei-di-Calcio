@@ -12,11 +12,11 @@
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <div class="container page">
-    <h1 th:text="'🎽 Rosa ' + ${squadra.nome}">Rosa Giocatori</h1>
+    <h1 th:text="'Rosa ' + ${squadra.nome}">Rosa Giocatori</h1>
     <p class="page-lead">Giocatori registrati: <span th:text="${#sets.size(squadra.giocatori)}">0</span></p>
 
     <div sec:authorize="hasAuthority('ADMIN')">
-        <a th:href="@{/admin/giocatori/new}" class="btn btn-create">➕ Aggiungi Giocatore</a>
+        <a th:href="@{/admin/giocatori/new}" class="btn btn-create">Aggiungi Giocatore</a>
     </div>
 
     <section class="card">

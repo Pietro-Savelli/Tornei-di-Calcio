@@ -20,7 +20,7 @@
         <h1 class="match-title" th:text="${torneo.nome}">Serie A</h1>
         <p class="muted" style="margin-top:10px;" th:text="${torneo.descrizione}">Descrizione</p>
         <div style="margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-            <a class="btn btn-ghost" th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">📅 Calendario completo</a>
+            <a class="btn btn-ghost" th:href="@{'/tornei/' + ${torneo.id} + '/calendario'}">Calendario completo</a>
             <span th:if="${prossimaPartita != null}">
                 <a class="btn btn-accent"
                    th:href="@{'/tornei/' + ${torneo.id} + '/calendario/partita/' + ${prossimaPartita.id}}"

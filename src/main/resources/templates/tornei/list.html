@@ -16,7 +16,7 @@
     <p class="page-lead">Totale tornei: <span th:text="${tornei.size()}">0</span></p>
 
     <div sec:authorize="hasAuthority('ADMIN')">
-        <a th:href="@{/admin/tornei/new}" class="btn btn-create">➕ Crea Nuovo Torneo</a>
+        <a th:href="@{/admin/tornei/new}" class="btn btn-create">Crea Nuovo Torneo</a>
     </div>
 
     <ul style="list-style:none; padding:0;">
@@ -26,10 +26,10 @@
                 <span style="color:var(--text-muted); font-size:0.9rem;" th:text="'(' + ${torneo.anno} + ')'">(2024)</span>
             </div>
             <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px;">
-                <a th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+                <a th:href="@{'/admin/tornei/' + ${torneo.id} + '/edit'}" class="btn btn-edit">Modifica</a>
                 <button type="button" class="btn btn-delete"
                         th:attr="onclick=|apriModale('@{/admin/tornei/{id}/delete(id=${torneo.id})}', '${torneo.nome}')|">
-                    🗑️ Elimina
+                    Elimina
                 </button>
             </div>
         </li>

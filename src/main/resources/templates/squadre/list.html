@@ -12,11 +12,11 @@
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <div class="container page">
-    <h1>👥 Squadre</h1>
+    <h1>Squadre</h1>
     <p class="page-lead">Totale squadre: <span th:text="${squadre.size()}">0</span></p>
 
     <div sec:authorize="hasAuthority('ADMIN')">
-        <a th:href="@{/admin/squadre/new}" class="btn btn-create">➕ Crea Nuova Squadra</a>
+        <a th:href="@{/admin/squadre/new}" class="btn btn-create">Crea Nuova Squadra</a>
     </div>
 
     <ul style="list-style:none; padding:0;">
@@ -28,10 +28,10 @@
                 <span style="color:var(--text-muted); font-size:0.9rem;" th:text="${squadra.citta}">Roma</span>
             </div>
             <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px;">
-                <a th:href="@{'/admin/squadre/' + ${squadra.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+                <a th:href="@{'/admin/squadre/' + ${squadra.id} + '/edit'}" class="btn btn-edit">Modifica</a>
                 <button type="button" class="btn btn-delete"
                         th:attr="onclick=|apriModale('@{/admin/squadre/{id}/delete(id=${squadra.id})}', '${squadra.nome}')|">
-                    🗑️ Elimina
+                    Elimina
                 </button>
             </div>
         </li>

@@ -22,17 +22,16 @@
 
     <section class="card fade-in stagger-1" style="max-width:620px; margin:0 auto;">
         <div class="card-header">
-            <div class="card-icon">ℹ️</div>
             <h2>Dettagli giocatore</h2>
         </div>
         <ul class="detail-list">
-            <li class="detail-item"><span class="detail-label">🎽 Ruolo</span>
+            <li class="detail-item"><span class="detail-label">Ruolo</span>
                 <span class="detail-value" th:text="${giocatore.ruolo}">ATTACCANTE</span></li>
-            <li class="detail-item"><span class="detail-label">🎂 Data di nascita</span>
+            <li class="detail-item"><span class="detail-label">Data di nascita</span>
                 <span class="detail-value" th:text="${giocatore.dataDiNascita}">01/01/2000</span></li>
-            <li class="detail-item"><span class="detail-label">📏 Altezza</span>
+            <li class="detail-item"><span class="detail-label">Altezza</span>
                 <span class="detail-value" th:text="${giocatore.altezza != null ? giocatore.altezza + ' cm' : 'Non specificata'}">182 cm</span></li>
-            <li class="detail-item"><span class="detail-label">🛡️ Squadra</span>
+            <li class="detail-item"><span class="detail-label">Squadra</span>
                 <span class="detail-value">
                     <a th:if="${giocatore.squadra != null}" th:href="@{/squadre/{id}(id=${giocatore.squadra.id})}"
                        th:text="${giocatore.squadra.nome}">Squadra</a>
@@ -41,10 +40,10 @@
         </ul>
 
         <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px; margin-top:18px;">
-            <a th:href="@{'/admin/giocatori/' + ${giocatore.id} + '/edit'}" class="btn btn-edit">✏️ Modifica</a>
+            <a th:href="@{'/admin/giocatori/' + ${giocatore.id} + '/edit'}" class="btn btn-edit">Modifica</a>
             <button type="button" class="btn btn-delete"
                     th:attr="onclick=|apriModale('@{/admin/giocatori/{id}/delete(id=${giocatore.id})}', '${giocatore.nome} ' + ${giocatore.cognome})|">
-                🗑️ Elimina
+                Elimina
             </button>
         </div>
     </section>

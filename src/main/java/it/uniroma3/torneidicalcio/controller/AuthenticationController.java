@@ -39,10 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = { "/register" })
-    public String registerUtente(@Valid @ModelAttribute("user") Utente utente,
-                               BindingResult userBindingResult, @Valid
-                               @ModelAttribute("credentials") Credentials credentials,
-                               BindingResult credentialsBindingResult) {
+    public String registerUtente(@Valid @ModelAttribute("user") Utente utente, BindingResult userBindingResult, @Valid @ModelAttribute("credentials") Credentials credentials, BindingResult credentialsBindingResult) {
         if(!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
             credentials.setUtente(utente);
             credentialsService.saveCredentials(credentials);

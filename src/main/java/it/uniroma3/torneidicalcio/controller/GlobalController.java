@@ -1,5 +1,7 @@
 package it.uniroma3.torneidicalcio.controller;
 
+import it.uniroma3.torneidicalcio.model.Utente;
+import it.uniroma3.torneidicalcio.service.CredentialsService;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class GlobalController {
     @ModelAttribute("userDetails")
 
-    public UserDetails getUser() {
+    public static UserDetails getUser() {
         UserDetails Utente = null;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -3,7 +3,6 @@ package it.uniroma3.torneidicalcio.dto;
 import java.util.List;
 
 //DTO di un torneo per la Home React
-
 public record TorneoHomeDto(
         Long id,
         String nome,

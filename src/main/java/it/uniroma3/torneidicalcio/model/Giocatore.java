@@ -98,7 +98,7 @@ public class Giocatore {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Giocatore giocatore = (Giocatore) o;
-        return Objects.equals(id, giocatore.id); // FIX: Long è un oggetto, == confronta riferimenti non valori
+        return Objects.equals(id, giocatore.id);
     }
 
     @Override

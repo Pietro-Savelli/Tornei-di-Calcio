@@ -35,7 +35,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TorneoDuplicataException.class)
     public String handleTorneoDuplicataException(TorneoDuplicataException ex, Model model) {
-        // Fallback per sicurezza: se l'eccezione dovesse propagarsi oltre il controller
         String msg = messageSource.getMessage("torneo.duplicato", null, ex.getMessage(), LocaleContextHolder.getLocale());
         model.addAttribute("errorMessage", msg);
         return "error/400";

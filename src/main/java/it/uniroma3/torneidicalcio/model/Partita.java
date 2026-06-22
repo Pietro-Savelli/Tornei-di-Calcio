@@ -150,7 +150,7 @@ public class Partita {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Partita partita = (Partita) o;
-        return Objects.equals(id, partita.id); // FIX: Long è un oggetto, == confronta riferimenti non valori
+        return Objects.equals(id, partita.id);
     }
 
     @Override

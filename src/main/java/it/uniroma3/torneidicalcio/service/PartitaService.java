@@ -99,7 +99,7 @@ public class PartitaService {
         if (nuovoStato != null && nuovoStato != partita.getStato()) {
             partita.setStato(nuovoStato);
 
-            if (nuovoStato == Stato.SCHEDULED || nuovoStato == Stato.POSTPONED) {
+            if (nuovoStato == Stato.SCHEDULED) {
                 partita.setGoalsHome(null);
                 partita.setGoalsAway(null);
             }

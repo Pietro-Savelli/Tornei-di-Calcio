@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -83,34 +80,26 @@ public class ApiController {
     }
 
     @PostMapping("/tornei/{id}/preferito")
-    public ResponseEntity<Void> aggiungi(@PathVariable Long id, Authentication auth) {
-        Utente utente = getUtente(auth);
+    public ResponseEntity<Void> aggiungi(@PathVariable Long id) {
+        Utente utente = credentialsService.getUtenteCorrente(); // Richiama il service
         if (utente == null) return ResponseEntity.status(401).build();
         preferitoService.aggiungi(utente, id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/tornei/{id}/preferito")
-    public ResponseEntity<Void> rimuovi(@PathVariable Long id, Authentication auth) {
-        Utente utente = getUtente(auth);
+    public ResponseEntity<Void> rimuovi(@PathVariable Long id) {
+        Utente utente = credentialsService.getUtenteCorrente(); // Richiama il service
         if (utente == null) return ResponseEntity.status(401).build();
         preferitoService.rimuovi(utente, id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/utente/preferiti")
-    public ResponseEntity<java.util.Set<Long>> getPreferiti(Authentication auth) {
-        Utente utente = getUtente(auth);
+    public ResponseEntity<Set<Long>> getPreferiti() {
+        Utente utente = credentialsService.getUtenteCorrente(); // Richiama il service
         if (utente == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(preferitoService.getTorneoIdsPreferiti(utente));
-    }
-
-    private Utente getUtente(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()) return null;
-
-        String username = auth.getName();
-        Credentials credentials = credentialsService.getCredentials(username);
-        return (credentials != null) ? credentials.getUtente() : null;
     }
 
 }

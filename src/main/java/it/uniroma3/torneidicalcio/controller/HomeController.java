@@ -1,5 +1,9 @@
 package it.uniroma3.torneidicalcio.controller;
 
+import it.uniroma3.torneidicalcio.model.Utente;
+import it.uniroma3.torneidicalcio.service.CredentialsService;
+import it.uniroma3.torneidicalcio.service.UtenteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,15 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
+    @Autowired
+    private CredentialsService credentialsService;
+
     @GetMapping("/")
     public String getHome(Model model) {
-        UserDetails userDetails = null;
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()
-                && !(auth.getPrincipal() instanceof String)) {
-            userDetails = (UserDetails) auth.getPrincipal();
-        }
-        model.addAttribute("userDetails", userDetails);
+        UserDetails userDetails = GlobalController.getUser();
+        model.addAttribute("userDetails", GlobalController.getUser());
 
         // Stato di autenticazione iniettato nella SPA React (window.__APP__) dalla index.html Thymeleaf
         boolean authenticated = userDetails != null;

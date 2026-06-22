@@ -1,9 +1,6 @@
 package it.uniroma3.torneidicalcio.exception;
 
-/**
- * Eccezione di dominio per segnalare un errore di business:
- * tentativo di iscrivere una squadra con un nome già esistente nel database.
- */
+
 public class SquadraDuplicataException extends RuntimeException {
 
     private final String nomeSquadra;

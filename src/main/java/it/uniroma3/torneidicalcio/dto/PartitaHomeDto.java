@@ -3,7 +3,7 @@ package it.uniroma3.torneidicalcio.dto;
 /**
  * DTO leggero per una partita mostrata nella Home React.
  * - per le partite GIOCATE: goalsHome/goalsAway valorizzati.
- * - per le partite IN PROGRAMMA: data/ora valorizzata, gol null.
+ * - per le partite IN PROGRAMMA: data/ora valorizzata, gol null. (commentate per ora)
  */
 public record PartitaHomeDto(
         Long id,
@@ -14,6 +14,6 @@ public record PartitaHomeDto(
         String squadraOspite,
         Integer goalsHome,
         Integer goalsAway,
-        String dataOra,   // già formattata "dd/MM/yyyy HH:mm" per semplificare il rendering lato React
+        String dataOra,
         String stato
 ) {}

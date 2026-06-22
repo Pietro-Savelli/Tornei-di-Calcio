@@ -1,7 +1,11 @@
 package it.uniroma3.torneidicalcio.service;
 
 import it.uniroma3.torneidicalcio.model.Credentials;
+import it.uniroma3.torneidicalcio.model.Utente;
 import it.uniroma3.torneidicalcio.repository.CredentialsRepository;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,4 +41,23 @@ public class CredentialsService {
         credentials.setPassword(this.passwordEncoder.encode(credentials.getPassword()));
         return this.credentialsRepository.save(credentials);
     }
+
+    public Utente getUtenteCorrente(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName();
+            Credentials credentials = this.findByUsername(username);
+
+            if (credentials != null) {
+                return credentials.getUtente();
+            }
+        }
+        return null;
+    }
+
+    public Credentials findByUsername(String username) {
+        return credentialsRepository.findByUsername(username);
+    }
+
 }

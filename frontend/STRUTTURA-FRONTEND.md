@@ -23,7 +23,7 @@ frontend/
     │   ├── Navbar.jsx
     │   ├── Hero.jsx
     │   ├── TorneoCard.jsx
-    │   ├── FinishedMatch.jsx
+    │   ├── FinishedMatch.tsx
     │   ├── UpcomingMatch.jsx
     │   └── TeamCarousel.jsx
     ├── services/             # Chiamate API centralizzate
@@ -101,7 +101,7 @@ Card che rappresenta un singolo torneo. Mostra:
 - Colonna "Prossime partite" (usa `UpcomingMatch`).
 - Link in fondo alla pagina del torneo.
 
-### `FinishedMatch.jsx`
+### `FinishedMatch.tsx`
 Riga riassuntiva di una partita già terminata. Mostra squadra casa, risultato (`goalsHome : goalsAway`), squadra ospite. Linkabile alla pagina della partita.
 
 ### `UpcomingMatch.jsx`

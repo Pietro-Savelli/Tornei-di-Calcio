@@ -1,16 +1,19 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import { matchUrl } from '../utils/helpers';
+import type { PartitaHomeDto } from '../types';
 
-function FinishedMatch({ m }) {
+interface FinishedMatchProps {
+  m: PartitaHomeDto;
+}
+
+export default function FinishedMatch({ m }: FinishedMatchProps) {
   return (
-    <a className="match-row" href={matchUrl(m)}>
+    <Link className="match-row" to={matchUrl(m)}>
       <span className="match-team home" title={m.squadraCasa}>{m.squadraCasa}</span>
       <span className="match-score">
         {m.goalsHome ?? '-'}<span className="dash">:</span>{m.goalsAway ?? '-'}
       </span>
       <span className="match-team away" title={m.squadraOspite}>{m.squadraOspite}</span>
-    </a>
+    </Link>
   );
 }
-
-export default FinishedMatch;

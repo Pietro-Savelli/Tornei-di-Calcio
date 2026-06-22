@@ -16,7 +16,9 @@ public class Torneo {
 
     @NotBlank
     private String nome;
-    //da aggiugere un vinocolo delle date accettabili
+
+    @Min(2000)
+    @Max(2030)
     private Integer anno;
     @NotBlank  //da aggiungere un vincolo per la lunghezza massima
     private String descrizione;

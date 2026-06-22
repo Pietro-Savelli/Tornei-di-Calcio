@@ -41,6 +41,26 @@ public class fetchTest implements CommandLineRunner {
 
         StopWatch watch = new StopWatch();
 
+
+        // =========================================================
+        // TEST B: 2x JOIN FETCH — SOLO CARICAMENTO
+        // =========================================================
+
+        watch.start("B - 2x JOIN FETCH caricamento");
+        Torneo t2 = torneoRepository.findTorneoWithPartite(id);
+        torneoRepository.findTorneoWithSquadre(id);
+        // Forza materializzazione delle proxy (come nel test A)
+        for (Partita p : t2.getPartite()) {
+            p.getSquadraCasa().getNome();
+            p.getSquadraOspite().getNome();
+        }
+        for (Squadra s : t2.getSquadre()) {
+            s.getNome();
+        }
+        watch.stop();
+        // PULISCI la cache di Hibernate tra i due test
+        entityManager.clear();
+
         // =========================================================
         // TEST A: LAZY N+1 — SOLO CARICAMENTO
         // =========================================================
@@ -56,24 +76,6 @@ public class fetchTest implements CommandLineRunner {
         }
         watch.stop();
 
-        // PULISCI la cache di Hibernate tra i due test
-        entityManager.clear();
-
-        // =========================================================
-        // TEST B: 2x JOIN FETCH — SOLO CARICAMENTO
-        // =========================================================
-        watch.start("B - 2x JOIN FETCH caricamento");
-        Torneo t2 = torneoRepository.findTorneoWithPartite(id);
-        torneoRepository.findTorneoWithSquadre(id);
-        // Forza materializzazione delle proxy (come nel test A)
-        for (Partita p : t2.getPartite()) {
-            p.getSquadraCasa().getNome();
-            p.getSquadraOspite().getNome();
-        }
-        for (Squadra s : t2.getSquadre()) {
-            s.getNome();
-        }
-        watch.stop();
 
         // PULISCI cache
         entityManager.clear();

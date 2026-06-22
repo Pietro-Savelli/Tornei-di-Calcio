@@ -19,15 +19,15 @@
 
 <h1 class="page-title"
     th:text="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
-              ? '✏️ Modifica Risultato' : '⚽ Inserisci Risultato'">
+              ? 'Modifica Risultato' : 'Inserisci Risultato'">
     Risultato
 </h1>
 
 <p class="partita-info">
-    <span>📅 <span th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}">data</span></span>
-    <span>📍 <span th:text="${partita.luogo}">luogo</span></span>
+    <span><span th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}">data</span></span>
+    <span><span th:text="${partita.luogo}">luogo</span></span>
     <span th:if="${partita.torneo != null}">
-        🏆 <span th:text="${partita.torneo.nome}">Torneo</span>
+        <span th:text="${partita.torneo.nome}">Torneo</span>
     </span>
 </p>
 
@@ -63,18 +63,14 @@
             Se lo stato è già FINISHED mostriamo un avviso:
             stiamo modificando un risultato già inserito.
         -->
-        <div class="warn-box" th:if="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}">
-            ⚠️ Questa partita ha già un risultato. Salvando, il risultato verrà aggiornato.
-        </div>
-
         <div class="form-actions">
             <button type="submit" class="btn btn-success"
                     th:text="${partita.stato == T(it.uniroma3.torneidicalcio.model.Stato).FINISHED}
-                               ? '💾 Aggiorna Risultato' : '✅ Salva Risultato'">
+                               ? 'Aggiorna Risultato' : 'Salva Risultato'">
                 Salva
             </button>
             <a th:href="@{/partite/{id}(id=${partita.id})}" class="btn btn-secondary">
-                ↩️ Annulla
+                Annulla
             </a>
         </div>
     </form>

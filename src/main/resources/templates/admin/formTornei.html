@@ -25,7 +25,7 @@
 
 <!-- DATI TORNEO -->
 <div class="admin-box">
-    <h2>📝 Dati Torneo</h2>
+    <h2>Dati Torneo</h2>
     <form th:action="${torneo.id != null} ? @{/admin/tornei/{id}/edit(id=${torneo.id})} : @{/admin/tornei/new}"
           th:object="${torneo}" method="POST">
 
@@ -42,7 +42,7 @@
 
         <div class="form-group">
             <label for="anno">Anno:</label>
-            <input type="number" id="anno" th:field="*{anno}" min="1900" max="2100" required />
+            <input type="number" id="anno" th:field="*{anno}"required />
             <span class="error" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}">Errore anno</span>
         </div>
 
@@ -54,15 +54,15 @@
 
         <div style="margin-left: 135px;">
             <button type="submit" class="btn btn-success"
-                    th:text="${torneo.id != null} ? '💾 Salva Modifiche' : '➕ Crea Torneo'">Salva</button>
-            <a th:href="@{/tornei/}" class="btn btn-secondary">↩️ Annulla</a>
+                    th:text="${torneo.id != null} ? 'Salva Modifiche' : 'Crea Torneo'">Salva</button>
+            <a th:href="@{/tornei/}" class="btn btn-secondary">Annulla</a>
         </div>
     </form>
 </div>
 
 <!-- SQUADRE -->
 <div class="admin-box" th:if="${torneo.id != null}">
-    <h2>⚽ Squadre Iscritte</h2>
+    <h2>Squadre Iscritte</h2>
 
     <!-- Squadre attive -->
     <ul class="clean-list" th:if="${squadreAttive != null and !squadreAttive.isEmpty()}">
@@ -76,7 +76,7 @@
                         th:data-url="@{/admin/tornei/{tid}/squadre/{sid}/remove(tid=${torneo.id},sid=${squadra.id})}"
                         th:data-nome="${squadra.nome}"
                         onclick="apriModale(this.dataset.url, this.dataset.nome)">
-                    🗑️ Rimuovi
+                    Rimuovi
                 </button>
             </span>
         </li>
@@ -87,7 +87,7 @@
 
     <!-- Squadre eliminate (se presenti) -->
     <div th:if="${squadreEliminate != null and !squadreEliminate.isEmpty()}">
-        <h3>🗑️ Squadre Eliminate</h3>
+        <h3>Squadre Eliminate</h3>
         <ul class="clean-list">
             <li th:each="squadra : ${squadreEliminate}" class="deleted-item">
                 <span th:text="${squadra.nome}">Lazio</span>
@@ -96,7 +96,7 @@
         </ul>
     </div>
 
-    <h3>➕ Aggiungi Squadra Esistente</h3>
+    <h3>Aggiungi Squadra Esistente</h3>
     <form th:action="@{/admin/tornei/{id}/squadre/add(id=${torneo.id})}" method="POST">
         <select name="squadraId" required>
             <option value="">-- Seleziona una squadra --</option>
@@ -111,11 +111,11 @@
 
 <!-- PARTITE -->
 <div class="admin-box" th:if="${torneo.id != null}">
-    <h2>🏟️ Partite Programmate</h2>
+    <h2>Partite Programmate</h2>
 
     <p>
         <a class="btn btn-primary" th:href="@{/admin/partite/new(torneoId=${torneo.id})}">
-            ➕ Aggiungi Nuova Partita
+            Aggiungi Nuova Partita
         </a>
     </p>
 
@@ -145,13 +145,12 @@
                 <span th:if="${partita.stato == null}">-</span>
             </td>
             <td class="actions">
-                <a th:href="@{'/admin/partite/' + ${partita.id} + '/edit'}" class="btn btn-warning">✏️</a>
                 <!-- data-* attributes + onclick senza variabili -->
                 <button type="button" class="btn btn-danger"
                         th:data-url="@{/admin/partite/{id}/delete(id=${partita.id})}"
                         th:data-nome="${partita.squadraCasa.nome + ' vs ' + partita.squadraOspite.nome}"
                         onclick="apriModale(this.dataset.url, this.dataset.nome)">
-                    🗑️
+                    Elimina
                 </button>
             </td>
         </tr>
@@ -163,7 +162,7 @@
 
     <!-- Partite eliminate (se presenti) -->
     <div th:if="${partiteEliminate != null and !partiteEliminate.isEmpty()}">
-        <h3>🗑️ Partite Eliminate</h3>
+        <h3>Partite Eliminate</h3>
         <table>
             <thead>
             <tr>
@@ -184,7 +183,7 @@
 </div>
 
 <div style="margin-top: 20px;">
-    <a href="/tornei/">↩️ Torna alla pagina dei tornei</a>
+    <a href="/tornei/">Torna alla pagina dei tornei</a>
 </div>
 
 </div>

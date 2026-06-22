@@ -68,7 +68,7 @@ public class ApiController {
         }
         List<Map<String, Object>> squadre = new ArrayList<>();
         for (Squadra s : torneo.getSquadre()) {
-            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMcdap<>();
             map.put("id", s.getId());
             map.put("nome", s.getNome());
             map.put("citta", s.getCitta());

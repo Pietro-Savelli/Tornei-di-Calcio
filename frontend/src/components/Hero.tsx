@@ -1,6 +1,6 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
-function Hero() {
+export default function Hero() {
   return (
     <header className="home-hero">
       <div className="container">
@@ -10,12 +10,10 @@ function Hero() {
           Risultati, calendario delle prossime sfide e squadre.
         </p>
         <div className="home-hero-cta">
-          <a className="btn btn-accent btn-lg" href="#tornei">Esplora i tornei</a>
-          <a className="btn btn-ghost btn-lg" href="/squadre/">Vedi le squadre</a>
+          <Link className="btn btn-accent btn-lg" to="/#tornei">Esplora i tornei</Link>
+          <Link className="btn btn-ghost btn-lg" to="/squadre/">Vedi le squadre</Link>
         </div>
       </div>
     </header>
   );
 }
-
-export default Hero;

@@ -68,9 +68,20 @@ public class SecurityConfiguration {
 
         httpSecurity.authorizeHttpRequests(authorize -> {
             // PUBBLICO
-            authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/css/**", "/images/**", "/favicon.ico").permitAll();
+            // /index.html è incluso esplicitamente: "/" fa un forward interno
+            // a /index.html (vedi WebConfig#addViewControllers), e Spring
+            // Security valuta le regole anche sul path di destinazione del
+            // forward, non solo su quello originale richiesto dal browser.
+            authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/index.html", "/css/**", "/images/**", "/favicon.ico").permitAll();
             // Asset statici della SPA React (build Vite) + API della Home
             authorize.requestMatchers(HttpMethod.GET, "/app/**", "/assets/**", "/js/**", "/api/home").permitAll();
+            // /api/auth/me deve essere raggiungibile sempre: risponde 401 lei stessa
+            // se non c'è nessuno loggato, così React sa distinguere "non loggato"
+            // da "errore di rete/route bloccata"
+            authorize.requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll();
+            // /api/csrf espone solo il token CSRF corrente: serve a React per
+            // poter fare POST /logout (che NON è in /api/** e quindi ha CSRF attivo)
+            authorize.requestMatchers(HttpMethod.GET, "/api/csrf").permitAll();
             authorize.requestMatchers("/login", "/register").permitAll();
             // API preferiti (autenticate)
             authorize.requestMatchers("/api/tornei/*/preferito", "/api/utente/preferiti").authenticated();
@@ -90,6 +101,9 @@ public class SecurityConfiguration {
 
         httpSecurity.formLogin(form -> {
             form.loginPage("/login").permitAll();
+            // "/" è la home servita da Spring (che incorpora la build React).
+            // In dev su Vite (porta 5173) il login va fatto comunque passando
+            // da Spring (porta 8080): vedi nota in login.html / Navbar.
             form.defaultSuccessUrl("/", true);
             form.failureUrl("/login?error=true");
         });
@@ -103,8 +117,13 @@ public class SecurityConfiguration {
             logout.permitAll();
         });
 
-        // API REST: disabilita CSRF per le chiamate AJAX da React (stesso dominio)
-        httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
+        // API REST: disabilita CSRF per le chiamate AJAX da React (stesso dominio).
+        // /api/csrf resta FUORI da questa esclusione (vedi pattern sotto) perché
+        // deve restare protetta dal filtro CSRF: è l'unico modo per cui Spring
+        // calcola e mette a disposizione un CsrfToken da restituire a React.
+        httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers(
+                "/api/home", "/api/tornei/**", "/api/utente/**", "/api/auth/**"
+        ));
 
         httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return httpSecurity.build();

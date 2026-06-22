@@ -26,7 +26,7 @@
             </span>
             <span class="navbar-auth" sec:authorize="isAuthenticated()">
                 <span class="nav-user"><span sec:authentication="name">utente</span></span>
-                <a class="btn btn-ghost" sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin}">Area Admin</a>
+                <a class="btn btn-ghost" sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin/index}">Area Admin</a>
                 <form class="logout-form" th:action="@{/logout}" method="POST">
                     <button type="submit" class="btn btn-accent">Logout</button>
                 </form>

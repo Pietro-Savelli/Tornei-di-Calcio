@@ -148,4 +148,9 @@ public class TorneoService {
 
         return classificaOrdinata;
     }
+
+    @Transactional(readOnly = true)
+    public List<Squadra> findSquadreByTorneoId(Long torneoId) {
+        return torneoRepository.findSquadreByTorneoId(torneoId);
+    }
 }

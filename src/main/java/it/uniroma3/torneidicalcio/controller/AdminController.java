@@ -250,19 +250,21 @@ public class AdminController {
         Partita partita = new Partita();
         if (torneoId != null) {
             Torneo torneo = this.torneoService.findById(torneoId);
-            if (torneo != null) partita.setTorneo(torneo);
+            if (torneo != null) {
+                partita.setTorneo(torneo);
+            }
         }
         model.addAttribute("partita", partita);
-        model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
-        model.addAttribute("squadre", this.squadraService.findAll().stream()
-                .filter(s -> !s.isEliminata()).toList());
+        popolaFormPartita(model, torneoId);
+
         return "admin/formPartite";
     }
 
     @PostMapping("/partite/new")
     public String createPartita(@Valid @ModelAttribute("partita") Partita partita, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            popolaFormPartita(model);
+            Long torneoId = partita.getTorneo() != null ? partita.getTorneo().getId() : null;
+            popolaFormPartita(model, torneoId);
             return "admin/formPartite";
         }
         try {
@@ -271,35 +273,40 @@ public class AdminController {
             return "redirect:/tornei/" + salvata.getTorneo().getId();
         } catch (PartitaDuplicataException e) {
             bindingResult.reject("partita.duplicata", null);
-            popolaFormPartita(model);
+            Long torneoId = partita.getTorneo() != null ? partita.getTorneo().getId() : null;
+            popolaFormPartita(model, torneoId);
             return "admin/formPartite";
         }
     }
 
-    private void popolaFormPartita(Model model) {
+    private void popolaFormPartita(Model model, Long torneoId) {
         model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
-        model.addAttribute("squadre", this.squadraService.findAll().stream()
-                .filter(s -> !s.isEliminata()).toList());
+        model.addAttribute("torneoSelezionatoId", torneoId);
+        List<Squadra> squadreDelTorneo = torneoId != null
+                ? this.torneoService.findSquadreByTorneoId(torneoId)
+                : List.of();
+        model.addAttribute("squadre", squadreDelTorneo);
     }
 
-    //da modificare, aggiungi il fatto che le squadre che vedi giocano nel torneo
     @GetMapping("/partite/{id}/edit")
-    public String editPartitaForm(@PathVariable Long id, Model model) {
+    public String editPartitaForm(@PathVariable Long id, @RequestParam(required = false) Long torneoId,  Model model) {
         Partita partita = this.partitaService.findById(id);
         if (partita == null) return "redirect:/tornei/";
+
+        Long torneoSelezionatoId = torneoId != null
+                ? torneoId
+                : (partita.getTorneo() != null ? partita.getTorneo().getId() : null);
+
         model.addAttribute("partita", partita);
-        model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
-        model.addAttribute("squadre", this.squadraService.findAll().stream()
-                .filter(s -> !s.isEliminata()).toList());
+        popolaFormPartita(model, torneoSelezionatoId);
         return "admin/formPartite";
     }
 
     @PostMapping("/partite/{id}/edit")
-    public String editPartita(@PathVariable Long id,
-                              @Valid @ModelAttribute("partita") Partita partita,
-                              BindingResult bindingResult, Model model) {
+    public String editPartita(@PathVariable Long id, @Valid @ModelAttribute("partita") Partita partita, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            popolaFormPartita(model);
+            Long torneoId = partita.getTorneo() != null ? partita.getTorneo().getId() : null;
+            popolaFormPartita(model, torneoId);
             return "admin/formPartite";
         }
         try {
@@ -307,7 +314,8 @@ public class AdminController {
             return "redirect:/partite/" + id;
         } catch (PartitaDuplicataException e) {
             bindingResult.reject("partita.duplicata", null);
-            popolaFormPartita(model);
+            Long torneoId = partita.getTorneo() != null ? partita.getTorneo().getId() : null;
+            popolaFormPartita(model, torneoId);
             return "admin/formPartite";
         }
     }

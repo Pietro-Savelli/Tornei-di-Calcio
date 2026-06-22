@@ -1,6 +1,8 @@
 package it.uniroma3.torneidicalcio.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,6 +24,9 @@ public class Giocatore {
     @NotNull
     @Enumerated(EnumType.STRING) // serve per dire al db di salvarlo come una stringa(serve per la scalabilita' del cosdice)
     private Ruolo ruolo;
+
+    @Min(100)
+    @Max(230)
     private Integer altezza;
 
     @ManyToOne

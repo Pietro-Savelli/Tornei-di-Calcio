@@ -1,6 +1,7 @@
 package it.uniroma3.torneidicalcio.repository;
 
 import it.uniroma3.torneidicalcio.model.Partita;
+import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Torneo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -44,4 +45,7 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
 
     @Query("SELECT COUNT(s) FROM Torneo t JOIN t.squadre s WHERE t.id = :torneoId")
     int countSquadreByTorneoId(@Param("torneoId") Long torneoId);
+
+    @Query("SELECT s FROM Torneo t JOIN t.squadre s WHERE t.id = :torneoId AND s.eliminata = false")
+    List<Squadra> findSquadreByTorneoId(@Param("torneoId") Long torneoId);
 }

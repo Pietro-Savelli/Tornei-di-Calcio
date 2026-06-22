@@ -14,125 +14,148 @@
 
 <div class="container page">
 
-<h1 class="page-title"
-    th:text="${partita.id != null} ? '✏️ Modifica Partita' : '📅 Registra Nuova Partita'">
-</h1>
-<p class="page-subtitle"
-   th:text="${partita.id != null}
+    <h1 class="page-title"
+        th:text="${partita.id != null} ? 'Modifica Partita' : 'Registra Nuova Partita'">
+    </h1>
+    <p class="page-subtitle"
+       th:text="${partita.id != null}
        ? 'Modifica i dati della partita o aggiorna il suo stato.'
        : 'Inserisci i dati per programmare una nuova partita.'">
-</p>
+    </p>
 
-<div class="form-card">
-    <h2>🏟️ Dati Partita</h2>
+    <div class="form-card">
+        <h2>Dati Partita</h2>
 
-    <form th:action="${partita.id != null}
+        <form id="formFiltroTorneo"
+              th:action="${partita.id != null}
                     ? @{/admin/partite/{id}/edit(id=${partita.id})}
                     : @{/admin/partite/new}"
-          th:object="${partita}"
-          method="POST">
+              method="GET">
+            <div class="form-group">
+                <label for="torneo">Torneo</label>
+                <select id="torneo" name="torneoId" onchange="this.form.submit()" required>
+                    <option value="">-- Seleziona torneo --</option>
+                    <option th:each="t : ${tornei}"
+                            th:value="${t.id}"
+                            th:text="${t.nome + ' (' + t.anno + ')'}"
+                            th:selected="${torneoSelezionatoId != null and torneoSelezionatoId == t.id}">
+                    </option>
+                </select>
+                <noscript>
+                    <button type="submit" class="btn btn-secondary" style="margin-top:8px;">
+                        Mostra squadre del torneo
+                    </button>
+                </noscript>
+            </div>
+        </form>
 
-        <input type="hidden" th:if="${partita.id != null}" th:field="*{id}" />
+        <form id="formPartita"
+              th:action="${partita.id != null}
+                    ? @{/admin/partite/{id}/edit(id=${partita.id})}
+                    : @{/admin/partite/new}"
+              th:object="${partita}"
+              method="POST">
 
-        <!-- Errore globale di business (es. partita duplicata) -->
-        <div class="form-group" th:if="${#fields.hasGlobalErrors()}">
-            <div class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-        </div>
+            <input type="hidden" th:if="${partita.id != null}" th:field="*{id}" />
+            <input type="hidden" name="torneo.id" th:value="${torneoSelezionatoId}" />
 
-        <div class="form-group">
-            <label for="torneo">Torneo</label>
-            <select id="torneo" name="torneo.id" required>
-                <option value="">-- Seleziona torneo --</option>
-                <option th:each="t : ${tornei}"
-                        th:value="${t.id}"
-                        th:text="${t.nome + ' (' + t.anno + ')'}"
-                        th:selected="${partita.torneo != null and partita.torneo.id == t.id}">
-                </option>
-            </select>
-        </div>
+            <!-- partita duplicata -->
+            <div class="form-group" th:if="${#fields.hasGlobalErrors()}">
+                <div class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+            </div>
 
-        <div class="form-group">
-            <label for="squadraCasa">Squadra in Casa</label>
-            <select id="squadraCasa" name="squadraCasa.id" required>
-                <option value="">-- Seleziona squadra --</option>
-                <option th:each="s : ${squadre}"
-                        th:value="${s.id}"
-                        th:text="${s.nome}"
-                        th:selected="${partita.squadraCasa != null and partita.squadraCasa.id == s.id}">
-                </option>
-            </select>
-        </div>
+            <!-- torneo scelto, mostrato come testo (non editabile qui: si cambia con la select sopra) -->
+            <div class="form-group" th:if="${torneoSelezionatoId != null}">
+                <label>Torneo selezionato</label>
+                <p style="margin:4px 0;">
+                    <strong th:each="t : ${tornei}"
+                            th:if="${t.id == torneoSelezionatoId}"
+                            th:text="${t.nome + ' (' + t.anno + ')'}">
+                    </strong>
+                </p>
+            </div>
 
-        <div class="form-group">
-            <label for="squadraOspite">Squadra Ospite</label>
-            <select id="squadraOspite" name="squadraOspite.id" required>
-                <option value="">-- Seleziona squadra --</option>
-                <option th:each="s : ${squadre}"
-                        th:value="${s.id}"
-                        th:text="${s.nome}"
-                        th:selected="${partita.squadraOspite != null and partita.squadraOspite.id == s.id}">
-                </option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="squadraCasa">Squadra in Casa</label>
+                <select id="squadraCasa" name="squadraCasa.id" required th:disabled="${torneoSelezionatoId == null}">
+                    <option value=""
+                            th:text="${torneoSelezionatoId == null} ? '-- Seleziona prima il torneo --' : '-- Seleziona squadra --'">
+                    </option>
+                    <option th:each="s : ${squadre}"
+                            th:value="${s.id}"
+                            th:text="${s.nome}"
+                            th:selected="${partita.squadraCasa != null and partita.squadraCasa.id == s.id}">
+                    </option>
+                </select>
+                <span th:if="${torneoSelezionatoId != null and #lists.isEmpty(squadre)}"
+                      style="font-size:0.82rem; color:#b00; display:block; margin-top:5px;">
+                Nessuna squadra iscritta a questo torneo.
+            </span>
+            </div>
 
-        <div class="form-group">
-            <label for="luogo">Luogo / Stadio</label>
-            <input type="text" id="luogo" th:field="*{luogo}"
-                   placeholder="es. Stadio Olimpico, Roma" />
-        </div>
+            <div class="form-group">
+                <label for="squadraOspite">Squadra Ospite</label>
+                <select id="squadraOspite" name="squadraOspite.id" required th:disabled="${torneoSelezionatoId == null}">
+                    <option value=""
+                            th:text="${torneoSelezionatoId == null} ? '-- Seleziona prima il torneo --' : '-- Seleziona squadra --'">
+                    </option>
+                    <option th:each="s : ${squadre}"
+                            th:value="${s.id}"
+                            th:text="${s.nome}"
+                            th:selected="${partita.squadraOspite != null and partita.squadraOspite.id == s.id}">
+                    </option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="dataOra">Data e Ora</label>
-            <!--
-                FIX: th:field su LocalDateTime non pre-compila correttamente.
-                Usiamo name + th:value con formato 'yyyy-MM-dd'T'HH:mm'
-                che è esattamente quello che si aspetta input type="datetime-local".
-            -->
-            <input type="datetime-local" id="dataOra" name="dataOra"
-                   th:value="${partita.dataOra != null}
+            <div class="form-group">
+                <label for="luogo">Luogo / Stadio</label>
+                <input type="text" id="luogo" th:field="*{luogo}"
+                       placeholder="es. Stadio Olimpico, Roma" />
+            </div>
+
+            <div class="form-group">
+                <label for="dataOra">Data e Ora</label>
+
+                <input type="datetime-local" id="dataOra" name="dataOra"
+                       th:value="${partita.dataOra != null}
                               ? ${#temporals.format(partita.dataOra, 'yyyy-MM-dd') + 'T' + #temporals.format(partita.dataOra, 'HH:mm')}
                               : ''" />
-        </div>
+            </div>
 
-        <!--
-            STATO — visibile solo in modifica.
-            In creazione viene impostato automaticamente a SCHEDULED dal controller.
-            In modifica l'admin può cambiarlo: es. da FINISHED a SCHEDULED se la partita
-            deve essere rigiorata, oppure a POSTPONED se è rinviata.
-            Se si riporta a SCHEDULED i gol vengono azzerati (gestito nel service).
-        -->
-        <div class="form-group" th:if="${partita.id != null}">
-            <label for="stato">Stato</label>
-            <select id="stato" name="stato">
-                <option th:each="s : ${T(it.uniroma3.torneidicalcio.model.Stato).values()}"
-                        th:value="${s}"
-                        th:text="${s}"
-                        th:selected="${partita.stato == s}">
-                </option>
-            </select>
-            <span style="font-size:0.82rem; color:#888; display:block; margin-top:5px;">
-                ⚠️ Se porti lo stato da <strong>FINISHED</strong> a <strong>SCHEDULED</strong>
+            <!--STATO, visibile solo in modifica.-->
+            <div class="form-group" th:if="${partita.id != null}">
+                <label for="stato">Stato</label>
+                <select id="stato" name="stato">
+                    <option th:each="s : ${T(it.uniroma3.torneidicalcio.model.Stato).values()}"
+                            th:value="${s}"
+                            th:text="${s}"
+                            th:selected="${partita.stato == s}">
+                    </option>
+                </select>
+                <span style="font-size:0.82rem; color:#888; display:block; margin-top:5px;">
+                Se porti lo stato da <strong>FINISHED</strong> a <strong>SCHEDULED</strong>
                 o <strong>POSTPONED</strong>, i gol vengono azzerati automaticamente.
                 Per aggiornare solo il risultato usa la
                 <a th:href="@{/admin/partite/{id}/risultato(id=${partita.id})}">pagina risultato</a>.
             </span>
-        </div>
+            </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-success"
-                    th:text="${partita.id != null} ? '💾 Salva Modifiche' : '📅 Registra Partita'">
-            </button>
-            <a th:href="${partita.torneo != null}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success"
+                        th:disabled="${torneoSelezionatoId == null}"
+                        th:text="${partita.id != null} ? 'Salva Modifiche' : 'Registra Partita'">
+                </button>
+                <a th:href="${partita.torneo != null}
                         ? '/tornei/' + ${partita.torneo.id} + '/calendario'
                         : '/tornei/'"
-               class="btn btn-secondary">
-                ↩️ Annulla
-            </a>
-        </div>
-    </form>
-</div>
+                   class="btn btn-secondary">
+                    Annulla
+                </a>
+            </div>
+        </form>
+    </div>
 
-<a th:href="@{/tornei/}" class="back-link">← Torna ai tornei</a>
+    <a th:href="@{/tornei/}" class="back-link">← Torna ai tornei</a>
 
 </div>
 

@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="/css/stile.css" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="|⚽ ${partita.squadraCasa?.nome} vs ${partita.squadraOspite?.nome} - MatchDay|">
-        ⚽ Lazio vs Roma | MatchDay
+    <title th:text="| ${partita.squadraCasa?.nome} vs ${partita.squadraOspite?.nome} - MatchDay|">
+         Lazio vs Roma | MatchDay
     </title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -33,57 +33,41 @@
 
     <!-- ===== SCORE CARD ===== -->
     <section class="score-card fade-in stagger-1">
-        <div class="score-label">Risultato Finale</div>
+
+        <div class="score-label" th:text="${partita.stato.name() == 'FINISHED' ? 'Risultato Finale' : (partita.stato.name() == 'CANCELLED' ? 'Partita Annullata' : 'In Programma')}">Risultato Finale</div>
+
         <div class="score-board">
             <div class="team">
                 <div class="team-badge" th:text="${partita.squadraCasa.nome}"></div>
                 <div class="team-name" th:text="${partita.squadraCasa.nome}">Lazio</div>
             </div>
+
             <div class="score-divider">
-                <div class="score-number" th:text="|${partita.goalsHome} - ${partita.goalsAway}|">1 - 1</div>
+
+                <!--Partita FINISHED-->
+                <div class="score-number" th:if="${partita.stato.name() == 'FINISHED'}">
+                    <span th:text="${partita.goalsHome != null ? partita.goalsHome : '-'}">1</span>
+                    -
+                    <span th:text="${partita.goalsAway != null ? partita.goalsAway : '-'}">1</span>
+                </div>
+
+                <!-- Partita non giocata-->
+                <div class="no-play-score" th:unless="${partita.stato.name() == 'FINISHED'}">
+
+                    <span class="vs" th:text="${partita.stato.name() == 'CANCELLED' ? '✖' : 'VS'}">VS</span>
+                    <span class="testo-aggiuntivo" th:text="${partita.stato.name() == 'CANCELLED' ? 'Annullata' : 'Da giocare'}">Da giocare</span>
+
+                </div>
+
             </div>
+
             <div class="team">
                 <div class="team-badge">✈️</div>
                 <div class="team-name" th:text="${partita.squadraOspite.nome}">Roma</div>
             </div>
         </div>
-        <div class="match-status">Terminata</div>
-    </section>
 
-    <!-- ===== DETAILS CARD ===== -->
-    <section class="card fade-in stagger-2">
-        <div class="card-header">
-            <h2>Dettagli della Partita</h2>
-        </div>
-
-        <ul class="detail-list">
-            <li class="detail-item">
-                <span class="detail-label">
-                    <span></span> Arbitro
-                </span>
-                <span class="detail-value" th:text="${partita.arbitro != null ? partita.arbitro.nome + ' ' + partita.arbitro.cognome : 'Da designare'}">Da designare</span>
-            </li>
-            <li class="detail-item">
-                <span class="detail-label">
-                    <span></span> Squadra di casa
-                </span>
-                <span class="detail-value">
-                    <a th:href="@{/squadre/{id}(id=${partita.squadraCasa.id})}" th:text="${partita.squadraCasa.nome}">Lazio</a>
-                </span>
-            </li>
-            <li class="detail-item">
-                <span class="detail-label">
-                    <span></span> Squadra ospite
-                </span>
-                <span class="detail-value">
-                    <a th:href="@{/squadre/{id}(id=${partita.squadraOspite.id})}" th:text="${partita.squadraOspite.nome}">Roma</a>
-                </span>
-            </li>
-        </ul>
-
-        <a class="back-link" th:href="@{/tornei/{id}(id=${partita.torneo.id})}">
-            ← Torna al torneo
-        </a>
+        <div class="match-status" th:text="${partita.stato.name() == 'FINISHED' ? 'Terminata il '+ partita.dataOra: (partita.stato.name() == 'CANCELLED' ? 'Annullata' : 'Da disputare il ' + partita.dataOra)}">Terminata</div>
     </section>
 
     <!-- ADMIN SECTION -->

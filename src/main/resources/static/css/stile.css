@@ -373,6 +373,27 @@ table a:hover { color: var(--accent-light); }
 }
 .team-name { font-weight: 800; font-size: 1.1rem; }
 .score-divider .score-number { font-size: 2.8rem; font-weight: 900; color: var(--accent-2); }
+.score-divider .no-play-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.score-divider .no-play-score .vs {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--card-border-strong);
+}
+
+.score-divider .no-play-score .testo-aggiuntivo {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 .match-status { margin-top: 18px; display: inline-block; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; }
 
 .detail-list { list-style: none; }

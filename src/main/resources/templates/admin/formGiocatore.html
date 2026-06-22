@@ -68,8 +68,8 @@
 
         <div class="form-group">
             <label for="altezza">Altezza (cm)</label>
-            <input type="number" id="altezza" th:field="*{altezza}"
-                   min="100" max="250" placeholder="es. 182" />
+            <input type="number" id="altezza" th:field="*{altezza}"/>
+            <span class="field-error" th:if="${#fields.hasErrors('altezza')}" th:errors="*{altezza}"></span>
         </div>
 
         <div class="form-group">
@@ -86,9 +86,9 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-success"
-                    th:text="${giocatore.id != null} ? '💾 Salva Modifiche' : '➕ Crea Giocatore'">
+                    th:text="${giocatore.id != null} ? 'Salva Modifiche' : 'Crea Giocatore'">
             </button>
-            <a th:href="@{/squadre/}" class="btn btn-secondary">↩️ Annulla</a>
+            <a th:href="@{/squadre/}" class="btn btn-secondary">Annulla</a>
         </div>
     </form>
 </div>

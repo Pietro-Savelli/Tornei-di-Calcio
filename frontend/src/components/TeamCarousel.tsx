@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { initials } from '../utils/helpers';
-import { SquadraHomeDto } from '../types';
+import type { SquadraHomeDto } from '../types';
 
 interface TeamCarouselProps {
   squadre: SquadraHomeDto[];

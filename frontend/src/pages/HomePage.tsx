@@ -7,7 +7,8 @@ import TeamCarousel from '../components/TeamCarousel';
 import { getHome } from '../services/homeService';
 import { aggiungiPreferito, rimuoviPreferito } from '../services/torneoService';
 import { useAuth } from '../context/AuthContext';
-import { HomeDto, TorneoHomeDto } from '../types';
+import { motion } from 'framer-motion';
+import type { HomeDto} from '../types';
 
 export default function HomePage() {
   const [data, setData] = useState<HomeDto | null>(null);

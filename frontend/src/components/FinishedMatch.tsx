@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { matchUrl } from '../utils/helpers';
-import { PartitaHomeDto } from '../types';
+import type { PartitaHomeDto } from '../types';
 
 interface FinishedMatchProps {
   m: PartitaHomeDto;

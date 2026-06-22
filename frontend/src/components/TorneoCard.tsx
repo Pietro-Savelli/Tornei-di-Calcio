@@ -1,32 +1,41 @@
-import UpcomingMatch from './UpcomingMatch';
 import { useAuth } from '../context/AuthContext';
-import type { TorneoHomeDto } from '../types';
+import type { PartitaHomeDto, TorneoHomeDto } from '../types';
 
 interface TorneoCardProps {
-    readonly t: TorneoHomeDto;
-    readonly onTogglePreferito: (id: number) => void;
+    t: TorneoHomeDto;
+    onTogglePreferito: (id: number) => void;
+}
+
+function UpcomingMatch({ m }: { m: PartitaHomeDto }) {
+    return (
+        <a className="match-row upcoming" href={`http://localhost:8080/tornei/${m.torneoId}/calendario/partita/${m.id}`}>
+            <span className="match-team home" title={m.squadraCasa}>{m.squadraCasa}</span>
+            <span className="match-vs">
+        <span className="vs">VS</span>
+        <span className="match-date">{m.dataOra || 'da definire'}</span>
+      </span>
+            <span className="match-team away" title={m.squadraOspite}>{m.squadraOspite}</span>
+        </a>
+    );
 }
 
 export default function TorneoCard({ t, onTogglePreferito }: TorneoCardProps) {
     const { isAuthenticated } = useAuth();
 
-    const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        onTogglePreferito(t.id);
-    };
-
     return (
         <article className="torneo-card">
-            <header className="torneo-card-head">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
+            <div className="torneo-card-head">
+                <div className="torneo-card-meta">
                     <span className="torneo-badge">{t.anno}</span>
                     <span className="torneo-meta">{t.numeroSquadre} squadre</span>
                     {isAuthenticated && (
                         <button
-                            type="button"
                             className={`preferito-btn ${t.preferito ? 'active' : ''}`}
-                            onClick={handleToggle}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onTogglePreferito(t.id);
+                            }}
                             title={t.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
                             aria-label={t.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
                         >
@@ -36,27 +45,26 @@ export default function TorneoCard({ t, onTogglePreferito }: TorneoCardProps) {
                         </button>
                     )}
                 </div>
-            </header>
+            </div>
 
-            <a className="torneo-card-foot" href={`http://localhost:8080/tornei/${t.id}`}>
+            <a className="torneo-card-title" href={`http://localhost:8080/tornei/${t.id}`}>
                 {t.nome}
             </a>
-
             <p className="torneo-card-desc">{t.descrizione}</p>
 
-            <section className="torneo-card-cols">
+            <div className="torneo-card-cols">
                 <div className="match-col">
                     <h4 className="match-col-title">Prossime partite</h4>
-                    {t.prossimePartite.length > 0 ? (
-                        t.prossimePartite.map((m) => <UpcomingMatch key={m.id} m={m} />)
-                    ) : (
-                        <p className="match-empty">Nessuna partita in programma.</p>
-                    )}
+                    <div className="match-list">
+                        {t.prossimePartite.length > 0
+                            ? t.prossimePartite.map((m) => <UpcomingMatch key={m.id} m={m} />)
+                            : <p className="match-empty">Nessuna partita in programma.</p>}
+                    </div>
                 </div>
-            </section>
+            </div>
 
             <a className="torneo-card-foot" href={`http://localhost:8080/tornei/${t.id}`}>
-                Apri torneo - classifica e calendario →
+                Apri torneo · classifica e calendario →
             </a>
         </article>
     );

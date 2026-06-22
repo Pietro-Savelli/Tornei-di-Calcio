@@ -31,11 +31,6 @@ class PartitaController {
         model.addAttribute("partita", partita);
         model.addAttribute("commento", new Commento());
 
-        Utente utenteLoggato = credentialsService.getUtenteCorrente();
-        if (utenteLoggato != null) {
-            model.addAttribute("utenteLoggato", utenteLoggato);
-        }
-
         return "partite/show";
     }
 

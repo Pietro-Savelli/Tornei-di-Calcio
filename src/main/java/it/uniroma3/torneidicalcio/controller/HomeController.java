@@ -19,16 +19,15 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHome(Model model) {
-        UserDetails userDetails = GlobalController.getUser();
-        model.addAttribute("userDetails", GlobalController.getUser());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean authenticated = auth != null && auth.isAuthenticated() && !(auth instanceof org.springframework.security.authentication.AnonymousAuthenticationToken);
 
-        // Stato di autenticazione iniettato nella SPA React (window.__APP__) dalla index.html Thymeleaf
-        boolean authenticated = userDetails != null;
-        boolean admin = authenticated && userDetails.getAuthorities().stream()
+        boolean admin = authenticated && auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+
         model.addAttribute("isAuth", authenticated);
         model.addAttribute("isAdmin", admin);
-        model.addAttribute("username", authenticated ? userDetails.getUsername() : null);
+        model.addAttribute("username", authenticated ? auth.getName() : null);
 
         return "index";
     }

@@ -20,12 +20,10 @@ import java.util.Optional;
 public class TorneoController {
     private final TorneoService torneoService;
     private final PartitaService partitaService;
-    private final CredentialsService credentialsService;
 
-    public TorneoController(TorneoService torneoService, PartitaService partitaService, CredentialsService credentialsService){
+    public TorneoController(TorneoService torneoService, PartitaService partitaService){
         this.torneoService = torneoService;
         this.partitaService = partitaService;
-        this.credentialsService = credentialsService;
     }
 
     @GetMapping("/")
@@ -61,11 +59,6 @@ public class TorneoController {
         Partita partita = this.partitaService.findById(idPartita);
         model.addAttribute("partita", partita);
         model.addAttribute("commento", new Commento());
-
-        Utente utenteLoggato = credentialsService.getUtenteCorrente();
-        if (utenteLoggato != null) {
-            model.addAttribute("utenteLoggato", utenteLoggato);
-        }
 
         return "partite/show";
     }

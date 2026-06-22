@@ -5,7 +5,7 @@ interface UpcomingMatchProps {
 }
 
 export default function UpcomingMatch({ m }: UpcomingMatchProps) {
-    const urlPartita = `http://localhost:8080/tornei/${m.torneoId}/calendario/partita/${m.id}`;
+    const urlPartita = `/tornei/${m.torneoId}/calendario/partita/${m.id}`;
 
     return (
         <a className="match-row upcoming" href={urlPartita}>

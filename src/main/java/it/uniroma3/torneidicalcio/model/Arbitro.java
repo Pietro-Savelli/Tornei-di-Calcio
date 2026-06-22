@@ -1,6 +1,8 @@
 package it.uniroma3.torneidicalcio.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,8 +14,11 @@ public class Arbitro {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
     private String nome;
+    @NotBlank
     private String cognome;
+    @NotNull
     private  String codiceArbitrale;
 
     @OneToMany(mappedBy = "arbitro")
@@ -58,6 +63,14 @@ public class Arbitro {
 
     public void setPartite(Set<Partita> partite) {
         this.partite = partite;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

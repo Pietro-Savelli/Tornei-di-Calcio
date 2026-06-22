@@ -8,10 +8,7 @@ import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Stato;
 import it.uniroma3.torneidicalcio.model.Torneo;
-import it.uniroma3.torneidicalcio.service.GiocatoreService;
-import it.uniroma3.torneidicalcio.service.PartitaService;
-import it.uniroma3.torneidicalcio.service.SquadraService;
-import it.uniroma3.torneidicalcio.service.TorneoService;
+import it.uniroma3.torneidicalcio.service.*;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,13 +26,14 @@ public class AdminController {
     private final SquadraService squadraService;
     private final GiocatoreService giocatoreService;
     private final PartitaService partitaService;
+    private final ArbitroService arbitroService;
 
-    public AdminController(TorneoService torneoService, SquadraService squadraService,
-                           GiocatoreService giocatoreService, PartitaService partitaService) {
+    public AdminController(TorneoService torneoService, SquadraService squadraService, GiocatoreService giocatoreService, PartitaService partitaService, ArbitroService arbitroService) {
         this.torneoService = torneoService;
         this.squadraService = squadraService;
         this.giocatoreService = giocatoreService;
         this.partitaService = partitaService;
+        this.arbitroService = arbitroService;
     }
 
     // TORNEI
@@ -282,6 +280,7 @@ public class AdminController {
     private void popolaFormPartita(Model model, Long torneoId) {
         model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
         model.addAttribute("torneoSelezionatoId", torneoId);
+        model.addAttribute("arbitri", arbitroService.findAll());
         List<Squadra> squadreDelTorneo = torneoId != null
                 ? this.torneoService.findSquadreByTorneoId(torneoId)
                 : List.of();

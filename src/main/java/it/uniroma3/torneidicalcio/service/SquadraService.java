@@ -4,10 +4,8 @@ import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
 import it.uniroma3.torneidicalcio.model.Giocatore;
 import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Stato;
-import it.uniroma3.torneidicalcio.model.Torneo;
 import it.uniroma3.torneidicalcio.repository.PartitaRepository;
 import it.uniroma3.torneidicalcio.repository.SquadraRepository;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +21,12 @@ public class SquadraService {
         this.partitaRepository = partitaRepository;
     }
 
-
-    public List<Squadra> fidAll() {
+    @Transactional(readOnly = true)
+    public List<Squadra> findAll() {
         return squadraRepository.findAllAttive();
     }
 
+    @Transactional(readOnly = true)
     public Squadra findById(Long id) {
         return squadraRepository.findById(id).orElse(null);// ritorno del torneo se esiste se no null
     }

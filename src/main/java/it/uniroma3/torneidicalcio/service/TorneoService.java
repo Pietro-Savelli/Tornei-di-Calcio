@@ -22,14 +22,17 @@ public class TorneoService {
         this.torneoRepository = torneoRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Torneo> findAllOrdinatiPerAnno(){
         return torneoRepository.findAllOrdinatiPerAnno();  //return (List<Torneo>) torneoRepository.findAll(); se non sovrascrivo il metodo
     }
 
+    @Transactional(readOnly = true)
     public Torneo findById(Long id) {
         return torneoRepository.findById(id).orElse(null);// ritorno del torneo se esiste se no null
     }
 
+    @Transactional(readOnly = true)
     public long conta(){
         return  torneoRepository.count();
     }
@@ -97,6 +100,7 @@ public class TorneoService {
         return torneo;
     }
 
+    @Transactional(readOnly = true)
     public @Nullable Object findCalendarioByTorneoId(Long id) {
         return torneoRepository.findCalendarioByTorneoId(id);
     }

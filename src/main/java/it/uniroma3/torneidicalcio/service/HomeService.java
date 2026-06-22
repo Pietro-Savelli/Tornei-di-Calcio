@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +69,7 @@ public class HomeService {
         tornei.sort((t1, t2) -> Boolean.compare(t2.preferito(), t1.preferito()));
 
         long t2 = System.currentTimeMillis();
-        List<Squadra> entitaSquadre = squadraService.fidAll();
+        List<Squadra> entitaSquadre = squadraService.findAll();
         System.out.println("fidAll: " + (System.currentTimeMillis() - t2) + "ms");
 
         List<SquadraHomeDto> squadre = new ArrayList<>();

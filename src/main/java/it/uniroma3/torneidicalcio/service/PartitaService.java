@@ -22,6 +22,7 @@ public class PartitaService {
         this.partitaRepository = partitaRepository;
     }
 
+    @Transactional(readOnly = true)
     public Optional<Partita> findProssimaPartita(Long id) {
         return partitaRepository.findFirstByTorneoIdAndDataOraAfterOrderByDataOraAsc(id, LocalDateTime.now());
     }
@@ -44,6 +45,7 @@ public class PartitaService {
         return partitaRepository.findProssimePartite(torneoId, LocalDateTime.now(), Stato.FINISHED, PageRequest.of(0, quante));
     }
 
+    @Transactional(readOnly = true)
     public Partita findById(Long id) {
         return partitaRepository.findById(id)
                 .orElseThrow(() -> new PartitaNotFoundException(id));

@@ -27,10 +27,12 @@ public class CommentoService {
         return commentoRepository.save(commento);
     }
 
+    @Transactional(readOnly = true)
     public List<Commento> findByPartita(Partita partita) {
         return commentoRepository.findByPartita(partita);
     }
 
+    @Transactional(readOnly = true)
     public Commento findById(Long id) {
         return commentoRepository.findById(id).orElse(null);
     }

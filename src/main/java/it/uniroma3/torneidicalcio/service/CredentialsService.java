@@ -15,33 +15,34 @@ import java.util.Optional;
 @Service
 public class CredentialsService {
 
-    private PasswordEncoder passwordEncoder;
-    private CredentialsRepository credentialsRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final CredentialsRepository credentialsRepository;
 
     public CredentialsService(PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository) {
         this.passwordEncoder = passwordEncoder;
         this.credentialsRepository = credentialsRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Credentials getCredentials(Long id) {
         Optional<Credentials> result = this.credentialsRepository.findById(id);
         return result.orElse(null);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Credentials getCredentials(String username) {
         Optional<Credentials> result = Optional.ofNullable(this.credentialsRepository.findByUsername(username));
         return result.orElse(null);
     }
 
     @Transactional
-    public Credentials saveCredentials(Credentials credentials) {
+    public void saveCredentials(Credentials credentials) {
         credentials.setRole(Credentials.DEFAULT_ROLE);
         credentials.setPassword(this.passwordEncoder.encode(credentials.getPassword()));
-        return this.credentialsRepository.save(credentials);
+        this.credentialsRepository.save(credentials);
     }
 
+    @Transactional(readOnly = true)
     public Utente getUtenteCorrente(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -56,6 +57,7 @@ public class CredentialsService {
         return null;
     }
 
+    @Transactional(readOnly = true)
     public Credentials findByUsername(String username) {
         return credentialsRepository.findByUsername(username);
     }

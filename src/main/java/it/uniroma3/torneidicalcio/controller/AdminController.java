@@ -13,7 +13,6 @@ import it.uniroma3.torneidicalcio.service.PartitaService;
 import it.uniroma3.torneidicalcio.service.SquadraService;
 import it.uniroma3.torneidicalcio.service.TorneoService;
 import jakarta.validation.Valid;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -74,7 +73,7 @@ public class AdminController {
         List<Partita> partiteAttive     = partite.stream().filter(p -> !p.isEliminata()).toList();
         List<Partita> partiteEliminate  = partite.stream().filter(Partita::isEliminata).toList();
 
-        List<Squadra> squadreDisponibili = this.squadraService.fidAll().stream()
+        List<Squadra> squadreDisponibili = this.squadraService.findAll().stream()
                 .filter(s -> !s.isEliminata() && !squadre.contains(s))
                 .toList();
 
@@ -199,14 +198,14 @@ public class AdminController {
     @GetMapping("/giocatori/new")
     public String createGiocatoreForm(Model model) {
         model.addAttribute("giocatore", new Giocatore());
-        model.addAttribute("squadre", this.squadraService.fidAll());
+        model.addAttribute("squadre", this.squadraService.findAll());
         return "admin/formGiocatore";
     }
 
     @PostMapping("/giocatori/new")
     public String createGiocatore(@Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("squadre", this.squadraService.fidAll());
+            model.addAttribute("squadre", this.squadraService.findAll());
             return "admin/formGiocatore";
         }
         this.giocatoreService.save(giocatore);
@@ -218,14 +217,14 @@ public class AdminController {
         Giocatore giocatore = this.giocatoreService.findById(id);
         if (giocatore == null) return "redirect:/squadre/";
         model.addAttribute("giocatore", giocatore);
-        model.addAttribute("squadre", this.squadraService.fidAll());
+        model.addAttribute("squadre", this.squadraService.findAll());
         return "admin/formGiocatore";
     }
 
     @PostMapping("/giocatori/{id}/edit")
     public String editGiocatore(@PathVariable Long id, @Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("squadre", this.squadraService.fidAll());
+            model.addAttribute("squadre", this.squadraService.findAll());
             return "admin/formGiocatore";
         }
         this.giocatoreService.update(id, giocatore);
@@ -255,7 +254,7 @@ public class AdminController {
         }
         model.addAttribute("partita", partita);
         model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
-        model.addAttribute("squadre", this.squadraService.fidAll().stream()
+        model.addAttribute("squadre", this.squadraService.findAll().stream()
                 .filter(s -> !s.isEliminata()).toList());
         return "admin/formPartite";
     }
@@ -279,7 +278,7 @@ public class AdminController {
 
     private void popolaFormPartita(Model model) {
         model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
-        model.addAttribute("squadre", this.squadraService.fidAll().stream()
+        model.addAttribute("squadre", this.squadraService.findAll().stream()
                 .filter(s -> !s.isEliminata()).toList());
     }
 
@@ -290,7 +289,7 @@ public class AdminController {
         if (partita == null) return "redirect:/tornei/";
         model.addAttribute("partita", partita);
         model.addAttribute("tornei", this.torneoService.findAllOrdinatiPerAnno());
-        model.addAttribute("squadre", this.squadraService.fidAll().stream()
+        model.addAttribute("squadre", this.squadraService.findAll().stream()
                 .filter(s -> !s.isEliminata()).toList());
         return "admin/formPartite";
     }

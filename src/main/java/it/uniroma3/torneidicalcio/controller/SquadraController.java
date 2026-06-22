@@ -1,12 +1,9 @@
 package it.uniroma3.torneidicalcio.controller;
 
-import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.service.GiocatoreService;
 import it.uniroma3.torneidicalcio.service.SquadraService;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -23,7 +20,7 @@ class SquadraController {
 
     @GetMapping("/")
     public  String list(Model model){
-        model.addAttribute("squadre", this.squadraService.fidAll());
+        model.addAttribute("squadre", this.squadraService.findAll());
         return "squadre/list";
     }
 

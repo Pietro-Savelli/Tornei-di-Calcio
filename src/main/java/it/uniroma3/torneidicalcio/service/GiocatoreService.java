@@ -16,6 +16,7 @@ public class GiocatoreService {
         this.giocatoreRepository = giocatoreRepository;
     }
 
+    @Transactional(readOnly = true)
     public Giocatore findById(Long id) {
         return giocatoreRepository.findById(id).orElse(null);// ritorno del torneo se esiste se no null
     }

@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE = import.meta.env.VITE_API_BASE ?? '';
+import api from '../services/api';
 
 export default function Navbar() {
   const { isAuthenticated, isAdmin, username, logout } = useAuth();
@@ -14,12 +13,10 @@ export default function Navbar() {
       // /logout di Spring Security richiede POST + token CSRF valido
       // (CSRF è disabilitato solo su /api/home, /api/tornei/**, /api/utente/**,
       // /api/auth/**: /logout non è tra questi, quindi serve il token vero).
-      const csrfRes = await fetch(`${API_BASE}/api/csrf`, { credentials: 'include' });
-      const { headerName, token } = await csrfRes.json();
+      const csrfRes = await api.get('/api/csrf');
+      const { headerName, token } = csrfRes.data;
 
-      await fetch(`${API_BASE}/logout`, {
-        method: 'POST',
-        credentials: 'include',
+      await api.post('/logout', null, {
         headers: { [headerName]: token },
       });
     } catch (err) {
@@ -37,15 +34,15 @@ export default function Navbar() {
             <span className="brand-ball"></span> SIW <span className="brand-accent">Tornei</span>
           </Link>
           <div className="navbar-links">
-            <a className="nav-link" href="http://localhost:8080/tornei/">Tornei</a>
-            <a className="nav-link" href="http://localhost:8080/squadre/">Squadre</a>
+            <a className="nav-link" href="/tornei/">Tornei</a>
+            <a className="nav-link" href="/squadre/">Squadre</a>
           </div>
           <div className="navbar-auth">
             {isAuthenticated ? (
                 <>
                   {username && <span className="navbar-username">{username}</span>}
                   {isAdmin && (
-                      <a className="btn btn-ghost" href="http://localhost:8080/admin/index">
+                      <a className="btn btn-ghost" href="/admin/index">
                         Area Admin
                       </a>
                   )}
@@ -55,8 +52,8 @@ export default function Navbar() {
                 </>
             ) : (
                 <>
-                  <a className="btn btn-ghost" href="http://localhost:8080/login">Login</a>
-                  <a className="btn btn-accent" href="http://localhost:8080/register">Registrati</a>
+                  <a className="btn btn-ghost" href="/login">Login</a>
+                  <a className="btn btn-accent" href="/register">Registrati</a>
                 </>
             )}
           </div>

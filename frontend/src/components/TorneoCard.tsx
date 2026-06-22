@@ -8,7 +8,7 @@ interface TorneoCardProps {
 
 function UpcomingMatch({ m }: { m: PartitaHomeDto }) {
     return (
-        <a className="match-row upcoming" href={`http://localhost:8080/tornei/${m.torneoId}/calendario/partita/${m.id}`}>
+        <a className="match-row upcoming" href={`/tornei/${m.torneoId}/calendario/partita/${m.id}`}>
             <span className="match-team home" title={m.squadraCasa}>{m.squadraCasa}</span>
             <span className="match-vs">
         <span className="vs">VS</span>
@@ -47,7 +47,7 @@ export default function TorneoCard({ t, onTogglePreferito }: TorneoCardProps) {
                 </div>
             </div>
 
-            <a className="torneo-card-title" href={`http://localhost:8080/tornei/${t.id}`}>
+            <a className="torneo-card-title" href={`/tornei/${t.id}`}>
                 {t.nome}
             </a>
             <p className="torneo-card-desc">{t.descrizione}</p>
@@ -63,7 +63,7 @@ export default function TorneoCard({ t, onTogglePreferito }: TorneoCardProps) {
                 </div>
             </div>
 
-            <a className="torneo-card-foot" href={`http://localhost:8080/tornei/${t.id}`}>
+            <a className="torneo-card-foot" href={`/tornei/${t.id}`}>
                 Apri torneo · classifica e calendario →
             </a>
         </article>

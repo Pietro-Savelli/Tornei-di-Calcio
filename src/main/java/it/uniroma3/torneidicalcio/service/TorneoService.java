@@ -55,21 +55,21 @@ public class TorneoService {
     }
     @Transactional
     public Torneo update(Long id, Torneo torneoAggiornato) {
-        Torneo torneo = findById(id);
-
-        Torneo esistente = torneoRepository.findByNomeAndAnno(torneo.getNome(), torneo.getAnno());
+        Torneo torneoDaAggiornare = findById(id);
+        if (torneoDaAggiornare == null) {
+            throw new RuntimeException("Torneo non trovato");
+        }
+        Torneo esistente = torneoRepository.findByNomeAndAnno(torneoAggiornato.getNome(), torneoAggiornato.getAnno());
 
         if (esistente != null && !esistente.getId().equals(id)) {
-            throw new TorneoDuplicataException(torneo.getNome(), torneo.getAnno());
+            throw new TorneoDuplicataException(torneoAggiornato.getNome(), torneoAggiornato.getAnno());
         }
 
-        if (torneo != null) {
-            torneo.setNome(torneoAggiornato.getNome());
-            torneo.setAnno(torneoAggiornato.getAnno());
-            torneo.setDescrizione(torneoAggiornato.getDescrizione());
-            return torneoRepository.save(torneo);
-        }
-        return null;
+        torneoDaAggiornare.setNome(torneoAggiornato.getNome());
+        torneoDaAggiornare.setAnno(torneoAggiornato.getAnno());
+        torneoDaAggiornare.setDescrizione(torneoAggiornato.getDescrizione());
+
+        return torneoRepository.save(torneoDaAggiornare);
     }
 
     @Transactional

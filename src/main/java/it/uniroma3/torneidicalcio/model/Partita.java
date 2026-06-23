@@ -27,6 +27,7 @@ public class Partita {
     @NotNull // una partita deve sempre appartenere a un torneo
     @ManyToOne(fetch = FetchType.LAZY)
     private Torneo torneo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Arbitro arbitro;
 

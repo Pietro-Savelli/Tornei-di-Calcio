@@ -44,6 +44,7 @@ public class TorneoController {
         model.addAttribute("paginaPartite", paginaPartite);
         model.addAttribute("partitaCorrente",
                 paginaPartite.hasContent() ? paginaPartite.getContent().get(0) : null);
+        model.addAttribute("squadreIscritte", this.torneoService.findSquadreByTorneoId(id));
 
         return "tornei/show";
     }

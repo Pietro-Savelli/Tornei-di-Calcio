@@ -105,7 +105,7 @@ public class AdminController {
         Squadra squadra = this.squadraService.findById(squadraId);
         if (torneo != null && squadra != null) {
             torneo.getSquadre().add(squadra);
-            this.torneoService.save(torneo);
+            this.torneoService.aggiungiSquadra(id, squadra);
         }
         return "redirect:/admin/tornei/" + id + "/edit";
     }
@@ -116,7 +116,7 @@ public class AdminController {
         Squadra squadra = this.squadraService.findById(sid);
         if (torneo != null && squadra != null) {
             torneo.getSquadre().remove(squadra);  // rimuove solo il link nella tabella ManyToMany
-            this.torneoService.save(torneo);
+            this.torneoService.rimuoviSquadra(tid, squadra);
         }
         return "redirect:/admin/tornei/" + tid + "/edit";
     }

@@ -79,9 +79,9 @@ public class HomeService {
             squadre.add(dto);
         }
 
-        long n = torneoService.conta();
+        //long n = torneoService.conta();
 
-        return new HomeDto(tornei, squadre, n);
+        return new HomeDto(tornei, squadre);
     }
 
     private TorneoHomeDto toTorneoHomeDto(Torneo t, Set<Long> preferiti) {

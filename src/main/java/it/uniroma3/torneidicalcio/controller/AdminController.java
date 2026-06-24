@@ -174,8 +174,8 @@ public class AdminController {
     public String deleteSquadra(@PathVariable Long id) {
         Squadra squadra = this.squadraService.findById(id);
         if (squadra != null) {
-            squadra.setEliminata(true);
-            this.squadraService.save(squadra);
+
+            this.squadraService.deleteById(squadra.getId());
         }
         return "redirect:/squadre/";
     }

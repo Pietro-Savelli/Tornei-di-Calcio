@@ -33,19 +33,27 @@ public class TorneoController {
     }
 
     @GetMapping("/{id}")
-    public String showTorneo(@PathVariable("id") Long id, @RequestParam(name = "partitaPage", defaultValue = "0") int partitaPage, Model model){
+    public String showTorneo(@PathVariable("id") Long id, @RequestParam(name = "partitaPage", defaultValue = "0") int partitaPage, Model model) {
         model.addAttribute("torneo", this.torneoService.findById(id));
+
         Optional<Partita> prossima = this.partitaService.findProssimaPartita(id);
-        prossima.ifPresent(p -> model.addAttribute("prossimaPartita", p));
+        if (prossima.isPresent()) {
+            Partita p = prossima.get();
+            model.addAttribute("prossimaPartita", p);
+        }
+
         model.addAttribute("classifica", this.torneoService.calcolaClassifica(id));
 
-        //10 partite per pagina, con Precedente/Successivo
-        Page<Partita> paginaPartite = this.partitaService.getPaginaPartite(id, Math.max(partitaPage, 0), 10);
+        int paginaCalcolata;
+        if (partitaPage > 0) {
+            paginaCalcolata = partitaPage;
+        } else {
+            paginaCalcolata = 0;
+        }
+        Page<Partita> paginaPartite = this.partitaService.getPaginaPartite(id, paginaCalcolata, 10);
         model.addAttribute("paginaPartite", paginaPartite);
-        model.addAttribute("partitaCorrente",
-                paginaPartite.hasContent() ? paginaPartite.getContent().get(0) : null);
-        model.addAttribute("squadreIscritte", this.torneoService.findSquadreByTorneoId(id));
 
+        model.addAttribute("squadreIscritte", this.torneoService.findSquadreByTorneoId(id));
         return "tornei/show";
     }
 

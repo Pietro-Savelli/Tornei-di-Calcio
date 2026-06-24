@@ -109,7 +109,7 @@
 
             <div class="form-group">
                 <label for="arbitro">Arbitro</label> <!-- Corretto da Squadra Ospite a Arbitro -->
-                <select id="arbitro" name="arbitro" required th:disabled="${torneoSelezionatoId == null}">
+                <select id="arbitro" name="arbitro" th:disabled="${torneoSelezionatoId == null}">
                     <option value="" th:text="'-- Seleziona arbitro --'"></option>
                     <option th:each="a : ${arbitri}"
                             th:value="${a.id}"

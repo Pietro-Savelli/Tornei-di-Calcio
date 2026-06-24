@@ -28,8 +28,6 @@ public class fetchTest implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        // FIX: guardia contro DB vuoto — iterator().next() lanciava NoSuchElementException
-        // facendo fallire l'avvio dell'applicazione se non c'erano tornei seedati.
         var iterator = torneoRepository.findAll().iterator();
         if (!iterator.hasNext()) {
             System.out.println(">>> [fetchTest] Nessun torneo nel DB: test di performance saltato.");
@@ -41,25 +39,6 @@ public class fetchTest implements CommandLineRunner {
 
         StopWatch watch = new StopWatch();
 
-
-        // =========================================================
-        // TEST B: 2x JOIN FETCH — SOLO CARICAMENTO
-        // =========================================================
-
-        watch.start("B - 2x JOIN FETCH caricamento");
-        Torneo t2 = torneoRepository.findTorneoWithPartite(id);
-        torneoRepository.findTorneoWithSquadre(id);
-        // Forza materializzazione delle proxy (come nel test A)
-        for (Partita p : t2.getPartite()) {
-            p.getSquadraCasa().getNome();
-            p.getSquadraOspite().getNome();
-        }
-        for (Squadra s : t2.getSquadre()) {
-            s.getNome();
-        }
-        watch.stop();
-        // PULISCI la cache di Hibernate tra i due test
-        entityManager.clear();
 
         // =========================================================
         // TEST A: LAZY N+1 — SOLO CARICAMENTO
@@ -77,19 +56,23 @@ public class fetchTest implements CommandLineRunner {
         watch.stop();
 
 
-        // PULISCI cache
         entityManager.clear();
 
         // =========================================================
-        // TEST C: end-to-end calcolaClassifica
+        // TEST B: 2x JOIN FETCH — SOLO CARICAMENTO
         // =========================================================
-        watch.start("C - calcolaClassifica end-to-end");
-        torneoService.calcolaClassifica(id);
-        watch.stop();
 
-        System.out.println("\n========== RISULTATI PERFORMANCE ==========");
-        System.out.println(watch.prettyPrint());
-        System.out.println("==========================================\n");
+        watch.start("B - 2x JOIN FETCH caricamento");
+        Torneo t2 = torneoRepository.findTorneoWithPartite(id);
+        torneoRepository.findTorneoWithSquadre(id);
+        for (Partita p : t2.getPartite()) {
+            p.getSquadraCasa().getNome();
+            p.getSquadraOspite().getNome();
+        }
+        for (Squadra s : t2.getSquadre()) {
+            s.getNome();
+        }
+        watch.stop();
     }
 }
 

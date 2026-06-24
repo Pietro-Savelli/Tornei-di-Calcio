@@ -504,3 +504,33 @@ table a:hover { color: var(--accent-light); }
     .navbar-inner { height: auto; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
     .torneo-cards { grid-template-columns: 1fr; }
 }
+
+
+/* Contenitore della riga della partita */
+.match-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Squadra in casa (metà sinistra) */
+.match-team.home {
+    flex: 1;               /* Occupa tutto lo spazio disponibile a sinistra */
+    text-align: right;     /* Spinge il testo della squadra verso il risultato */
+    padding-right: 15px;   /* Un po' di respiro dal punteggio */
+}
+
+/* Blocco centrale (Risultato o VS) */
+.match-vs {
+    flex: 0 0 70px;        /* Larghezza fissa (70px). Aumentala se serve più spazio */
+    text-align: center;    /* Centra il risultato (es. 2 - 2) nella sua "scatola" */
+    justify-content: center;
+}
+
+/* Squadra in trasferta (metà destra) */
+.match-team.away {
+    flex: 1;               /* Occupa tutto lo spazio disponibile a destra, speculare alla home */
+    text-align: left;      /* Spinge il testo lontano dal risultato */
+    padding-left: 15px;    /* Un po' di respiro dal punteggio */
+}

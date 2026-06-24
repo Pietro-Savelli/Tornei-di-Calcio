@@ -97,9 +97,9 @@ export default function HomePage() {
                 <div className="container">
                   <FadeIn delay={0}>
                     <div className="section-header">
-                      <h2 className="section-title">Tornei {data.n}</h2>
+                      <h2 className="section-title">Tornei </h2>
                       <p className="section-sub">
-                        Le ultime partite giocate e le prossime sfide, torneo per torneo.
+                        Le prossime sfide, torneo per torneo.
                       </p>
                     </div>
                   </FadeIn>

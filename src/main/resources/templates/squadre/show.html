@@ -66,8 +66,17 @@
         <a th:each="partita: ${squadra.partiteGiocateInCasa}" class="match-row"
            th:href="@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/' + ${partita.id}}">
             <span class="match-team home" th:text="${partita.squadraCasa.nome}">Lazio</span>
-            <span class="match-vs"><span class="vs">VS</span>
-                <span class="match-date" th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy') : '—'}">data</span></span>
+
+            <span class="match-vs">
+            <span th:if="${partita.stato != null and partita.stato.name() == 'FINISHED'}" class="vs">
+                <strong th:text="${partita.goalsHome + ' - ' + partita.goalsAway}"></strong>
+            </span>
+            <th:block th:unless="${partita.stato != null and partita.stato.name() == 'FINISHED'}">
+                <span class="vs">VS</span>
+                <span class="match-date" th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy') : '—'}">data</span>
+            </th:block>
+        </span>
+
             <span class="match-team away" th:text="${partita.squadraOspite.nome}">Roma</span>
         </a>
         <p class="match-empty" th:if="${#sets.isEmpty(squadra.partiteGiocateInCasa)}">Nessuna partita in casa.</p>
@@ -76,8 +85,17 @@
         <a th:each="partita: ${squadra.partiteGiocateInTrasferta}" class="match-row"
            th:href="@{'/tornei/' + ${partita.torneo.id} + '/calendario/partita/' + ${partita.id}}">
             <span class="match-team home" th:text="${partita.squadraCasa.nome}">Roma</span>
-            <span class="match-vs"><span class="vs">VS</span>
-                <span class="match-date" th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy') : '—'}">data</span></span>
+
+            <span class="match-vs">
+            <span th:if="${partita.stato != null and partita.stato.name() == 'FINISHED'}" class="vs">
+                <strong th:text="${partita.goalsHome + ' - ' + partita.goalsAway}"></strong>
+            </span>
+            <th:block th:unless="${partita.stato != null and partita.stato.name() == 'FINISHED'}">
+                <span class="vs">VS</span>
+                <span class="match-date" th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy') : '—'}">data</span>
+            </th:block>
+        </span>
+
             <span class="match-team away" th:text="${partita.squadraOspite.nome}">Lazio</span>
         </a>
         <p class="match-empty" th:if="${#sets.isEmpty(squadra.partiteGiocateInTrasferta)}">Nessuna partita in trasferta.</p>

@@ -9,6 +9,7 @@
     <title th:text="| ${partita.squadraCasa?.nome} vs ${partita.squadraOspite?.nome} - MatchDay|">
          Lazio vs Roma | MatchDay
     </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -38,7 +39,9 @@
 
         <div class="score-board">
             <div class="team">
-                <div class="team-badge" th:text="${partita.squadraCasa.nome}"></div>
+                <div class="team-badge">
+                    <span class="material-symbols-rounded">home</span>
+                </div>
                 <div class="team-name" th:text="${partita.squadraCasa.nome}">Lazio</div>
             </div>
 
@@ -62,7 +65,9 @@
             </div>
 
             <div class="team">
-                <div class="team-badge">✈️</div>
+                <div class="team-badge">
+                    <span class="material-symbols-rounded">flight_takeoff</span>
+                </div>
                 <div class="team-name" th:text="${partita.squadraOspite.nome}">Roma</div>
             </div>
         </div>

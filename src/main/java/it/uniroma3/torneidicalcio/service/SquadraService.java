@@ -40,10 +40,16 @@ public class SquadraService {
 
     @Transactional
     public Squadra iscriviSquadra(Squadra squadra) {
-        if (squadraRepository.existsByNomeAndEliminataFalse(squadra.getNome())) {
+        if (squadraRepository.existsByNomeAndAnnoFondazioneAndEliminataFalse(squadra.getNome(), squadra.getAnnoFondazione())) {
             throw new SquadraDuplicataException(squadra.getNome());
         }
-        return squadraRepository.save(squadra);
+        if(squadraRepository.existsByNomeAndAnnoFondazioneAndEliminataTrue(squadra.getNome(), squadra.getAnnoFondazione())) {
+            Squadra esistente = squadraRepository.findByNomeAndAnnoFondazione(squadra.getNome(), squadra.getAnnoFondazione());
+            esistente.setEliminata(false);
+            return squadraRepository.save(esistente);
+        }
+        else
+            return squadraRepository.save(squadra);
     }
 
     @Transactional

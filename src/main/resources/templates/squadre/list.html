@@ -13,7 +13,6 @@
 
 <div class="container page">
     <h1>Squadre</h1>
-    <p class="page-lead">Totale squadre: <span th:text="${squadre.size()}">0</span></p>
 
     <div sec:authorize="hasAuthority('ADMIN')">
         <a th:href="@{/admin/squadre/new}" class="btn btn-create">Crea Nuova Squadra</a>

@@ -12,8 +12,7 @@
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <div class="container page">
-    <h1>🏆 Tornei</h1>
-    <p class="page-lead">Totale tornei: <span th:text="${tornei.size()}">0</span></p>
+    <h1>Tornei</h1>
 
     <div sec:authorize="hasAuthority('ADMIN')">
         <a th:href="@{/admin/tornei/new}" class="btn btn-create">Crea Nuovo Torneo</a>

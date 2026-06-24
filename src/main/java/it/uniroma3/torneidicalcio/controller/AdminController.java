@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -64,19 +65,47 @@ public class AdminController {
     @GetMapping("/tornei/{id}/edit")
     public String editTorneoForm(@PathVariable Long id, Model model) {
         Torneo torneo = this.torneoService.findByIdWithDetails(id);
-        if (torneo == null) return "redirect:/tornei/";
+        if (torneo == null) {
+            return "redirect:/tornei/";
+        }
 
         Set<Partita> partite = torneo.getPartite();
         Set<Squadra> squadre = torneo.getSquadre();
 
-        List<Squadra> squadreAttive     = squadre.stream().filter(s -> !s.isEliminata()).toList();
-        List<Squadra> squadreEliminate  = squadre.stream().filter(Squadra::isEliminata).toList();
-        List<Partita> partiteAttive     = partite.stream().filter(p -> !p.isEliminata()).toList();
-        List<Partita> partiteEliminate  = partite.stream().filter(Partita::isEliminata).toList();
+        List<Squadra> squadreAttive = new ArrayList<>();
+        List<Squadra> squadreEliminate = new ArrayList<>();
+        if (squadre != null) {
+            for (Squadra s : squadre) {
+                if (s.isEliminata()) {
+                    squadreEliminate.add(s);
+                } else {
+                    squadreAttive.add(s);
+                }
+            }
+        }
 
-        List<Squadra> squadreDisponibili = this.squadraService.findAll().stream()
-                .filter(s -> !s.isEliminata() && !squadre.contains(s))
-                .toList();
+        List<Partita> partiteAttive = new ArrayList<>();
+        List<Partita> partiteEliminate = new ArrayList<>();
+        if (partite != null) {
+            for (Partita p : partite) {
+                if (p.isEliminata()) {
+                    partiteEliminate.add(p);
+                } else {
+                    partiteAttive.add(p);
+                }
+            }
+        }
+
+        List<Squadra> tutteLeSquadre = this.squadraService.findAll();
+        List<Squadra> squadreDisponibili = new ArrayList<>();
+        if (tutteLeSquadre != null) {
+            for (Squadra s : tutteLeSquadre) {
+                //  se non è eliminata e non è già nel torneo
+                if (!s.isEliminata() && (squadre == null || !squadre.contains(s))) {
+                    squadreDisponibili.add(s);
+                }
+            }
+        }
 
         model.addAttribute("torneo", torneo);
         model.addAttribute("partiteAttive", partiteAttive);
@@ -84,6 +113,7 @@ public class AdminController {
         model.addAttribute("squadreAttive", squadreAttive);
         model.addAttribute("squadreEliminate", squadreEliminate);
         model.addAttribute("squadreDisponibili", squadreDisponibili);
+
         return "admin/formTornei";
     }
 

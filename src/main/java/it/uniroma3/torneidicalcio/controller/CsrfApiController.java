@@ -8,11 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Espone il token CSRF corrente a React. Spring Security lo calcola e lo mette
- * in request.getAttribute(CsrfToken.class.getName()) ogni volta che il filtro
- * CSRF gira sulla richiesta
- */
+//Espone il token CSRF corrente a React.
 @RestController
 @RequestMapping("/api")
 public class CsrfApiController {

@@ -12,13 +12,8 @@ import java.util.Map;
 
 import static it.uniroma3.torneidicalcio.model.Credentials.ADMIN_ROLE;
 
-/**
- * Espone l'utente autenticato della sessione Spring Security corrente a React.
- * Non c'è nessun JWT qui: il browser manda già il cookie JSESSIONID ad ogni
- * richiesta (perché React e Spring sono sullo stesso dominio in produzione,
- * o grazie a withCredentials/CORS in dev), quindi questo endpoint si limita
- * a leggere chi è loggato lato server e a restituirlo come JSON.
- */
+//Espone l'utente autenticato della sessione Spring Security corrente a React.
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthApiController {

@@ -26,7 +26,7 @@
                 <img th:if="${squadra.stemmaUrl != null}"
                      th:src="${squadra.stemmaUrl}"
                      alt="Stemma"
-                     style="width:44px; height:44px; border-radius:50%; object-fit:cover; flex-shrink:0;" />
+                     style="width: 44px; height: 44px; object-fit: contain; display: block; margin: 0 auto 14px;" />
 
                 <span th:if="${squadra.stemmaUrl == null}"
                       class="team-logo" style="width:44px; height:44px; font-size:1.1rem; margin:0;"

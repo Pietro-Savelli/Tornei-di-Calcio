@@ -102,9 +102,17 @@
         </div>
         <div class="team-carousel">
             <a class="team-chip" th:each="squadra : ${squadreIscritte}" th:href="@{'/squadre/' + ${squadra.id}}">
-                <span class="team-logo" th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
+
+                <img th:if="${squadra.stemmaUrl != null}"
+                     th:src="${squadra.stemmaUrl}"
+                     alt="Stemma"
+                     style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto 14px;" />
+
+                <span th:if="${squadra.stemmaUrl == null}"
+                      class="team-logo"
+                      th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
+
                 <span class="team-chip-name" th:text="${squadra.nome}">Lazio</span>
-                <span class="team-chip-city" th:text="${squadra.citta}">Roma</span>
             </a>
         </div>
     </section>

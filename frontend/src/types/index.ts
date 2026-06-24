@@ -126,6 +126,7 @@ export interface SquadraHomeDto {
   nome: string;
   citta: string;
   annoFondazione: number;
+  stemmaUrl: string|null;
 }
 
 export interface TorneoHomeDto {

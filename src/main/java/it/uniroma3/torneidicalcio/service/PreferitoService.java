@@ -8,6 +8,8 @@ import it.uniroma3.torneidicalcio.repository.TorneoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,10 +25,12 @@ public class PreferitoService {
 
     @Transactional(readOnly = true)
     public Set<Long> getTorneoIdsPreferiti(Utente utente) {
-        return preferitoRepository.findByUtente(utente)
-                .stream()
-                .map(p -> p.getTorneo().getId())
-                .collect(Collectors.toSet());
+        Set<Long> torneoIds = new HashSet<>();
+        List<Preferito> preferiti = preferitoRepository.findByUtente(utente);
+        for (Preferito p : preferiti) {
+            torneoIds.add(p.getTorneo().getId());
+        }
+        return torneoIds;
     }
 
     @Transactional

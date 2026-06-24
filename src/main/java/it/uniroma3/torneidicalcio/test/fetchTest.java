@@ -73,6 +73,10 @@ public class fetchTest implements CommandLineRunner {
             s.getNome();
         }
         watch.stop();
+
+        System.out.println("\n========== RISULTATI PERFORMANCE ==========");
+        System.out.println(watch.prettyPrint());
+        System.out.println("==========================================\n");
     }
 }
 

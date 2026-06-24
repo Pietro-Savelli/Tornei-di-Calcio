@@ -2,6 +2,7 @@ package it.uniroma3.torneidicalcio.service;
 
 import it.uniroma3.torneidicalcio.exception.SquadraDuplicataException;
 import it.uniroma3.torneidicalcio.model.Giocatore;
+import it.uniroma3.torneidicalcio.model.Partita;
 import it.uniroma3.torneidicalcio.model.Squadra;
 import it.uniroma3.torneidicalcio.model.Stato;
 import it.uniroma3.torneidicalcio.repository.PartitaRepository;
@@ -9,6 +10,7 @@ import it.uniroma3.torneidicalcio.repository.SquadraRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -55,26 +57,31 @@ public class SquadraService {
     @Transactional
     public void deleteById(Long id) {
         Squadra squadra = findById(id);
-        if (squadra == null) return;
+        if (squadra == null) {
+            return;
+        }
 
         for (Giocatore g : squadra.getGiocatori()) {
             g.setSquadra(null);
         }
 
-        squadra.getPartiteGiocateInCasa().removeIf(p -> {
+        Iterator<Partita> iterCasa = squadra.getPartiteGiocateInCasa().iterator();
+        while (iterCasa.hasNext()) {
+            Partita p = iterCasa.next();
             if (p.getStato() != Stato.FINISHED) {
                 partitaRepository.delete(p);
-                return true;
+                iterCasa.remove();
             }
-            return false;
-        });
-        squadra.getPartiteGiocateInTrasferta().removeIf(p -> {
+        }
+
+        Iterator<Partita> iterTrasferta = squadra.getPartiteGiocateInTrasferta().iterator();
+        while (iterTrasferta.hasNext()) {
+            Partita p = iterTrasferta.next();
             if (p.getStato() != Stato.FINISHED) {
                 partitaRepository.delete(p);
-                return true;
+                iterTrasferta.remove();
             }
-            return false;
-        });
+        }
 
         squadra.setEliminata(true);
         squadraRepository.save(squadra);

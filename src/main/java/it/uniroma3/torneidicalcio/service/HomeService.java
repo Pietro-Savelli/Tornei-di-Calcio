@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,11 +47,15 @@ public class HomeService {
     // da elimidare i  temi per test
     @Transactional(readOnly = true)
     public HomeDto getHomeData() {
-        Utente utente = getUtenteLoggato();
+        //Utente utente = getUtenteLoggato();
+        Utente utente = credentialsService.getUtenteCorrente();
 
-        Set<Long> preferiti = (utente != null)
-                ? preferitoService.getTorneoIdsPreferiti(utente)
-                : Set.of();
+        Set<Long> preferiti;
+        if (utente != null) {
+            preferiti = preferitoService.getTorneoIdsPreferiti(utente);
+        } else {
+            preferiti = new HashSet<>();
+        }
 
         long t0 = System.currentTimeMillis();
         List<Torneo> entitaTornei = torneoService.findAllOrdinatiPerAnno();

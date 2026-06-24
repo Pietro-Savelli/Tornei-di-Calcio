@@ -5,12 +5,9 @@ export default function Hero() {
       <header className="home-hero">
         <div className="home-hero-bg" aria-hidden="true" />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-          <FadeIn delay={0} duration={900}>
-            <p className="home-hero-kicker">SISTEMA INFORMATIVO · CALCIO AMATORIALE</p>
-          </FadeIn>
           <FadeIn delay={150} duration={900}>
             <h1 className="home-hero-title">
-              Vivi ogni <span className="brand-accent">torneo</span>.
+              Segui ogni <span className="brand-accent">torneo</span>.
             </h1>
           </FadeIn>
           <FadeIn delay={300} duration={900}>

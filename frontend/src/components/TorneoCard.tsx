@@ -27,7 +27,7 @@ export default function TorneoCard({ t, onTogglePreferito }: TorneoCardProps) {
             <div className="torneo-card-head">
                 <div className="torneo-card-meta">
                     <span className="torneo-badge">{t.anno}</span>
-                    <span className="torneo-meta">{t.numeroSquadre} squadre</span>
+                    {/*<span className="torneo-meta">{t.numeroSquadre} squadre</span>*/}
                     {isAuthenticated && (
                         <button
                             className={`preferito-btn ${t.preferito ? 'active' : ''}`}

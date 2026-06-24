@@ -22,10 +22,18 @@
     <ul style="list-style:none; padding:0;">
         <li th:each="squadra: ${squadre}" class="item-card">
             <div style="display:flex; align-items:center; gap:14px;">
-                <span class="team-logo" style="width:44px; height:44px; font-size:1.1rem; margin:0;"
+
+                <img th:if="${squadra.stemmaUrl != null}"
+                     th:src="${squadra.stemmaUrl}"
+                     alt="Stemma"
+                     style="width:44px; height:44px; border-radius:50%; object-fit:cover; flex-shrink:0;" />
+
+                <span th:if="${squadra.stemmaUrl == null}"
+                      class="team-logo" style="width:44px; height:44px; font-size:1.1rem; margin:0;"
                       th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
-                <a th:href="@{'/squadre/' + ${squadra.id}}" style="font-weight:700; font-size:1.1rem; color:var(--text); text-decoration:none;" th:text="${squadra.nome}">Lazio</a>
-                <span style="color:var(--text-muted); font-size:0.9rem;" th:text="${squadra.citta}">Roma</span>
+
+                <a th:href="@{'/squadre/' + ${squadra.id}}" class="team-name" th:text="${squadra.nome}">Lazio</a>
+                <span class="team-city" th:text="${squadra.citta}">Roma</span>
             </div>
             <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px;">
                 <a th:href="@{'/admin/squadre/' + ${squadra.id} + '/edit'}" class="btn btn-edit">Modifica</a>

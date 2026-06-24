@@ -14,77 +14,97 @@
 
 <div class="container page">
 
-<h1 class="page-title"
-    th:text="${squadra.id != null} ? 'Modifica Squadra' : 'Nuova Squadra'">
-</h1>
-<p class="page-subtitle"
-   th:text="${squadra.id != null}
+    <h1 class="page-title"
+        th:text="${squadra.id != null} ? 'Modifica Squadra' : 'Nuova Squadra'">
+    </h1>
+    <p class="page-subtitle"
+       th:text="${squadra.id != null}
        ? 'Modifica i dati della squadra o gestisci i giocatori iscritti.'
        : 'Compila i campi per aggiungere una nuova squadra.'">
-</p>
+    </p>
 
-<!-- SEZIONE DATI SQUADRA -->
-<div class="form-card">
-    <h2>Dati Squadra</h2>
+    <!-- SEZIONE DATI SQUADRA -->
+    <div class="form-card">
+        <h2>Dati Squadra</h2>
 
-    <form th:action="${squadra.id != null}
+        <form th:action="${squadra.id != null}
                     ? @{/admin/squadre/{id}/edit(id=${squadra.id})}
                     : @{/admin/squadre/new}"
-          th:object="${squadra}"
-          method="POST">
+              th:object="${squadra}"
+              method="POST"
+              enctype="multipart/form-data">
 
-        <input type="hidden" th:if="${squadra.id != null}" th:field="*{id}" />
+            <input type="hidden" th:if="${squadra.id != null}" th:field="*{id}" />
 
-        <div class="form-group" th:if="${#fields.hasGlobalErrors()}">
-            <div class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-        </div>
+            <div class="form-group" th:if="${#fields.hasGlobalErrors()}">
+                <div class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+            </div>
 
-        <div class="form-group">
-            <label for="nome">Nome squadra</label>
-            <input type="text" id="nome" th:field="*{nome}" placeholder="es. S.S. Lazio" required />
-            <span class="field-error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
-        </div>
+            <div class="form-group">
+                <label for="nome">Nome squadra</label>
+                <input type="text" id="nome" th:field="*{nome}" placeholder="es. S.S. Lazio" required />
+                <span class="field-error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+            </div>
 
-        <div class="form-group">
-            <label for="citta">Città</label>
-            <input type="text" id="citta" th:field="*{citta}" placeholder="es. Roma" required />
-            <span class="field-error" th:if="${#fields.hasErrors('citta')}" th:errors="*{citta}"></span>
-        </div>
+            <div class="form-group">
+                <label for="citta">Città</label>
+                <input type="text" id="citta" th:field="*{citta}" placeholder="es. Roma" required />
+                <span class="field-error" th:if="${#fields.hasErrors('citta')}" th:errors="*{citta}"></span>
+            </div>
 
-        <div class="form-group">
-            <label for="annoFondazione">Anno di fondazione</label>
-            <input type="number" id="annoFondazione" th:field="*{annoFondazione}"/>
-            <span class="field-error" th:if="${#fields.hasErrors('annoFondazione')}" th:errors="*{annoFondazione}"></span>
-        </div>
+            <div class="form-group">
+                <label for="annoFondazione">Anno di fondazione</label>
+                <input type="number" id="annoFondazione" th:field="*{annoFondazione}"/>
+                <span class="field-error" th:if="${#fields.hasErrors('annoFondazione')}" th:errors="*{annoFondazione}"></span>
+            </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-success"
-                    th:text="${squadra.id != null} ? 'Salva Modifiche' : 'Crea Squadra'">
-            </button>
-            <a th:href="@{/squadre/}" class="btn btn-secondary">Annulla</a>
-        </div>
-    </form>
-</div>
+            <div class="form-group">
+                <label>Stemma squadra</label>
+                <!-- Anteprima stemma attuale, solo in modifica -->
+                <div th:if="${squadra.stemmaUrl != null}" style="margin-bottom: 10px;">
+                    <img th:src="${squadra.stemmaUrl}" alt="Stemma attuale"
+                         style="max-width: 80px; max-height: 80px; display: block; border-radius: 8px;" />
+                    <span style="font-size: 0.85rem; color: #999;">Stemma attuale (carica un nuovo file per sostituirlo)</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <label for="stemma" class="btn btn-secondary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        Scegli stemma
+                    </label>
+                    <input type="file" id="stemma" name="stemma" accept="image/*"
+                           style="position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden;" />
+                    <span id="stemma-filename" style="display: none; align-items: center; gap: 6px; background: rgba(34,197,150,0.15); color: #4ade80; font-size: 0.85rem; padding: 6px 12px; border-radius: 20px;"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success"
+                        th:text="${squadra.id != null} ? 'Salva Modifiche' : 'Crea Squadra'">
+                </button>
+                <a th:href="@{/squadre/}" class="btn btn-secondary">Annulla</a>
+            </div>
+        </form>
+    </div>
 
 
-<div class="form-card" th:if="${squadra.id != null}" style="max-width:650px;">
-    <h2>Giocatori della Squadra</h2>
+    <div class="form-card" th:if="${squadra.id != null}" style="max-width:650px;">
+        <h2>Giocatori della Squadra</h2>
 
-    <!-- Lista giocatori attuali -->
-    <ul class="item-list" th:if="${not #sets.isEmpty(squadra.giocatori)}">
-        <li th:each="g : ${squadra.giocatori}">
+        <!-- Lista giocatori attuali -->
+        <ul class="item-list" th:if="${not #sets.isEmpty(squadra.giocatori)}">
+            <li th:each="g : ${squadra.giocatori}">
             <span class="item-name">
                 <a th:href="@{/giocatori/{id}(id=${g.id})}"
                    th:text="${g.cognome + ' ' + g.nome + ' — ' + g.ruolo}">
                     Rossi Marco — ATTACCANTE
                 </a>
             </span>
-            <span class="actions">
+                <span class="actions">
                 <!-- Modifica giocatore -->
                 <a th:href="@{/admin/giocatori/{id}/edit(id=${g.id})}"
                    class="btn btn-warning" style="padding:5px 10px; font-size:0.85rem;">Modifica
                 </a>
-                <!-- Rimuovi giocatore dalla squadra (non lo cancella, lo slega) -->
+                    <!-- Rimuovi giocatore dalla squadra (non lo cancella, lo slega) -->
                 <form th:action="@{/admin/squadre/{sid}/giocatori/{gid}/remove(sid=${squadra.id},gid=${g.id})}"
                       method="POST" class="inline-form" >
                     <button type="submit" class="btn btn-danger"
@@ -94,24 +114,48 @@
                     </button>
                 </form>
             </span>
-        </li>
-    </ul>
+            </li>
+        </ul>
 
-    <p class="empty-msg" th:if="${#sets.isEmpty(squadra.giocatori)}">
-        Nessun giocatore in questa squadra.
-    </p>
+        <p class="empty-msg" th:if="${#sets.isEmpty(squadra.giocatori)}">
+            Nessun giocatore in questa squadra.
+        </p>
 
-    <!-- Link per aggiungere un nuovo giocatore direttamente a questa squadra -->
-    <div style="margin-top: 16px;">
-        <a th:href="@{/admin/giocatori/new}" class="btn btn-success" style="font-size:0.9rem;">
-            Aggiungi Giocatore
-        </a>
+        <!-- Link per aggiungere un nuovo giocatore direttamente a questa squadra -->
+        <div style="margin-top: 16px;">
+            <a th:href="@{/admin/giocatori/new}" class="btn btn-success" style="font-size:0.9rem;">
+                Aggiungi Giocatore
+            </a>
+        </div>
     </div>
-</div>
 
+</div>
 <a href="/squadre/" class="back-link">← Torna all'elenco squadre</a>
 
 </div>
+
+<script>
+    document.getElementById('stemma').addEventListener('change', function(e) {
+        const badge = document.getElementById('stemma-filename');
+        if (e.target.files.length > 0) {
+            badge.textContent = '✓ ' + e.target.files[0].name;
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    });
+</script>
+
+<script>
+    document.querySelector('.form-card form').addEventListener('submit', function() {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Salvataggio in corso...';
+    });
+</script>
+
+</body>
+</html>
 
 </body>
 </html>

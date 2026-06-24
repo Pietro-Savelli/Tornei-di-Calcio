@@ -48,6 +48,9 @@ public class SquadraService {
         if(squadraRepository.existsByNomeAndAnnoFondazioneAndEliminataTrue(squadra.getNome(), squadra.getAnnoFondazione())) {
             Squadra esistente = squadraRepository.findByNomeAndAnnoFondazione(squadra.getNome(), squadra.getAnnoFondazione());
             esistente.setEliminata(false);
+            if (squadra.getStemmaUrl() != null) {
+                esistente.setStemmaUrl(squadra.getStemmaUrl());
+            }
             return squadraRepository.save(esistente);
         }
         else
@@ -94,6 +97,9 @@ public class SquadraService {
             squadra.setNome(squadraAggiornata.getNome());
             squadra.setCitta(squadraAggiornata.getCitta());
             squadra.setAnnoFondazione(squadraAggiornata.getAnnoFondazione());
+            if (squadraAggiornata.getStemmaUrl() != null) {
+                squadra.setStemmaUrl(squadraAggiornata.getStemmaUrl());
+            }
             return squadraRepository.save(squadra);
         }
         return null;

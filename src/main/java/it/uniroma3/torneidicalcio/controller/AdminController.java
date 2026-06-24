@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -27,13 +28,15 @@ public class AdminController {
     private final GiocatoreService giocatoreService;
     private final PartitaService partitaService;
     private final ArbitroService arbitroService;
+    private final ImageUploadService imageUploadService;
 
-    public AdminController(TorneoService torneoService, SquadraService squadraService, GiocatoreService giocatoreService, PartitaService partitaService, ArbitroService arbitroService) {
+    public AdminController(TorneoService torneoService, SquadraService squadraService, GiocatoreService giocatoreService, PartitaService partitaService, ArbitroService arbitroService, ImageUploadService imageUploadService) {
         this.torneoService = torneoService;
         this.squadraService = squadraService;
         this.giocatoreService = giocatoreService;
         this.partitaService = partitaService;
         this.arbitroService = arbitroService;
+        this.imageUploadService = imageUploadService;
     }
 
     // TORNEI
@@ -138,12 +141,17 @@ public class AdminController {
 
     @PostMapping("/squadre/new")
     public String createSquadra(@Valid @ModelAttribute("squadra") Squadra squadra,
-                                BindingResult bindingResult) {
+                                BindingResult bindingResult,
+                                @RequestParam(value = "stemma", required = false) MultipartFile stemma) {
         if (bindingResult.hasErrors()) {
             return "admin/formSquadre";
         }
 
         try {
+            String stemmaUrl = this.imageUploadService.uploadStemma(stemma);
+            if (stemmaUrl != null) {
+                squadra.setStemmaUrl(stemmaUrl);
+            }
             Squadra salvata = this.squadraService.iscriviSquadra(squadra);
             return "redirect:/squadre/" + salvata.getId();
         } catch (SquadraDuplicataException e) {
@@ -161,9 +169,15 @@ public class AdminController {
     }
 
     @PostMapping("/squadre/{id}/edit")
-    public String editSquadra(@PathVariable Long id, @Valid @ModelAttribute("squadra") Squadra squadra, BindingResult bindingResult) {
+    public String editSquadra(@PathVariable Long id, @Valid @ModelAttribute("squadra") Squadra squadra,
+                              BindingResult bindingResult,
+                              @RequestParam(value = "stemma", required = false) MultipartFile stemma) {
         if (bindingResult.hasErrors()) {
             return "admin/formSquadre";
+        }
+        String stemmaUrl = this.imageUploadService.uploadStemma(stemma);
+        if (stemmaUrl != null) {
+            squadra.setStemmaUrl(stemmaUrl);
         }
         this.squadraService.update(id, squadra);
         return "redirect:/squadre/" + id;

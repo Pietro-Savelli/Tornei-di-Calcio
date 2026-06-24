@@ -18,9 +18,6 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
 });
 
-// Stesso dominio in produzione (Spring serve React); in dev Vite gira su
-// un'altra porta, quindi serve l'origin esplicito + withCredentials per
-// far viaggiare il cookie JSESSIONID tra :5173 e :8080.
 const API_BASE = import.meta.env.VITE_API_BASE ?? '';
 
 export function AuthProvider({ children }: { children: ReactNode }) {

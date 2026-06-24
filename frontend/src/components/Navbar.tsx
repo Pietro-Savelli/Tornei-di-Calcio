@@ -10,9 +10,6 @@ export default function Navbar() {
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
-      // /logout di Spring Security richiede POST + token CSRF valido
-      // (CSRF è disabilitato solo su /api/home, /api/tornei/**, /api/utente/**,
-      // /api/auth/**: /logout non è tra questi, quindi serve il token vero).
       const csrfRes = await api.get('/api/csrf');
       const { headerName, token } = csrfRes.data;
 

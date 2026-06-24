@@ -26,6 +26,8 @@ public class Squadra {
     @NotBlank
     private String citta;
 
+    private String stemmaUrl;
+
     @ManyToMany (mappedBy = "squadre")
     private Set<Torneo> tornei = new HashSet<>();
 
@@ -116,6 +118,9 @@ public class Squadra {
 
     public boolean isEliminata() { return eliminata; }
     public void setEliminata(boolean eliminata) { this.eliminata = eliminata; }
+
+    public String getStemmaUrl() { return stemmaUrl; }
+    public void setStemmaUrl(String stemmaUrl) { this.stemmaUrl = stemmaUrl; }
 
 
     @Override

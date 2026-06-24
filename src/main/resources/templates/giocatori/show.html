@@ -31,12 +31,27 @@
                 <span class="detail-value" th:text="${giocatore.dataDiNascita}">01/01/2000</span></li>
             <li class="detail-item"><span class="detail-label">Altezza</span>
                 <span class="detail-value" th:text="${giocatore.altezza != null ? giocatore.altezza + ' cm' : 'Non specificata'}">182 cm</span></li>
-            <li class="detail-item"><span class="detail-label">Squadra</span>
+            <li class="detail-item">
+                <span class="detail-label">Squadra</span>
                 <span class="detail-value">
-                    <a th:if="${giocatore.squadra != null}" th:href="@{/squadre/{id}(id=${giocatore.squadra.id})}"
-                       th:text="${giocatore.squadra.nome}">Squadra</a>
-                    <span th:unless="${giocatore.squadra != null}">Svincolato</span>
-                </span></li>
+
+        <a th:if="${giocatore.squadra != null}"
+           th:href="@{/squadre/{id}(id=${giocatore.squadra.id})}"
+           style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
+
+            <img th:if="${giocatore.squadra.stemmaUrl != null}"
+                 th:src="${giocatore.squadra.stemmaUrl}"
+                 alt="Stemma"
+                 style="width: 24px; height: 24px; object-fit: contain; display: block;" />
+            <span th:text="${giocatore.squadra.nome}">Squadra</span>
+        </a>
+
+        <span th:unless="${giocatore.squadra != null}" style="font-style: italic; color: #9ca3af;">
+            Svincolato
+        </span>
+
+    </span>
+            </li>
         </ul>
 
         <div sec:authorize="hasAuthority('ADMIN')" style="display:flex; gap:10px; margin-top:18px;">

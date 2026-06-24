@@ -38,38 +38,50 @@
         <div class="score-label" th:text="${partita.stato.name() == 'FINISHED' ? 'Risultato Finale' : (partita.stato.name() == 'CANCELLED' ? 'Partita Annullata' : 'In Programma')}">Risultato Finale</div>
 
         <div class="score-board">
+
             <div class="team">
-                <div class="team-badge">
+
+                <img th:if="${partita.squadraCasa.stemmaUrl != null}"
+                     th:src="${partita.squadraCasa.stemmaUrl}"
+                     alt="Stemma Casa"
+                     style="width: 64px; height: 64px; object-fit: contain; display: block; margin: 0 auto 12px;" />
+
+                <div th:if="${partita.squadraCasa.stemmaUrl == null}" class="team-badge" style="margin-bottom: 12px;">
                     <span class="material-symbols-rounded">home</span>
                 </div>
+
                 <div class="team-name" th:text="${partita.squadraCasa.nome}">Lazio</div>
             </div>
 
             <div class="score-divider">
 
-                <!--Partita FINISHED-->
                 <div class="score-number" th:if="${partita.stato.name() == 'FINISHED'}">
                     <span th:text="${partita.goalsHome != null ? partita.goalsHome : '-'}">1</span>
                     -
                     <span th:text="${partita.goalsAway != null ? partita.goalsAway : '-'}">1</span>
                 </div>
 
-                <!-- Partita non giocata-->
                 <div class="no-play-score" th:unless="${partita.stato.name() == 'FINISHED'}">
-
                     <span class="vs" th:text="${partita.stato.name() == 'CANCELLED' ? '✖' : 'VS'}">VS</span>
                     <span class="testo-aggiuntivo" th:text="${partita.stato.name() == 'CANCELLED' ? 'Annullata' : 'Da giocare'}">Da giocare</span>
-
                 </div>
 
             </div>
 
             <div class="team">
-                <div class="team-badge">
+
+                <img th:if="${partita.squadraOspite.stemmaUrl != null}"
+                     th:src="${partita.squadraOspite.stemmaUrl}"
+                     alt="Stemma Trasferta"
+                     style="width: 64px; height: 64px; object-fit: contain; display: block; margin: 0 auto 12px;" />
+
+                <div th:if="${partita.squadraOspite.stemmaUrl == null}" class="team-badge" style="margin-bottom: 12px;">
                     <span class="material-symbols-rounded">flight_takeoff</span>
                 </div>
+
                 <div class="team-name" th:text="${partita.squadraOspite.nome}">Roma</div>
             </div>
+
         </div>
 
         <div class="match-status" th:text="${partita.stato.name() == 'FINISHED' ? 'Terminata il '+ partita.dataOra: (partita.stato.name() == 'CANCELLED' ? 'Annullata' : 'Da disputare il ' + partita.dataOra)}">Terminata</div>

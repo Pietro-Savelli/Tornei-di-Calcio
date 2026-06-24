@@ -21,9 +21,23 @@ export default function TeamCarousel({ squadre }: TeamCarouselProps) {
                             key={s.id}
                             href={`/squadre/${s.id}`}
                         >
-                            <span className="team-logo">{initials(s.nome)}</span>
+                            {/* Controllo se esiste lo stemmaUrl */}
+                            {s.stemmaUrl ? (
+                                <img
+                                    src={s.stemmaUrl}
+                                    alt={`Stemma ${s.nome}`}
+                                    style={{
+                                        width: '70px',
+                                        height: '70px',
+                                        objectFit: 'contain',
+                                        marginBottom: '15px'
+                                    }}
+                                />
+                            ) : (
+                                <span className="team-logo">{initials(s.nome)}</span>
+                            )}
+
                             <span className="team-chip-name">{s.nome}</span>
-                            <span className="team-chip-city">{s.citta}</span>
                         </a>
                     ))}
                 </div>

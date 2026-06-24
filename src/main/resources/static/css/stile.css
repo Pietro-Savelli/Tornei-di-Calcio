@@ -534,3 +534,34 @@ table a:hover { color: var(--accent-light); }
     text-align: left;      /* Spinge il testo lontano dal risultato */
     padding-left: 15px;    /* Un po' di respiro dal punteggio */
 }
+
+.file-input-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.file-input-label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.file-input-filename {
+    margin-left: 10px;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.team-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.team-city {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}

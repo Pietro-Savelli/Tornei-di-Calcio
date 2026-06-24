@@ -118,7 +118,7 @@ public class HomeService {
     }
 
     private SquadraHomeDto toSquadraHomeDto(Squadra s) {
-        return new SquadraHomeDto(s.getId(), s.getNome(), s.getCitta(), s.getAnnoFondazione());
+        return new SquadraHomeDto(s.getId(), s.getNome(), s.getCitta(), s.getAnnoFondazione(), s.getStemmaUrl());
     }
 
     private Utente getUtenteLoggato() {

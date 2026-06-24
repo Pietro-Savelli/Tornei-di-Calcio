@@ -14,7 +14,16 @@
 <div class="container page">
 
     <section class="hero fade-in">
-        <span class="team-logo" style="margin:0 auto 14px;" th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
+        <img th:if="${squadra.stemmaUrl != null}"
+             th:src="${squadra.stemmaUrl}"
+             alt="Stemma"
+             style="width: 90px; height: 90px; object-fit: contain; display: block; margin: 0 auto 14px;" />
+
+        <span th:if="${squadra.stemmaUrl == null}"
+              class="team-logo"
+              style="margin: 0 auto 14px; width: 64px; height: 64px; font-size: 1.1rem;"
+              th:text="${#strings.substring(squadra.nome,0,1).toUpperCase()}">L</span>
+
         <h1 class="match-title" th:text="${squadra.nome}">Lazio</h1>
         <div class="stadium-info">
             <span th:text="${squadra.citta}">Roma</span>

@@ -4,5 +4,6 @@ public record SquadraHomeDto(
         Long id,
         String nome,
         String citta,
-        Integer annoFondazione
+        Integer annoFondazione,
+        String stemmaUrl
 ) {}
